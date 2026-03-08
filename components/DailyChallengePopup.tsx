@@ -10,7 +10,7 @@ interface Props {
 export const DailyChallengePopup: React.FC<Props> = ({ onStart, onClose, rewardPercentage }) => {
     return (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/70 backdrop-blur-md animate-in fade-in duration-300">
-            <div className="bg-white rounded-[32px] w-full max-w-sm shadow-2xl overflow-hidden relative border-4 border-white/20">
+            <div className="bg-white rounded-[32px] w-full max-w-lg shadow-2xl overflow-hidden relative border-4 border-white/20">
                 {/* Close Button */}
                 <button 
                     onClick={onClose} 

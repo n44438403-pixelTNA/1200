@@ -208,10 +208,10 @@ export const AiDeepAnalysis: React.FC<Props> = ({ user, settings, onUpdateUser, 
                     <BrainCircuit size={64} className="text-violet-600" />
                 </div>
                 <h2 className="text-2xl font-black text-slate-800 mb-2">AI Deep Analysis Hub</h2>
-                <p className="text-slate-500 mb-8 max-w-sm">
+                <p className="text-slate-500 mb-8 max-w-lg">
                     Unlock smart insights, mistake patterns, and personalized audio guidance to boost your score.
                 </p>
-                <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm mb-8 w-full max-w-xs">
+                <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm mb-8 w-full max-w-sm">
                     <div className="flex justify-between items-center mb-2">
                         <span className="text-xs font-bold text-slate-400 uppercase">Entry Cost</span>
                         <span className="text-lg font-black text-violet-600">{COST} Coins</span>

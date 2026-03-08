@@ -9015,7 +9015,7 @@ Capital of India?       Mumbai  Delhi   Kolkata Chennai 2       Delhi is the cap
       {/* --- EDIT USER MODAL --- */}
       {editingUser && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
-              <div className="bg-white p-6 rounded-2xl w-full max-w-sm shadow-2xl max-h-[90vh] overflow-y-auto">
+              <div className="bg-white p-6 rounded-2xl w-full max-w-lg shadow-2xl max-h-[90vh] overflow-y-auto">
                   <h3 className="text-lg font-bold mb-4">Edit User: {editingUser.name}</h3>
                   <div className="space-y-4">
                       {/* CREDITS */}
@@ -9163,7 +9163,7 @@ Capital of India?       Mumbai  Delhi   Kolkata Chennai 2       Delhi is the cap
       {/* --- DM USER MODAL WITH GIFT --- */}
       {dmUser && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
-              <div className="bg-white p-6 rounded-2xl w-full max-w-sm shadow-2xl animate-in fade-in max-h-[90vh] overflow-y-auto">
+              <div className="bg-white p-6 rounded-2xl w-full max-w-lg shadow-2xl animate-in fade-in max-h-[90vh] overflow-y-auto">
                   <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
                       <Gift className="text-pink-500" /> Gift & Message
                   </h3>
@@ -9702,8 +9702,8 @@ Capital of India?       Mumbai  Delhi   Kolkata Chennai 2       Delhi is the cap
                                       {note.type} • {note.access}
                                   </span>
                               </div>
-                              {note.type === 'PDF' && <a href={note.url} target="_blank" className="text-xs text-blue-600 hover:underline mt-1 block truncate max-w-md">{note.url}</a>}
-                              {note.type === 'HTML' && <p className="text-xs text-slate-500 mt-1 truncate max-w-md">{note.content.substring(0, 50)}...</p>}
+                              {note.type === 'PDF' && <a href={note.url} target="_blank" className="text-xs text-blue-600 hover:underline mt-1 block truncate max-w-lg">{note.url}</a>}
+                              {note.type === 'HTML' && <p className="text-xs text-slate-500 mt-1 truncate max-w-lg">{note.content.substring(0, 50)}...</p>}
                           </div>
                           <button
                               onClick={() => {
@@ -9752,7 +9752,7 @@ Capital of India?       Mumbai  Delhi   Kolkata Chennai 2       Delhi is the cap
                       </div>
                   )}
 
-                  <p className="text-slate-500 font-medium text-center max-w-md">
+                  <p className="text-slate-500 font-medium text-center max-w-lg">
                       {whatsappStatus === 'CONNECTED' 
                           ? "Your admin WhatsApp is linked. You can now send automated updates and respond to student queries directly."
                           : "Open WhatsApp on your phone > Linked Devices > Link a Device > Scan this QR Code."}
@@ -9859,7 +9859,7 @@ Capital of India?       Mumbai  Delhi   Kolkata Chennai 2       Delhi is the cap
 
       {codeModal && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in">
-              <div className="bg-white p-6 rounded-2xl w-full max-w-sm shadow-2xl">
+              <div className="bg-white p-6 rounded-2xl w-full max-w-lg shadow-2xl">
                   <h3 className="text-xl font-black text-slate-800 mb-2 flex items-center gap-2">
                       <Key className="text-yellow-500" /> Generate Code
                   </h3>

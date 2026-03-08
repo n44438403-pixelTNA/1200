@@ -41,7 +41,7 @@ export const CustomAlert: React.FC<AlertProps> = ({ isOpen, type = 'INFO', title
 
   return (
     <div className="fixed inset-0 z-[999] flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-in fade-in duration-300">
-      <div className="bg-white w-full max-w-md rounded-[2rem] shadow-2xl overflow-hidden border border-slate-100 animate-in zoom-in-95 duration-300">
+      <div className="bg-white w-full max-w-lg rounded-[2rem] shadow-2xl overflow-hidden border border-slate-100 animate-in zoom-in-95 duration-300">
         <div className="p-8 text-center">
             <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-sm border border-slate-100">
                 {getIcon()}
@@ -105,7 +105,7 @@ export const CustomConfirm: React.FC<ConfirmProps> = ({ isOpen, title, message, 
 
   return (
     <div className="fixed inset-0 z-[250] flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-in fade-in">
-      <div className="bg-white rounded-2xl w-full max-w-sm shadow-2xl p-6 text-center">
+      <div className="bg-white rounded-2xl w-full max-w-lg shadow-2xl p-6 text-center">
         <h3 className="text-lg font-black text-slate-800 mb-2">{title}</h3>
         <p className="text-slate-600 mb-6 text-sm">{message}</p>
         <div className="flex gap-3">

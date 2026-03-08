@@ -105,7 +105,7 @@ export const ReferralPopup: React.FC<Props> = ({ user, onClose, onUpdateUser }) 
     if (success) {
         return (
             <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-sm animate-in fade-in">
-                <div className="bg-white rounded-3xl p-8 w-full max-w-sm text-center shadow-2xl relative overflow-hidden">
+                <div className="bg-white rounded-3xl p-8 w-full max-w-lg text-center shadow-2xl relative overflow-hidden">
                     <div className="absolute inset-0 bg-green-50 z-0"></div>
                     <div className="relative z-10">
                         <div className="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg animate-bounce">
@@ -124,7 +124,7 @@ export const ReferralPopup: React.FC<Props> = ({ user, onClose, onUpdateUser }) 
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-sm animate-in fade-in">
-            <div className="bg-white rounded-3xl p-6 w-full max-w-sm shadow-2xl border border-slate-200 relative">
+            <div className="bg-white rounded-3xl p-6 w-full max-w-lg shadow-2xl border border-slate-200 relative">
                 <button onClick={onClose} className="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
                     <X size={24} />
                 </button>

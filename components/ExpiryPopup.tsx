@@ -42,7 +42,7 @@ export const ExpiryPopup: React.FC<Props> = ({
 
   return (
     <div className="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-md animate-in fade-in">
-      <div className="bg-white rounded-3xl w-full max-w-sm shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300 relative border-2 border-red-500">
+      <div className="bg-white rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300 relative border-2 border-red-500">
         
         {/* Animated Warning Header */}
         <div className="bg-red-500 p-6 text-white text-center relative overflow-hidden">

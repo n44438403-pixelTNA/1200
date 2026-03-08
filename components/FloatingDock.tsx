@@ -71,7 +71,7 @@ export const FloatingDock: React.FC<Props> = ({ onTabSelect, onGoHome, onGoBack,
              {/* Click outside to close */}
              <div className="absolute inset-0" onClick={() => setIsMaximized(false)}></div>
              
-             <div className="bg-white rounded-3xl p-6 shadow-2xl w-full max-w-sm mb-20 animate-in zoom-in slide-in-from-bottom-10 border border-slate-100 relative z-10">
+             <div className="bg-white rounded-3xl p-6 shadow-2xl w-full max-w-lg mb-20 animate-in zoom-in slide-in-from-bottom-10 border border-slate-100 relative z-10">
                  <button 
                      onClick={() => setIsMaximized(false)} 
                      className="absolute -top-4 -right-4 w-10 h-10 bg-slate-900 text-white rounded-full shadow-lg flex items-center justify-center hover:scale-110 transition-transform"

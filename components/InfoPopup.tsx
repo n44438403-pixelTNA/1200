@@ -23,7 +23,7 @@ export const InfoPopup: React.FC<InfoPopupProps> = ({ isOpen, onClose, config, t
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
       <div 
-        className={`w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden transform transition-all scale-100 border-2 ${borderColor}`}
+        className={`w-full max-w-lg bg-white rounded-2xl shadow-2xl overflow-hidden transform transition-all scale-100 border-2 ${borderColor}`}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}

@@ -233,7 +233,7 @@ export const SpinWheel: React.FC<Props> = ({ user, onUpdateUser, settings }) => 
       </div>
 
       {resultMessage && (
-          <div className="mb-8 p-6 rounded-2xl bg-white border-2 border-slate-100 shadow-xl text-center w-full max-w-xs relative overflow-hidden">
+          <div className="mb-8 p-6 rounded-2xl bg-white border-2 border-slate-100 shadow-xl text-center w-full max-w-sm relative overflow-hidden">
               <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"></div>
               {resultMessage}
           </div>
@@ -252,7 +252,7 @@ export const SpinWheel: React.FC<Props> = ({ user, onUpdateUser, settings }) => 
           <div className="absolute top-0 -left-full w-full h-full bg-white/30 -skew-x-12 group-hover:left-full transition-all duration-700 ease-in-out"></div>
         </button>
       ) : (
-        <div className="bg-slate-900 text-white px-8 py-4 rounded-2xl shadow-lg flex flex-col items-center border border-slate-700 w-full max-w-xs">
+        <div className="bg-slate-900 text-white px-8 py-4 rounded-2xl shadow-lg flex flex-col items-center border border-slate-700 w-full max-w-sm">
              <div className="text-[10px] font-bold text-slate-400 uppercase mb-2 flex items-center gap-1 tracking-widest">
                  <Lock size={12} /> Daily Limit Reached
              </div>

@@ -972,7 +972,7 @@ export const PdfView: React.FC<Props> = ({
                                         <Lock size={32} className="text-teal-600" />
                                     </div>
                                     <h2 className="text-xl font-black text-slate-800 mb-2">Deep Dive Mode Locked</h2>
-                                    <p className="text-sm text-slate-500 max-w-xs mb-8 leading-relaxed">
+                                    <p className="text-sm text-slate-500 max-w-sm mb-8 leading-relaxed">
                                         {access.reason === 'FEED_LOCKED' ? 'This content is currently locked by admin.' : 'Unlock in-depth conceptual notes to master this chapter.'}
                                     </p>
 
@@ -1104,7 +1104,7 @@ export const PdfView: React.FC<Props> = ({
                                         <Lock size={32} className="text-purple-600" />
                                     </div>
                                     <h2 className="text-xl font-black text-slate-800 mb-2">Premium Audio Slides Locked</h2>
-                                    <p className="text-sm text-slate-500 max-w-xs mb-8 leading-relaxed">
+                                    <p className="text-sm text-slate-500 max-w-sm mb-8 leading-relaxed">
                                         {access.reason === 'FEED_LOCKED' ? 'Content locked by admin.' : 'Visual slides with synchronized audio narration.'}
                                     </p>
 
@@ -1306,7 +1306,7 @@ export const PdfView: React.FC<Props> = ({
                                         <Lock size={32} className="text-cyan-600" />
                                     </div>
                                     <h2 className="text-xl font-black text-slate-800 mb-2">Additional Resources Locked</h2>
-                                    <p className="text-sm text-slate-500 max-w-xs mb-8 leading-relaxed">
+                                    <p className="text-sm text-slate-500 max-w-sm mb-8 leading-relaxed">
                                         {access.reason === 'FEED_LOCKED' ? 'This section is disabled by admin.' : 'Extra reading material and reference documents.'}
                                     </p>
 

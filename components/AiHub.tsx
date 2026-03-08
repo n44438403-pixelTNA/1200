@@ -288,7 +288,7 @@ export const AiHub: React.FC<Props> = ({ user, onTabChange, settings }) => {
                                         <Sparkles size={40} className="text-pink-600" />
                                     </div>
                                     <h3 className="text-xl font-bold text-slate-800 mb-2">Create Your Success Plan</h3>
-                                    <p className="text-slate-500 mb-6 text-sm max-w-xs mx-auto">
+                                    <p className="text-slate-500 mb-6 text-sm max-w-sm mx-auto">
                                         Our AI will analyze your past test performance and create a custom 3-day schedule to fix your weak areas.
                                     </p>
                                     <Button

@@ -140,7 +140,7 @@ export const TodayRevisionView: React.FC<Props> = ({ user, topics, onClose, onCo
             {/* EXIT CONFIRMATION MODAL */}
             {showExitConfirm && (
                 <div className="fixed inset-0 z-[100] bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in">
-                    <div className="bg-white rounded-2xl w-full max-w-sm shadow-2xl p-6 text-center">
+                    <div className="bg-white rounded-2xl w-full max-w-lg shadow-2xl p-6 text-center">
                          <div className="mx-auto w-12 h-12 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mb-4">
                             <CheckCircle size={24} />
                          </div>

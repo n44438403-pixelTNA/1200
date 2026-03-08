@@ -1626,7 +1626,7 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
       {/* EDIT PROFILE MODAL (Moved to root level of StudentDashboard to fix z-index and conditional rendering issues) */}
       {editMode && (
           <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-in fade-in">
-              <div className="bg-white rounded-2xl p-6 w-full max-w-sm shadow-xl">
+              <div className="bg-white rounded-2xl p-6 w-full max-w-lg shadow-xl">
                   <div className="flex justify-between items-center mb-6">
                       <h3 className="text-xl font-black text-slate-800 flex items-center gap-2"><Edit className="text-blue-600"/> Edit Profile</h3>
                       <button onClick={() => setEditMode(false)} className="p-2 hover:bg-slate-100 rounded-full"><X size={20} /></button>
@@ -1756,7 +1756,7 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
         {/* REQUEST CONTENT MODAL */}
         {showRequestModal && (
             <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-in fade-in">
-                <div className="bg-white rounded-2xl p-6 w-full max-w-sm shadow-xl">
+                <div className="bg-white rounded-2xl p-6 w-full max-w-lg shadow-xl">
                     <div className="flex items-center gap-2 mb-4 text-pink-600">
                         <Megaphone size={24} />
                         <h3 className="text-lg font-black text-slate-800">Request Content</h3>
@@ -1836,7 +1836,7 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
         {/* NAME CHANGE MODAL */}
         {showNameChangeModal && (
             <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-in fade-in">
-                <div className="bg-white rounded-2xl p-6 w-full max-w-sm shadow-xl">
+                <div className="bg-white rounded-2xl p-6 w-full max-w-lg shadow-xl">
                     <h3 className="text-lg font-bold mb-4 text-slate-800">Change Display Name</h3>
                     <input
                         type="text"
@@ -2063,7 +2063,7 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
                               </div>
                           </div>
                           <h2 className="text-2xl font-black text-slate-800 mb-2">Revision Hub Locked</h2>
-                          <p className="text-slate-500 mb-6 max-w-xs">
+                          <p className="text-slate-500 mb-6 max-w-sm">
                               {access.reason === 'FEED_LOCKED' ? 'This feature is currently disabled by Admin.' : 'Upgrade your plan to unlock smart revision tools.'}
                           </p>
                           <Button onClick={() => onTabChange('STORE')} variant="primary">View Plans</Button>

@@ -118,7 +118,7 @@ export const UniversalChat: React.FC<Props> = ({ user, onClose, isAdmin, targetU
                 </div>
             )}
 
-            <div className="bg-white w-full max-w-md h-[80vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden">
+            <div className="bg-white w-full max-w-lg h-[80vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden">
                 {/* Header */}
                 <div className="bg-slate-900 text-white p-4 flex items-center justify-between">
                     <div className="flex items-center gap-3">

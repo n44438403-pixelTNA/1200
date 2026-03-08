@@ -14,7 +14,7 @@ export const LessonActionModal: React.FC<Props> = ({ chapter, onClose, onSelect,
     return (
         <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-4 bg-slate-900/80 backdrop-blur-md animate-in fade-in duration-200">
             <div
-                className="bg-white w-full max-w-xs rounded-[32px] overflow-hidden shadow-2xl animate-in slide-in-from-bottom-10 duration-300 relative border border-white/20"
+                className="bg-white w-full max-w-sm rounded-[32px] overflow-hidden shadow-2xl animate-in slide-in-from-bottom-10 duration-300 relative border border-white/20"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Header Branding */}

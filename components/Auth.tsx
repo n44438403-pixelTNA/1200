@@ -508,7 +508,7 @@ export const Auth: React.FC<Props> = ({ onLogin, logActivity }) => {
                  <div className="absolute -top-[20%] -right-[10%] w-[50%] h-[50%] bg-blue-500/20 blur-[120px] rounded-full"></div>
                  <div className="absolute top-[60%] -left-[10%] w-[40%] h-[40%] bg-purple-500/20 blur-[120px] rounded-full"></div>
             </div>
-            <div className="bg-white/90 backdrop-blur-xl p-10 rounded-3xl shadow-2xl w-full max-w-md border border-slate-200 text-center animate-in zoom-in relative z-10">
+            <div className="bg-white/90 backdrop-blur-xl p-10 rounded-3xl shadow-2xl w-full max-w-lg border border-slate-200 text-center animate-in zoom-in relative z-10">
                 <div className="w-20 h-20 bg-emerald-500/10 text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-emerald-500/20">
                     <ShieldCheck size={40} />
                 </div>

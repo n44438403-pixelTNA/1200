@@ -83,7 +83,7 @@ export const ImageCropper: React.FC<Props> = ({ imageSrc, onCropComplete, onCanc
 
   return (
     <div className="fixed inset-0 z-[60] bg-black/80 flex flex-col items-center justify-center p-4">
-      <div className="bg-white w-full max-w-md rounded-2xl overflow-hidden shadow-2xl flex flex-col h-[500px]">
+      <div className="bg-white w-full max-w-lg rounded-2xl overflow-hidden shadow-2xl flex flex-col h-[500px]">
         <div className="bg-slate-900 text-white p-4 flex justify-between items-center">
             <h3 className="font-bold">Crop Image</h3>
             <button onClick={onCancel} className="text-slate-400 hover:text-white">✕</button>

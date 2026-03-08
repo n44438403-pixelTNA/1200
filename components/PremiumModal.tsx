@@ -152,7 +152,7 @@ export const PremiumModal: React.FC<Props> = ({ chapter, user, credits, isAdmin,
 
   return (
     <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center p-0 md:p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
-        <div className="bg-white w-full max-w-sm rounded-t-3xl md:rounded-3xl shadow-2xl overflow-hidden relative max-h-[80vh] flex flex-col">
+        <div className="bg-white w-full max-w-lg rounded-t-3xl md:rounded-3xl shadow-2xl overflow-hidden relative max-h-[80vh] flex flex-col">
             
             {/* Header */}
             <div className="bg-white p-4 border-b border-slate-100 flex items-center justify-between">

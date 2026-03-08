@@ -9,7 +9,7 @@ interface Props {
 export const LoginGuide: React.FC<Props> = ({ onClose }) => {
     return (
         <div className="fixed inset-0 z-50 bg-white/95 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in">
-            <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md border border-slate-200 overflow-hidden relative">
+            <div className="bg-white rounded-3xl shadow-2xl w-full max-w-lg border border-slate-200 overflow-hidden relative">
                 <div className="bg-slate-50 p-4 border-b border-slate-100 flex justify-between items-center">
                     <h3 className="font-bold text-slate-800">Login Help / लॉगिन सहायता</h3>
                     <button onClick={onClose} className="p-1 hover:bg-white rounded-full"><X size={20} /></button>

@@ -74,7 +74,27 @@ const App: React.FC = () => {
   const [isFlashSaleActive, setIsFlashSaleActive] = useState(false);
   const [showGlobalSearch, setShowGlobalSearch] = useState(false);
 
+
   useEffect(() => {
+      // 🚨 AGGRESSIVE CACHE CLEANUP FOR NON-ADMINS 🚨
+      // If a student's device is bloated by old cache or they previously logged in as admin,
+      // we need to free up their quota so they don't get white screens.
+      try {
+          const userStr = localStorage.getItem('nst_current_user');
+          if (userStr) {
+              const currentUser = JSON.parse(userStr);
+              if (currentUser.role !== 'ADMIN' && currentUser.role !== 'SUB_ADMIN') {
+                  localStorage.removeItem('nst_users');
+                  localStorage.removeItem('nst_recycle_bin');
+                  localStorage.removeItem('nst_admin_codes');
+              }
+          }
+      } catch (e) {
+          console.error("Cleanup error", e);
+      }
+
+
+  let storedSettings = state.settings;
       // Check Discount Logic Periodically
       const checkDiscount = () => {
           const lastVisitStr = localStorage.getItem('nst_store_last_visit');
@@ -970,8 +990,8 @@ const App: React.FC = () => {
 
       const storedLogs = localStorage.getItem('nst_activity_log');
       const logs: ActivityLogEntry[] = storedLogs ? JSON.parse(storedLogs) : [];
-      // Keep last 500 logs
-      const updatedLogs = [...logs, newLog].slice(-500); 
+      // Keep last 50 logs instead of 500 to save localStorage quota
+      const updatedLogs = [...logs, newLog].slice(-50);
       safeSetLocalStorage('nst_activity_log', JSON.stringify(updatedLogs));
   };
 

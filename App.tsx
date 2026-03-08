@@ -84,7 +84,8 @@ const App: React.FC = () => {
           if (userStr) {
               const currentUser = JSON.parse(userStr);
               if (currentUser.role !== 'ADMIN' && currentUser.role !== 'SUB_ADMIN') {
-                  localStorage.removeItem('nst_users');
+                  // Keep only the current user in nst_users to save space but prevent update bugs
+                  safeSetLocalStorage('nst_users', JSON.stringify([currentUser]));
                   localStorage.removeItem('nst_recycle_bin');
                   localStorage.removeItem('nst_admin_codes');
               }
@@ -767,9 +768,7 @@ const App: React.FC = () => {
                               Object.keys(localStorage).forEach(k => {
                                   if (k.startsWith('nst_content_')) localStorage.removeItem(k);
                               });
-                              // Also clear indexedDB via storage util if possible (not exposed here, but we can try)
-                              storage.clear().catch(e => console.error(e));
-
+                              // Removed storage.clear() to prevent wiping all IndexedDB data (which causes data loss)
                               safeSetLocalStorage('nst_last_cache_clear', now.toString());
                           }
                       }

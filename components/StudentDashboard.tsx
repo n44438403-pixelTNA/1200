@@ -692,10 +692,16 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
       const userIdx = storedUsers.findIndex((u:User) => u.id === updatedUser.id);
       if (userIdx !== -1) {
           storedUsers[userIdx] = updatedUser;
-          safeSetLocalStorage('nst_users', JSON.stringify(storedUsers));
-          if (!isImpersonating) { safeSetLocalStorage('nst_current_user', JSON.stringify(updatedUser)); saveUserToLive(updatedUser); }
-          onRedeemSuccess(updatedUser); 
+      } else {
+          storedUsers.push(updatedUser);
       }
+      safeSetLocalStorage('nst_users', JSON.stringify(storedUsers));
+
+      if (!isImpersonating) {
+          safeSetLocalStorage('nst_current_user', JSON.stringify(updatedUser));
+          saveUserToLive(updatedUser);
+      }
+      onRedeemSuccess(updatedUser);
   };
 
   const markInboxRead = () => {

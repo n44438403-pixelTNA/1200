@@ -2168,14 +2168,20 @@ const AdminDashboardInner: React.FC<Props> = ({ onNavigate, settings, onUpdateSe
                           let qLine = line;
                               let qOffset = 0;
 
-                              // If we matched the 📘 header, the actual question text is usually a few lines down marked with ❓
-                              if (/📘/.test(line)) {
-                                  for (let j = 1; j <= 4; j++) {
-                                      if (i + j < lines.length && /❓/.test(lines[i+j])) {
+                              // If we matched the 📘 header or "Question [Number]", the actual question text is usually a few lines down marked with ❓ or 'Question:'
+                              if (/📘/.test(line) || /^Question\s+\d+/i.test(line)) {
+                                  for (let j = 1; j <= 5; j++) {
+                                      if (i + j < lines.length && /^(?:❓\s*\*?\*?Question|Question:)/i.test(lines[i+j])) {
                                           qLine = lines[i+j];
                                           qOffset = j;
                                           break;
                                       }
+                                  }
+
+                                  // If the line containing 'Question:' is just the header and the actual question starts on the NEXT line
+                                  if (/^(?:❓\s*\*?\*?Question:\*?\*?\s*|Question:\s*)$/i.test(qLine.trim()) && i + qOffset + 1 < lines.length) {
+                                      qOffset++;
+                                      qLine = lines[i + qOffset];
                                   }
                               }
 
@@ -2379,14 +2385,20 @@ const AdminDashboardInner: React.FC<Props> = ({ onNavigate, settings, onUpdateSe
                               let qLine = line;
                               let qOffset = 0;
 
-                              // If we matched the 📘 header, the actual question text is usually a few lines down marked with ❓
-                              if (/📘/.test(line)) {
-                                  for (let j = 1; j <= 4; j++) {
-                                      if (i + j < lines.length && /❓/.test(lines[i+j])) {
+                              // If we matched the 📘 header or "Question [Number]", the actual question text is usually a few lines down marked with ❓ or 'Question:'
+                              if (/📘/.test(line) || /^Question\s+\d+/i.test(line)) {
+                                  for (let j = 1; j <= 5; j++) {
+                                      if (i + j < lines.length && /^(?:❓\s*\*?\*?Question|Question:)/i.test(lines[i+j])) {
                                           qLine = lines[i+j];
                                           qOffset = j;
                                           break;
                                       }
+                                  }
+
+                                  // If the line containing 'Question:' is just the header and the actual question starts on the NEXT line
+                                  if (/^(?:❓\s*\*?\*?Question:\*?\*?\s*|Question:\s*)$/i.test(qLine.trim()) && i + qOffset + 1 < lines.length) {
+                                      qOffset++;
+                                      qLine = lines[i + qOffset];
                                   }
                               }
 

@@ -2009,10 +2009,10 @@ const AdminDashboardInner: React.FC<Props> = ({ onNavigate, settings, onUpdateSe
       const baseKey = `${selBoard}-${selClass}${streamKey}-${selSubject.name}`;
       
       const cacheKey = `nst_custom_chapters_${baseKey}-English`;
-      localStorage.setItem(cacheKey, JSON.stringify(selChapters));
+      await storage.setItem(cacheKey, selChapters);
       // Save Hindi fallback
       const cacheKeyHindi = `nst_custom_chapters_${baseKey}-Hindi`;
-      localStorage.setItem(cacheKeyHindi, JSON.stringify(selChapters));
+      await storage.setItem(cacheKeyHindi, selChapters);
 
       if (isFirebaseConnected) {
           await saveCustomSyllabus(`${baseKey}-English`, selChapters);
@@ -4640,8 +4640,8 @@ const AdminDashboardInner: React.FC<Props> = ({ onNavigate, settings, onUpdateSe
                                             }
                                             
                                             // Save Local
-                                            localStorage.setItem(`nst_custom_chapters_${baseKey}-English`, JSON.stringify(newChapters));
-                                            localStorage.setItem(`nst_custom_chapters_${baseKey}-Hindi`, JSON.stringify(newChapters));
+                                            await storage.setItem(`nst_custom_chapters_${baseKey}-English`, newChapters);
+                                            await storage.setItem(`nst_custom_chapters_${baseKey}-Hindi`, newChapters);
                                             
                                             alert("✅ Syllabus Overwritten & Saved to Cloud!");
                                             setSyllabusImportText('');
@@ -4662,8 +4662,8 @@ const AdminDashboardInner: React.FC<Props> = ({ onNavigate, settings, onUpdateSe
                                                 await deleteCustomSyllabus(`${baseKey}-English`);
                                                 await deleteCustomSyllabus(`${baseKey}-Hindi`);
                                             }
-                                            localStorage.removeItem(`nst_custom_chapters_${baseKey}-English`);
-                                            localStorage.removeItem(`nst_custom_chapters_${baseKey}-Hindi`);
+                                            await storage.removeItem(`nst_custom_chapters_${baseKey}-English`);
+                                            await storage.removeItem(`nst_custom_chapters_${baseKey}-Hindi`);
                                             
                                             const fresh = await fetchChapters(selBoard, selClass, selStream, selSubject, 'English');
                                             setSelChapters(fresh);

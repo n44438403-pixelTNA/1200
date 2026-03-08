@@ -338,7 +338,7 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
   }, []);
   
   const [isLoadingContent, setIsLoadingContent] = useState(false);
-  const [isDataReady, setIsDataReady] = useState(false);
+  const [isDataReady, setIsDataReady] = useState(true);
   const [editMode, setEditMode] = useState(false);
   const [profileData, setProfileData] = useState({
       classLevel: user.classLevel || '10',

@@ -907,7 +907,7 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
 
                 {/* MAIN ACTION BUTTONS (RESTORED OLD LAYOUT) */}
                 <DashboardSectionWrapper id="section_main_actions" label="Main Actions" settings={settings} isLayoutEditing={isLayoutEditing} onToggleVisibility={toggleLayoutVisibility}>
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="grid grid-cols-2 gap-3 w-[96%] mx-auto">
                         {/* STUDY SECTION (REPLACED MY COURSES) */}
                         <div className="col-span-2 bg-white rounded-[20px] p-5 border border-slate-100 shadow-[0_10px_25px_rgba(0,0,0,0.08)] mb-3">
                             <h3 className="font-black text-slate-800 text-lg mb-3 flex items-center gap-2">
@@ -1425,7 +1425,7 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
 
   return (
 
-    <div className={`min-h-screen bg-slate-50 pb-[80px] ${!isStudyMode ? 'pt-[74px] px-2' : ''}`}>
+    <div className={`min-h-screen bg-slate-50 pb-[80px] ${!isStudyMode ? 'pt-[74px] px-0' : ''}`}>
 
         {/* GLOBAL HEADER DESIGN (Visible on all dashboard tabs) */}
         {!isStudyMode && (

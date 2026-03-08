@@ -175,10 +175,10 @@ export const AiHub: React.FC<Props> = ({ user, onTabChange, settings }) => {
     const eventSlides = getEventSlides();
 
     return (
-        <div className="space-y-6 pb-24 p-4 animate-in fade-in">
+        <div className="space-y-6 pb-24 pt-4 animate-in fade-in w-full">
              {/* EVENT BANNERS */}
              {eventSlides.length > 0 && (
-                <div className="h-48 shadow-lg rounded-2xl overflow-hidden">
+                <div className="h-48 shadow-lg rounded-[20px] overflow-hidden w-[96%] mx-auto">
                     <BannerCarousel
                         slides={eventSlides}
                         autoPlay={true}
@@ -195,7 +195,7 @@ export const AiHub: React.FC<Props> = ({ user, onTabChange, settings }) => {
             {showDiscountBanner && discountTimer && (
                 <button
                     onClick={() => onTabChange('STORE')}
-                    className={`w-full bg-gradient-to-r ${discountStatus === 'ACTIVE' ? 'from-red-600 to-pink-600' : 'from-blue-600 to-indigo-600'} p-4 rounded-xl text-white shadow-lg flex items-center justify-between animate-pulse`}
+                    className={`w-[96%] mx-auto bg-gradient-to-r ${discountStatus === 'ACTIVE' ? 'from-red-600 to-pink-600' : 'from-blue-600 to-indigo-600'} p-5 rounded-[20px] text-white shadow-[0_10px_25px_rgba(0,0,0,0.08)] flex items-center justify-between animate-pulse`}
                 >
                     <div className="flex items-center gap-3">
                         <span className="text-2xl">{discountStatus === 'ACTIVE' ? '🎉' : '⏳'}</span>
@@ -216,7 +216,7 @@ export const AiHub: React.FC<Props> = ({ user, onTabChange, settings }) => {
             )}
 
             {/* HEADER */}
-            <div className="bg-gradient-to-br from-indigo-900 to-slate-900 p-6 rounded-3xl text-white shadow-xl relative overflow-hidden">
+            <div className="bg-gradient-to-br from-indigo-900 to-slate-900 p-5 rounded-[20px] text-white shadow-[0_10px_25px_rgba(0,0,0,0.08)] relative overflow-hidden w-[96%] mx-auto">
                 <div className="relative z-10">
                     <h2 className="text-2xl font-black mb-1 flex items-center gap-2">
                         <Sparkles className="text-yellow-400" /> AI Center
@@ -227,11 +227,11 @@ export const AiHub: React.FC<Props> = ({ user, onTabChange, settings }) => {
             </div>
 
             {/* AI TOOLS COMPRESSED VIEW */}
-            <div className="grid grid-cols-1 gap-4">
+            <div className="grid grid-cols-1 gap-4 w-[96%] mx-auto">
                 {/* 1. CHAT TUTOR */}
                 <button
                     onClick={() => onTabChange('AI_CHAT')}
-                    className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex items-center gap-4 hover:shadow-md transition-all active:scale-[0.98]"
+                    className="bg-white p-5 rounded-[20px] shadow-[0_10px_25px_rgba(0,0,0,0.08)] border border-slate-100 flex items-center gap-4 hover:shadow-lg transition-all active:scale-[0.98]"
                 >
                     <div className="bg-indigo-100 text-indigo-600 p-3 rounded-xl">
                         <Bot size={24} />
@@ -248,7 +248,7 @@ export const AiHub: React.FC<Props> = ({ user, onTabChange, settings }) => {
                 {/* 2. REPLACED: NOTES GENERATOR -> AI STUDY PLANNER */}
                 <button
                     onClick={() => setShowPlannerModal(true)}
-                    className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex items-center gap-4 hover:shadow-md transition-all active:scale-[0.98]"
+                    className="bg-white p-5 rounded-[20px] shadow-[0_10px_25px_rgba(0,0,0,0.08)] border border-slate-100 flex items-center gap-4 hover:shadow-lg transition-all active:scale-[0.98]"
                 >
                     <div className="bg-pink-100 text-pink-600 p-3 rounded-xl">
                         <Calendar size={24} />
@@ -267,7 +267,7 @@ export const AiHub: React.FC<Props> = ({ user, onTabChange, settings }) => {
             {/* AI PLANNER MODAL */}
             {showPlannerModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-md animate-in fade-in">
-                    <div className="bg-white rounded-3xl p-6 w-full max-w-lg shadow-2xl overflow-hidden flex flex-col max-h-[85vh]">
+                    <div className="bg-white rounded-[20px] p-6 w-full max-w-lg shadow-2xl overflow-hidden flex flex-col max-h-[85vh]">
                         <div className="flex justify-between items-center mb-6">
                             <div className="flex items-center gap-3">
                                 <div className="w-10 h-10 bg-pink-100 rounded-full flex items-center justify-center text-pink-600">

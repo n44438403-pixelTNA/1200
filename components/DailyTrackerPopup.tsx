@@ -23,7 +23,7 @@ export const DailyTrackerPopup: React.FC<Props> = ({ dailySeconds, targetSeconds
 
     return (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
-            <div className="bg-white rounded-3xl w-full max-w-sm shadow-2xl overflow-hidden relative">
+            <div className="bg-white rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden relative">
                 {/* Close Button */}
                 <button 
                     onClick={onClose} 

@@ -15,7 +15,7 @@ export const DownloadOptionsModal: React.FC<Props> = ({ isOpen, onClose, onDownl
 
     return (
         <div className="fixed inset-0 z-[250] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in">
-            <div className="bg-white rounded-2xl w-full max-w-sm shadow-2xl overflow-hidden scale-in-center">
+            <div className="bg-white rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden scale-in-center">
                 <div className="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
                     <h3 className="font-bold text-slate-800 flex items-center gap-2">
                         <Download size={18} className="text-blue-600"/> {title}

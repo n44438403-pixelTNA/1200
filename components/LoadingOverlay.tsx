@@ -80,7 +80,7 @@ export const LoadingOverlay: React.FC<Props> = ({ dataReady, onComplete, customM
 
   return (
     <div className="fixed inset-0 z-50 bg-slate-900/95 backdrop-blur-md flex flex-col items-center justify-center text-white">
-      <div className="w-full max-w-md px-8 text-center">
+      <div className="w-full max-w-lg px-8 text-center">
         
         <div className="relative mb-8 inline-block">
             <div className={`absolute inset-0 ${bgClass} blur-3xl opacity-20 animate-pulse`}></div>

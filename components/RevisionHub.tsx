@@ -678,7 +678,7 @@ const RevisionHubComponent: React.FC<Props> = ({ user, onTabChange, settings, on
                     </div>
                 </div>
                 <h2 className="text-2xl font-black text-slate-800 mb-2">Revision Hub Locked</h2>
-                <p className="text-slate-500 mb-6 max-w-xs">
+                <p className="text-slate-500 mb-6 max-w-sm">
                     This advanced feature unlocks at <span className="font-bold text-indigo-600">Level {requiredLevel}</span>.
                     Keep learning to level up!
                 </p>

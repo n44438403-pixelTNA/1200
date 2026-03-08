@@ -407,7 +407,7 @@ export const LessonView: React.FC<Props> = ({
           <div className="h-[70vh] flex flex-col items-center justify-center text-center p-8 bg-slate-50 rounded-2xl m-4 border-2 border-dashed border-slate-200">
               <Clock size={64} className="text-orange-400 mb-4 opacity-80" />
               <h2 className="text-2xl font-black text-slate-800 mb-2">Coming Soon</h2>
-              <p className="text-slate-600 max-w-xs mx-auto mb-6">
+              <p className="text-slate-600 max-w-sm mx-auto mb-6">
                   This content is currently being prepared by the Admin.
               </p>
               <button onClick={onBack} className="mt-8 text-slate-400 font-bold hover:text-slate-600">
@@ -895,7 +895,7 @@ export const LessonView: React.FC<Props> = ({
 
                {showResumePrompt && !showResults && (
                    <div className="absolute inset-0 z-50 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4">
-                       <div className="bg-white rounded-2xl p-6 w-full max-w-sm text-center shadow-2xl">
+                       <div className="bg-white rounded-2xl p-6 w-full max-w-lg text-center shadow-2xl">
                            <h3 className="text-xl font-black text-slate-800 mb-2">Resume Session?</h3>
                            <p className="text-slate-500 text-sm mb-6">You have a saved session for this chapter.</p>
                            <div className="flex gap-3">
@@ -908,7 +908,7 @@ export const LessonView: React.FC<Props> = ({
 
                {showSubmitModal && (
                    <div className="fixed inset-0 z-[100] bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4">
-                       <div className="bg-white rounded-2xl p-6 w-full max-w-sm text-center shadow-2xl animate-in zoom-in duration-200">
+                       <div className="bg-white rounded-2xl p-6 w-full max-w-lg text-center shadow-2xl animate-in zoom-in duration-200">
                            <Trophy size={48} className="mx-auto text-yellow-400 mb-4" />
                            <h3 className="text-xl font-black text-slate-800 mb-2">Submit Test?</h3>
                            <p className="text-slate-500 text-sm mb-6">
@@ -1702,7 +1702,7 @@ export const LessonView: React.FC<Props> = ({
       <div className="h-[70vh] flex flex-col items-center justify-center text-center p-8 bg-slate-50 rounded-2xl m-4 border-2 border-dashed border-slate-200">
           <BookOpen size={64} className="text-slate-300 mb-4" />
           <h2 className="text-2xl font-black text-slate-800 mb-2">No Content</h2>
-          <p className="text-slate-600 max-w-xs mx-auto mb-6">
+          <p className="text-slate-600 max-w-sm mx-auto mb-6">
               There is no content available for this lesson.
           </p>
           <button onClick={onBack} className="mt-8 text-slate-400 font-bold hover:text-slate-600">

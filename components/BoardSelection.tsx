@@ -116,7 +116,7 @@ export const BoardSelection: React.FC<Props> = ({ onSelect, onBack }) => {
                     </div>
                     <div>
                         <h3 className="text-2xl font-black text-white mb-2">Competition & More</h3>
-                        <p className="text-slate-300 mb-4 text-sm max-w-md">Prepare for SSC, Railways, Police, Banking, and Civil Services examinations with expert guidance.</p>
+                        <p className="text-slate-300 mb-4 text-sm max-w-lg">Prepare for SSC, Railways, Police, Banking, and Civil Services examinations with expert guidance.</p>
                         <span className="inline-flex items-center gap-2 bg-white text-slate-900 px-4 py-2 rounded-lg text-xs font-bold hover:bg-purple-50 transition-colors">
                             Start Preparation <ArrowLeft size={14} className="rotate-180" />
                         </span>

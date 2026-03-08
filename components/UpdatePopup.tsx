@@ -85,7 +85,7 @@ export const UpdatePopup: React.FC<Props> = ({ latestVersion, updateUrl, launchD
 
     return (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/90 backdrop-blur-sm animate-in fade-in">
-            <div className="bg-white w-full max-w-sm rounded-3xl shadow-2xl overflow-hidden relative animate-in zoom-in-95 duration-300">
+            <div className="bg-white w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden relative animate-in zoom-in-95 duration-300">
                 {/* Header Image/Icon */}
                 <div className="bg-gradient-to-br from-blue-600 to-indigo-600 p-8 flex justify-center items-center relative overflow-hidden">
                     <div className="absolute top-0 left-0 w-full h-full opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>

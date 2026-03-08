@@ -162,7 +162,7 @@ export const Store: React.FC<Props> = ({ user, settings }) => {
             <Lock size={40} className="text-slate-500" />
           </div>
           <h3 className="text-2xl font-black text-slate-200 mb-2">Store Locked</h3>
-          <p className="text-slate-500 font-medium max-w-xs mx-auto leading-relaxed">
+          <p className="text-slate-500 font-medium max-w-sm mx-auto leading-relaxed">
             {settings.paymentDisabledMessage || "Purchases are currently disabled by the Admin. Please check back later."}
           </p>
         </div>
@@ -230,7 +230,7 @@ export const Store: React.FC<Props> = ({ user, settings }) => {
       
       {/* SUBSCRIPTION STATUS */}
       {user.isPremium && (
-          <div className="max-w-md mx-auto pt-6 px-4">
+          <div className="max-w-lg mx-auto pt-6 px-4">
               <div className="bg-gradient-to-r from-indigo-900 to-purple-900 p-4 rounded-2xl border border-white/10 shadow-xl flex items-center justify-between">
                   <div>
                       <p className="text-xs text-indigo-300 font-bold uppercase tracking-wider">Active Subscription</p>
@@ -247,7 +247,7 @@ export const Store: React.FC<Props> = ({ user, settings }) => {
       {/* SUPPORT CHANNEL SELECTOR MODAL */}
       {showSupportModal && (
           <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in">
-              <div className="bg-slate-900 rounded-3xl w-full max-w-sm shadow-2xl overflow-hidden border border-slate-800">
+              <div className="bg-slate-900 rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden border border-slate-800">
                   <div className="bg-gradient-to-r from-cyan-600 to-blue-600 p-4 text-white text-center">
                       <h3 className="font-black text-lg flex items-center justify-center gap-2">
                           <MessageSquare size={20} /> Select Support Channel
@@ -290,7 +290,7 @@ export const Store: React.FC<Props> = ({ user, settings }) => {
       )}
 
       {/* --- PERPLEXITY STYLE STORE --- */}
-      <div className="max-w-md mx-auto pt-8 px-4">
+      <div className="max-w-lg mx-auto pt-8 px-4">
           
           {/* HEADER ICON */}
           <div className="flex justify-center mb-4">

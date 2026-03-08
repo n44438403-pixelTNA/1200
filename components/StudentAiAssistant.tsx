@@ -140,7 +140,7 @@ export const StudentAiAssistant: React.FC<Props> = ({ user, settings, isOpen: co
                         <p className="text-sm font-medium">Ask me anything! I can help you study.</p>
                         
                         {settings?.aiInstruction && (
-                            <div className="mt-6 p-4 bg-indigo-50 text-indigo-800 text-xs rounded-xl max-w-xs border border-indigo-100">
+                            <div className="mt-6 p-4 bg-indigo-50 text-indigo-800 text-xs rounded-xl max-w-sm border border-indigo-100">
                                 <span className="font-bold block mb-1">Current Mode:</span>
                                 {settings.aiInstruction.slice(0, 100)}...
                             </div>

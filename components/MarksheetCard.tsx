@@ -1251,7 +1251,7 @@ export const MarksheetCard: React.FC<Props> = ({ result, user, settings, onClose
                             <div className="mt-6 bg-white p-6 rounded-2xl border-2 border-indigo-100 text-center shadow-lg">
                                 <Lock className="mx-auto text-indigo-400 mb-3" size={48} />
                                 <h3 className="text-xl font-black text-slate-800 mb-2">Analysis Locked</h3>
-                                <p className="text-slate-500 text-sm mb-6 max-w-xs mx-auto">Unlock detailed answers, OMR sheet, and weak concept analysis.</p>
+                                <p className="text-slate-500 text-sm mb-6 max-w-sm mx-auto">Unlock detailed answers, OMR sheet, and weak concept analysis.</p>
                                 <button onClick={unlockFreeAnalysis} className="bg-indigo-600 text-white px-8 py-3 rounded-xl font-bold shadow-xl hover:bg-indigo-700 active:scale-95 transition-all flex items-center justify-center gap-2 mx-auto">
                                     <BrainCircuit size={20} /> Unlock Now (20 Coins)
                                 </button>
@@ -1393,7 +1393,7 @@ export const MarksheetCard: React.FC<Props> = ({ result, user, settings, onClose
                     <div className="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
                         <div className="flex items-center gap-2">
                             <BookOpen size={18} className="text-indigo-600"/>
-                            <h3 className="font-bold text-slate-800 text-sm line-clamp-1 max-w-[200px] sm:max-w-xs">{viewingNote.title}</h3>
+                            <h3 className="font-bold text-slate-800 text-sm line-clamp-1 max-w-[200px] sm:max-w-sm">{viewingNote.title}</h3>
                         </div>
                         <div className="flex items-center gap-2">
                             <SpeakButton

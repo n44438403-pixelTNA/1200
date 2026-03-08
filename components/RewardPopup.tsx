@@ -11,7 +11,7 @@ interface Props {
 export const RewardPopup: React.FC<Props> = ({ reward, onClaim, onIgnore }) => {
     return (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-sm animate-in zoom-in duration-300">
-            <div className="bg-white rounded-3xl p-6 w-full max-w-sm text-center shadow-2xl relative overflow-hidden border border-white/20">
+            <div className="bg-white rounded-3xl p-6 w-full max-w-lg text-center shadow-2xl relative overflow-hidden border border-white/20">
                 <button onClick={onIgnore} className="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
                     <X size={24} />
                 </button>

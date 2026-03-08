@@ -219,7 +219,7 @@ export const SyllabusManager: React.FC<Props> = ({ board }) => {
                                     {chapters.map((ch, i) => (
                                         <tr key={ch.id} className="hover:bg-slate-50 transition-colors group">
                                             <td className="p-3 pl-4">
-                                                <span className="font-bold text-slate-700 block truncate max-w-[200px] md:max-w-md" title={ch.title}>
+                                                <span className="font-bold text-slate-700 block truncate max-w-[200px] md:max-w-lg" title={ch.title}>
                                                     {i + 1}. {ch.title}
                                                 </span>
                                             </td>

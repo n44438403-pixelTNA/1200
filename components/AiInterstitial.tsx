@@ -70,7 +70,7 @@ export const AiInterstitial: React.FC<Props> = ({ onComplete, userType, user, cu
     <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-slate-900/95 backdrop-blur-sm animate-in fade-in duration-300">
         <div className="relative mb-8 flex flex-col items-center">
             {displayImage ? (
-                <div className="w-full max-w-sm rounded-xl overflow-hidden shadow-[0_0_30px_rgba(59,130,246,0.5)] border-4 border-blue-500/30 mb-6">
+                <div className="w-full max-w-lg rounded-xl overflow-hidden shadow-[0_0_30px_rgba(59,130,246,0.5)] border-4 border-blue-500/30 mb-6">
                     <img src={displayImage} alt="AI Working" className="w-full h-auto object-cover animate-pulse" />
                 </div>
             ) : (

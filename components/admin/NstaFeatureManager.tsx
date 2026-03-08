@@ -402,7 +402,7 @@ export const NstaFeatureManager: React.FC<Props> = ({ settings, onUpdateSettings
             {/* Add Modal */}
             {showAddModal && (
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 animate-in fade-in">
-                    <div className="bg-white rounded-2xl p-6 w-full max-w-sm shadow-xl">
+                    <div className="bg-white rounded-2xl p-6 w-full max-w-lg shadow-xl">
                         <h3 className="font-black text-xl text-slate-800 mb-4">Add New Feature</h3>
                         <div className="space-y-4">
                             <div>

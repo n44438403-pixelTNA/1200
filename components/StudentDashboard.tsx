@@ -1439,7 +1439,7 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
 
         {/* GLOBAL HEADER DESIGN (Visible on all dashboard tabs) */}
         {!isStudyMode && (
-            <div className="bg-white p-4 rounded-b-3xl shadow-[0_4px_10px_rgba(0,0,0,0.04)] border-b border-slate-200 flex items-center justify-between fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[1080px] z-50">
+            <div className="bg-white p-6 shadow-sm border-b border-slate-200 flex items-center justify-between fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[1080px] z-50">
                 <div className="flex items-center gap-3">
                     {/* Menu Button Restored */}
                     <button

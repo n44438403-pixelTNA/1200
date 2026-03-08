@@ -888,7 +888,7 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
       // 1. HOME TAB
       if (activeTab === 'HOME') {
           return (
-              <div className="space-y-4 pb-12">
+              <div className="space-y-3">
                 {/* PERFORMANCE GRAPH */}
                 <DashboardSectionWrapper id="section_performance" label="Performance" settings={settings} isLayoutEditing={isLayoutEditing} onToggleVisibility={toggleLayoutVisibility}>
                     <PerformanceGraph
@@ -917,13 +917,13 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
 
                 {/* MAIN ACTION BUTTONS (RESTORED OLD LAYOUT) */}
                 <DashboardSectionWrapper id="section_main_actions" label="Main Actions" settings={settings} isLayoutEditing={isLayoutEditing} onToggleVisibility={toggleLayoutVisibility}>
-                    <div className="grid grid-cols-2 gap-[14px]">
+                    <div className="grid grid-cols-2 gap-3">
                         {/* STUDY SECTION (REPLACED MY COURSES) */}
-                        <div className="col-span-2 bg-white rounded-[16px] p-4 border border-slate-100 shadow-[0_4px_10px_rgba(0,0,0,0.04)] mb-[14px]">
-                            <h3 className="font-black text-slate-800 text-lg mb-4 flex items-center gap-2">
+                        <div className="col-span-2 bg-white rounded-[16px] p-4 border border-slate-100 shadow-[0_4px_10px_rgba(0,0,0,0.04)] mb-3">
+                            <h3 className="font-black text-slate-800 text-lg mb-3 flex items-center gap-2">
                                 <BookOpen className="text-blue-600" size={24} /> Study
                             </h3>
-                            <div className="grid grid-cols-2 gap-[14px]">
+                            <div className="grid grid-cols-2 gap-3">
                                 {getSubjectsList(user.classLevel || '10', user.stream || 'Science', user.board).map((subject) => {
                                     if ((settings?.hiddenSubjects || []).includes(subject.id)) return null;
                                     return (
@@ -1435,11 +1435,11 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
 
   return (
 
-    <div className={`min-h-screen bg-slate-50 pb-[80px] ${!isStudyMode ? 'pt-[105px] px-4' : ''}`}>
+    <div className={`min-h-screen bg-slate-50 pb-[80px] ${!isStudyMode ? 'pt-[85px] px-4' : ''}`}>
 
         {/* GLOBAL HEADER DESIGN (Visible on all dashboard tabs) */}
         {!isStudyMode && (
-            <div className="bg-white p-6 shadow-sm border-b border-slate-200 flex items-center justify-between fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[1080px] z-50">
+            <div className="bg-white p-4 shadow-sm border-b border-slate-200 flex items-center justify-between fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[1080px] z-50">
                 <div className="flex items-center gap-3">
                     {/* Menu Button Restored */}
                     <button
@@ -1869,11 +1869,11 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
         )}
 
         {/* MAIN CONTENT AREA */}
-        <div className="p-4 relative pb-12">
+        <div className="p-4 relative pb-20">
             {renderMainContent()}
 
             {settings?.showFooter !== false && activeTab !== 'REVISION' && (
-                <div className="mt-12 mb-4 text-center">
+                <div className="mt-8 mb-4 text-center">
                     <p
                         className="text-[10px] font-black uppercase tracking-widest"
                         style={{ color: settings?.footerColor || '#cbd5e1' }}

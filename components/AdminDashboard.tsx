@@ -2115,7 +2115,7 @@ const AdminDashboardInner: React.FC<Props> = ({ onNavigate, settings, onUpdateSe
                   if (!qMatch) continue;
                   let questionText = qMatch[1].replace(/^\*\*|\*\*$/g, '').trim();
 
-                  const optMatch = part.match(/(?:Options:|विकल्प:)[\s\S]*?(?:✅\s*Correct Answer:|सही उत्तर:|Answer:|Ans:)/i);
+                  const optMatch = part.match(/(?:Options:|विकल्प:)\s*\n?[\s\S]*?(?:✅\s*Correct Answer:|सही उत्तर:|Answer:|Ans:)/i);
                   let options: string[] = ['A', 'B', 'C', 'D'];
                   if (optMatch) {
                       const optText = optMatch[0];
@@ -2126,7 +2126,7 @@ const AdminDashboardInner: React.FC<Props> = ({ onNavigate, settings, onUpdateSe
                       options = [optA, optB, optC, optD];
                   }
 
-                  const ansMatch = part.match(/(?:✅\s*Correct Answer:|सही उत्तर:|Answer:|Ans:)\s*([A-D1-4])/i);
+                  const ansMatch = part.match(/(?:✅\s*Correct Answer:|सही उत्तर:|Answer:|Ans:)\s*\n?\s*([A-D1-4])/i);
                   let correctIdx = 0;
                   if (ansMatch) {
                       const letter = ansMatch[1].toUpperCase();
@@ -2136,11 +2136,11 @@ const AdminDashboardInner: React.FC<Props> = ({ onNavigate, settings, onUpdateSe
                       else if (letter === 'D' || letter === '4') correctIdx = 3;
                   }
 
-                  const conceptMatch = part.match(/(?:💡\s*Concept:|Concept:|अवधारणा:)\s*([\s\S]*?)(?=🔎|🎯|⚠|🧠|📊|Explanation:|Exam Tip:|Mistake:|Trick:|Difficulty|$)/i);
-                  const expMatch = part.match(/(?:🔎\s*Explanation:|Explanation:|व्याख्या:)\s*([\s\S]*?)(?=🎯|⚠|🧠|📊|Exam Tip:|Mistake:|Trick:|Difficulty|$)/i);
-                  const tipMatch = part.match(/(?:🎯\s*Exam Tip:|Exam Tip:|परीक्षा टिप:)\s*([\s\S]*?)(?=⚠|🧠|📊|Mistake:|Trick:|Difficulty|$)/i);
-                  const mistakeMatch = part.match(/(?:⚠\s*Common Mistake:|Common Mistake:|सामान्य गलती:)\s*([\s\S]*?)(?=🧠|📊|Trick:|Difficulty|$)/i);
-                  const memoryMatch = part.match(/(?:🧠\s*Memory Trick:|Memory Trick:|Trick:|याद रखने का तरीका:)\s*([\s\S]*?)(?=📊|Difficulty|$)/i);
+                  const conceptMatch = part.match(/(?:💡\s*Concept:|Concept:|अवधारणा:)\s*([\s\S]*?)(?=\s*🔎|\s*🎯|\s*⚠|\s*🧠|\s*📊|\s*Explanation:|\s*Exam Tip:|\s*Mistake:|\s*Trick:|\s*Difficulty|$)/i);
+                  const expMatch = part.match(/(?:🔎\s*Explanation:|Explanation:|व्याख्या:)\s*([\s\S]*?)(?=\s*🎯|\s*⚠|\s*🧠|\s*📊|\s*Exam Tip:|\s*Mistake:|\s*Trick:|\s*Difficulty|$)/i);
+                  const tipMatch = part.match(/(?:🎯\s*Exam Tip:|Exam Tip:|परीक्षा टिप:)\s*([\s\S]*?)(?=\s*⚠|\s*🧠|\s*📊|\s*Mistake:|\s*Trick:|\s*Difficulty|$)/i);
+                  const mistakeMatch = part.match(/(?:⚠\s*Common Mistake:|Common Mistake:|सामान्य गलती:)\s*([\s\S]*?)(?=\s*🧠|\s*📊|\s*Trick:|\s*Difficulty|$)/i);
+                  const memoryMatch = part.match(/(?:🧠\s*Memory Trick:|Memory Trick:|Trick:|याद रखने का तरीका:)\s*([\s\S]*?)(?=\s*📊|\s*Difficulty|$)/i);
                   const diffMatch = part.match(/(?:📊\s*Difficulty Level:|Difficulty Level:|Difficulty:|कठिनाई:)\s*(🟢 Easy|🟡 Medium|🔴 Hard|Easy|Medium|Hard|आसान|मध्यम|कठिन)/i);
 
                   questions.push({
@@ -2223,7 +2223,7 @@ const AdminDashboardInner: React.FC<Props> = ({ onNavigate, settings, onUpdateSe
               const ansOffset = qOffset;
               let ansLine = lines[i + ansOffset + 5];
               ansLine = ansLine.replace(/^\*\*|\*\*$/g, '');
-              let ansRaw = ansLine.replace(/^(Answer|Ans|Correct|उत्तर)\s*[:\s-]*\s*/i, '').trim();
+              let ansRaw = ansLine.replace(/^(Answer|Ans|Correct|उत्तर|✅\s*Correct Answer)\s*[:\s-]*\s*/i, '').trim();
 
               let ansIdx = -1;
               if (/^\d+$/.test(ansRaw)) {

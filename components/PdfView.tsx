@@ -835,7 +835,7 @@ export const PdfView: React.FC<Props> = ({
                <div className="flex-1">
                    <div className="flex justify-between items-start">
                      <div>
-                       <h3 className="font-bold text-slate-800 leading-tight line-clamp-1">{chapter.title}</h3>
+                       <h3 className="font-bold text-slate-800 leading-tight">{chapter.title}</h3>
                        <div className="flex gap-2 mt-1">
                          <button onClick={() => setSyllabusMode('SCHOOL')} className={`text-[10px] px-2 py-0.5 rounded-full font-bold transition-all ${syllabusMode === 'SCHOOL' ? 'bg-blue-600 text-white shadow-sm' : 'bg-slate-100 text-slate-500'}`}>School</button>
                          <button onClick={() => setSyllabusMode('COMPETITION')} className={`text-[10px] px-2 py-0.5 rounded-full font-bold transition-all ${syllabusMode === 'COMPETITION' ? 'bg-purple-600 text-white shadow-sm' : 'bg-slate-100 text-slate-500'}`}>Competition</button>
@@ -1218,7 +1218,7 @@ export const PdfView: React.FC<Props> = ({
                                                                className={`px-3 py-1.5 rounded-lg text-[10px] font-bold whitespace-nowrap transition-all flex flex-col items-center border ${currentPremiumEntryIdx === i ? 'bg-purple-600 text-white border-purple-600 shadow-md' : 'bg-white text-slate-500 border-slate-200 hover:bg-slate-50'}`}
                                                            >
                                                                <span>{i === 0 && hasLegacy ? 'MAIN' : `TOPIC ${hasLegacy ? i : i + 1}`}</span>
-                                                               <span className="opacity-80 text-[9px] truncate max-w-[80px]">{item.title}</span>
+                                                               <span className="opacity-80 text-[9px] max-w-[80px] text-center">{item.title}</span>
                                                            </button>
                                                        ))}
                                                    </div>

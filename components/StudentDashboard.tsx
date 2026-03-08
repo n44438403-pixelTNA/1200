@@ -885,7 +885,7 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
       // 1. HOME TAB
       if (activeTab === 'HOME') {
           return (
-              <div className="space-y-3">
+              <div className="space-y-3 p-0 sm:p-0">
                 {/* PERFORMANCE GRAPH */}
                 <DashboardSectionWrapper id="section_performance" label="Performance" settings={settings} isLayoutEditing={isLayoutEditing} onToggleVisibility={toggleLayoutVisibility}>
                     <PerformanceGraph
@@ -914,7 +914,7 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
 
                 {/* MAIN ACTION BUTTONS (RESTORED OLD LAYOUT) */}
                 <DashboardSectionWrapper id="section_main_actions" label="Main Actions" settings={settings} isLayoutEditing={isLayoutEditing} onToggleVisibility={toggleLayoutVisibility}>
-                    <div className="grid grid-cols-2 gap-3 w-[96%] mx-auto">
+                    <div className="grid grid-cols-2 gap-3 w-full">
                         {/* STUDY SECTION (REPLACED MY COURSES) */}
                         <div className="col-span-2 bg-white rounded-[20px] p-5 border border-slate-100 shadow-[0_10px_25px_rgba(0,0,0,0.08)] mb-3">
                             <h3 className="font-black text-slate-800 text-lg mb-3 flex items-center gap-2">
@@ -1426,6 +1426,9 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
           if (content) return content;
       }
 
+      // Handle components rendered outside the main switch to avoid fallback
+      if (activeTab === 'REVISION') return null;
+
       // 🚨 CATCH-ALL FALLBACK (Prevents Blank Screen of Death)
       return (
           <div className="flex flex-col items-center justify-center py-20 px-6 text-center animate-in fade-in zoom-in duration-300">
@@ -1890,7 +1893,7 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
         )}
 
         {/* MAIN CONTENT AREA */}
-        <div className="p-4 relative pb-20">
+        <div className="p-0 sm:p-4 relative pb-20">
             {renderMainContent()}
 
             {settings?.showFooter !== false && activeTab !== 'REVISION' && (

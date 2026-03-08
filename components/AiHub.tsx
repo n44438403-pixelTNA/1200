@@ -178,7 +178,7 @@ export const AiHub: React.FC<Props> = ({ user, onTabChange, settings }) => {
         <div className="space-y-6 pb-24 pt-4 animate-in fade-in w-full">
              {/* EVENT BANNERS */}
              {eventSlides.length > 0 && (
-                <div className="h-48 shadow-lg rounded-[20px] overflow-hidden w-[96%] mx-auto">
+                <div className="h-48 shadow-lg rounded-[20px] overflow-hidden w-full">
                     <BannerCarousel
                         slides={eventSlides}
                         autoPlay={true}
@@ -195,7 +195,7 @@ export const AiHub: React.FC<Props> = ({ user, onTabChange, settings }) => {
             {showDiscountBanner && discountTimer && (
                 <button
                     onClick={() => onTabChange('STORE')}
-                    className={`w-[96%] mx-auto bg-gradient-to-r ${discountStatus === 'ACTIVE' ? 'from-red-600 to-pink-600' : 'from-blue-600 to-indigo-600'} p-5 rounded-[20px] text-white shadow-[0_10px_25px_rgba(0,0,0,0.08)] flex items-center justify-between animate-pulse`}
+                    className={`w-full bg-gradient-to-r ${discountStatus === 'ACTIVE' ? 'from-red-600 to-pink-600' : 'from-blue-600 to-indigo-600'} p-5 rounded-[20px] text-white shadow-[0_10px_25px_rgba(0,0,0,0.08)] flex items-center justify-between animate-pulse`}
                 >
                     <div className="flex items-center gap-3">
                         <span className="text-2xl">{discountStatus === 'ACTIVE' ? '🎉' : '⏳'}</span>
@@ -216,7 +216,7 @@ export const AiHub: React.FC<Props> = ({ user, onTabChange, settings }) => {
             )}
 
             {/* HEADER */}
-            <div className="bg-gradient-to-br from-indigo-900 to-slate-900 p-5 rounded-[20px] text-white shadow-[0_10px_25px_rgba(0,0,0,0.08)] relative overflow-hidden w-[96%] mx-auto">
+            <div className="bg-gradient-to-br from-indigo-900 to-slate-900 p-5 rounded-[20px] text-white shadow-[0_10px_25px_rgba(0,0,0,0.08)] relative overflow-hidden w-full">
                 <div className="relative z-10">
                     <h2 className="text-2xl font-black mb-1 flex items-center gap-2">
                         <Sparkles className="text-yellow-400" /> AI Center
@@ -227,7 +227,7 @@ export const AiHub: React.FC<Props> = ({ user, onTabChange, settings }) => {
             </div>
 
             {/* AI TOOLS COMPRESSED VIEW */}
-            <div className="grid grid-cols-1 gap-4 w-[96%] mx-auto">
+            <div className="grid grid-cols-1 gap-4 w-full">
                 {/* 1. CHAT TUTOR */}
                 <button
                     onClick={() => onTabChange('AI_CHAT')}

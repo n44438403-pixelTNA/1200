@@ -33,7 +33,7 @@ export const StudyGoalTimer: React.FC<Props> = ({ dailyStudySeconds, targetSecon
     };
 
     return (
-        <div className="bg-white rounded-[20px] p-5 shadow-[0_10px_25px_rgba(0,0,0,0.08)] border border-slate-100 flex flex-col items-center mb-[14px] w-[96%] mx-auto">
+        <div className="bg-white rounded-[20px] p-5 shadow-[0_10px_25px_rgba(0,0,0,0.08)] border border-slate-100 flex flex-col items-center mb-[14px] w-full">
 
             <div className="flex justify-between w-full mb-3">
                 <div className="flex items-center gap-2">

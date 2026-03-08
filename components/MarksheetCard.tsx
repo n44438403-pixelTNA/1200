@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 // Sync check
 import type { MCQResult, User, SystemSettings } from '../types';
-import { X, Share2, ChevronLeft, ChevronRight, Download, FileSearch, Grid, CheckCircle, XCircle, Clock, Award, BrainCircuit, Play, StopCircle, BookOpen, Target, Zap, BarChart3, BarChart, ListChecks, FileText, LayoutTemplate, TrendingUp, TrendingDown, Lightbulb, ExternalLink, RefreshCw, Lock, Sparkles, Volume2, ChevronDown, ChevronUp, AlertCircle, ArrowRight, BookOpenCheck, ArrowUp, Minus } from 'lucide-react';
+import { X, Share2, ChevronLeft, ChevronRight, Download, FileSearch, Grid, CheckCircle, XCircle, Clock, Award, BrainCircuit, Play, StopCircle, BookOpen, Target, Zap, BarChart3, BarChart, ListChecks, FileText, LayoutTemplate, TrendingUp, TrendingDown, Lightbulb, ExternalLink, RefreshCw, Lock, Sparkles, Volume2, ChevronDown, ChevronUp, AlertCircle, ArrowRight, BookOpenCheck, ArrowUp, Minus, AlertTriangle, Brain } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { generateUltraAnalysis } from '../services/groq';
@@ -1127,15 +1127,48 @@ export const MarksheetCard: React.FC<Props> = ({ result, user, settings, onClose
                               </div>
                           )}
 
-                          {q.explanation && (
-                              <div className="mt-4 ml-11 p-4 bg-blue-50 border border-blue-100 rounded-xl relative overflow-hidden">
-                                  <div className="absolute top-0 left-0 w-1 h-full bg-blue-500"></div>
-                                  <p className="text-[10px] font-black text-blue-600 mb-2 uppercase tracking-widest flex items-center gap-1">
-                                      <BrainCircuit size={12} /> Expert Explanation
-                                  </p>
-                                  <div className="text-xs text-slate-700 leading-relaxed font-medium" dangerouslySetInnerHTML={{ __html: renderMathInHtml(q.explanation) }} />
-                              </div>
-                          )}
+                          <div className="mt-4 ml-11 flex flex-col gap-3">
+                              {q.concept && (
+                                  <div className="p-4 bg-indigo-50 border border-indigo-100 rounded-[20px] shadow-sm">
+                                      <p className="text-[12px] font-bold text-indigo-700 mb-2 flex items-center gap-1">
+                                          <Lightbulb size={14} /> Concept
+                                      </p>
+                                      <div className="text-sm text-slate-700 leading-relaxed font-medium" dangerouslySetInnerHTML={{ __html: renderMathInHtml(q.concept) }} />
+                                  </div>
+                              )}
+                              {q.explanation && (
+                                  <div className="p-4 bg-blue-50 border border-blue-100 rounded-[20px] shadow-sm">
+                                      <p className="text-[12px] font-bold text-blue-700 mb-2 flex items-center gap-1">
+                                          <BookOpen size={14} /> Explanation
+                                      </p>
+                                      <div className="text-sm text-slate-700 leading-relaxed font-medium" dangerouslySetInnerHTML={{ __html: renderMathInHtml(q.explanation) }} />
+                                  </div>
+                              )}
+                              {q.examTip && (
+                                  <div className="p-4 bg-amber-50 border border-amber-200 rounded-[20px] shadow-sm">
+                                      <p className="text-[12px] font-bold text-amber-700 mb-2 flex items-center gap-1">
+                                          <Target size={14} /> Exam Tip
+                                      </p>
+                                      <div className="text-sm text-amber-900 leading-relaxed font-medium" dangerouslySetInnerHTML={{ __html: renderMathInHtml(q.examTip) }} />
+                                  </div>
+                              )}
+                              {q.commonMistake && (
+                                  <div className="p-4 bg-red-50 border border-red-100 rounded-[20px] shadow-sm">
+                                      <p className="text-[12px] font-bold text-red-700 mb-2 flex items-center gap-1">
+                                          <AlertTriangle size={14} /> Common Mistake
+                                      </p>
+                                      <div className="text-sm text-red-900 leading-relaxed font-medium" dangerouslySetInnerHTML={{ __html: renderMathInHtml(q.commonMistake) }} />
+                                  </div>
+                              )}
+                              {q.mnemonic && (
+                                  <div className="p-4 bg-purple-50 border border-purple-100 rounded-[20px] shadow-sm">
+                                      <p className="text-[12px] font-bold text-purple-700 mb-2 flex items-center gap-1">
+                                          <Brain size={14} /> Memory Trick
+                                      </p>
+                                      <div className="text-sm text-purple-900 leading-relaxed font-medium whitespace-pre-line" dangerouslySetInnerHTML={{ __html: renderMathInHtml(q.mnemonic) }} />
+                                  </div>
+                              )}
+                          </div>
                       </div>
                   );
               })}
@@ -1297,11 +1330,13 @@ export const MarksheetCard: React.FC<Props> = ({ result, user, settings, onClose
                                                     })}
                                                 </div>
                                             )}
-                                            {q.explanation && (
-                                                <div className="p-4 bg-blue-50 border-t border-blue-100">
-                                                    <div className="text-xs text-slate-700 leading-relaxed font-medium" dangerouslySetInnerHTML={{ __html: renderMathInHtml(q.explanation) }} />
-                                                </div>
-                                            )}
+                                            <div className="p-4 bg-blue-50 border-t border-blue-100 flex flex-col gap-2">
+                                                {q.concept && <div><span className="font-bold text-indigo-700">Concept:</span> <span dangerouslySetInnerHTML={{ __html: renderMathInHtml(q.concept) }}></span></div>}
+                                                {q.explanation && <div><span className="font-bold text-blue-700">Explanation:</span> <span dangerouslySetInnerHTML={{ __html: renderMathInHtml(q.explanation) }}></span></div>}
+                                                {q.examTip && <div><span className="font-bold text-amber-700">Exam Tip:</span> <span dangerouslySetInnerHTML={{ __html: renderMathInHtml(q.examTip) }}></span></div>}
+                                                {q.commonMistake && <div><span className="font-bold text-red-700">Common Mistake:</span> <span dangerouslySetInnerHTML={{ __html: renderMathInHtml(q.commonMistake) }}></span></div>}
+                                                {q.mnemonic && <div><span className="font-bold text-purple-700">Memory Trick:</span> <span dangerouslySetInnerHTML={{ __html: renderMathInHtml(q.mnemonic) }}></span></div>}
+                                            </div>
                                         </div>
                                     );
                                 })}

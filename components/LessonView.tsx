@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { LessonContent, Subject, ClassLevel, Chapter, MCQItem, ContentType, User, SystemSettings } from '../types';
-import { ArrowLeft, Clock, AlertTriangle, ExternalLink, CheckCircle, XCircle, Trophy, BookOpen, Play, Lock, ChevronRight, ChevronLeft, Save, X, Maximize, Volume2, Square, Zap, StopCircle, Globe, Lightbulb, FileText, BrainCircuit, Grip, CheckSquare, List, Download, BarChart3 } from 'lucide-react';
+import { ArrowLeft, Clock, AlertTriangle, ExternalLink, CheckCircle, XCircle, Trophy, BookOpen, Play, Lock, ChevronRight, ChevronLeft, Save, X, Maximize, Volume2, Square, Zap, StopCircle, Globe, Lightbulb, FileText, BrainCircuit, Grip, CheckSquare, List, Download, BarChart3, Target, Brain } from 'lucide-react';
 import { CustomConfirm, CustomAlert } from './CustomDialogs';
 import { CustomPlayer } from './CustomPlayer';
 import remarkMath from 'remark-math';
@@ -1562,18 +1562,55 @@ export const LessonView: React.FC<Props> = ({
                                            })}
                                        </div>
 
-                                       {showExplanation && q.explanation && (
-                                           <div className="mt-4 p-4 bg-blue-50 border border-blue-100 rounded-xl animate-in fade-in slide-in-from-top-2">
-                                               <div className="flex items-center justify-between mb-1">
-                                                   <div className="flex items-center gap-2 text-blue-700 font-bold text-xs">
-                                                       <BookOpen size={14} /> Explanation
+                                       {showExplanation && (
+                                           <div className="mt-6 flex flex-col gap-4 animate-in fade-in slide-in-from-top-2">
+                                               {q.concept && (
+                                                   <div className="p-5 bg-white border border-slate-200 rounded-[20px] shadow-sm">
+                                                       <div className="flex items-center gap-2 text-indigo-700 font-bold text-sm mb-2">
+                                                           <Lightbulb size={16} /> Concept
+                                                       </div>
+                                                       <div className="text-slate-700 text-sm leading-relaxed prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: renderMathInHtml(q.concept) }} />
                                                    </div>
-                                                   <SpeakButton text={q.explanation} className="p-1 text-blue-400 hover:bg-blue-100" iconSize={14} />
-                                               </div>
-                                               <div
-                                                   className="text-slate-600 text-sm leading-relaxed prose prose-sm max-w-none"
-                                                   dangerouslySetInnerHTML={{ __html: renderMathInHtml(q.explanation) }}
-                                               />
+                                               )}
+
+                                               {q.explanation && (
+                                                   <div className="p-5 bg-white border border-slate-200 rounded-[20px] shadow-sm">
+                                                       <div className="flex items-center justify-between mb-2">
+                                                           <div className="flex items-center gap-2 text-blue-700 font-bold text-sm">
+                                                               <BookOpen size={16} /> Explanation
+                                                           </div>
+                                                           <SpeakButton text={q.explanation} className="p-1 text-blue-400 hover:bg-blue-100" iconSize={16} />
+                                                       </div>
+                                                       <div className="text-slate-700 text-sm leading-relaxed prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: renderMathInHtml(q.explanation) }} />
+                                                   </div>
+                                               )}
+
+                                               {q.examTip && (
+                                                   <div className="p-5 bg-gradient-to-br from-amber-50 to-amber-100/50 border border-amber-200 rounded-[20px] shadow-sm">
+                                                       <div className="flex items-center gap-2 text-amber-700 font-bold text-sm mb-2">
+                                                           <Target size={16} /> Exam Tip
+                                                       </div>
+                                                       <div className="text-amber-900 text-sm leading-relaxed prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: renderMathInHtml(q.examTip) }} />
+                                                   </div>
+                                               )}
+
+                                               {q.commonMistake && (
+                                                   <div className="p-5 bg-red-50 border border-red-100 rounded-[20px] shadow-sm">
+                                                       <div className="flex items-center gap-2 text-red-700 font-bold text-sm mb-2">
+                                                           <AlertTriangle size={16} /> Common Mistake
+                                                       </div>
+                                                       <div className="text-red-900 text-sm leading-relaxed prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: renderMathInHtml(q.commonMistake) }} />
+                                                   </div>
+                                               )}
+
+                                               {q.mnemonic && (
+                                                   <div className="p-5 bg-purple-50 border border-purple-100 rounded-[20px] shadow-sm">
+                                                       <div className="flex items-center gap-2 text-purple-700 font-bold text-sm mb-2">
+                                                           <Brain size={16} /> Memory Trick
+                                                       </div>
+                                                       <div className="text-purple-900 text-sm leading-relaxed whitespace-pre-line" dangerouslySetInnerHTML={{ __html: renderMathInHtml(q.mnemonic) }} />
+                                                   </div>
+                                               )}
                                            </div>
                                        )}
                                    </div>
@@ -1634,8 +1671,12 @@ export const LessonView: React.FC<Props> = ({
                                             );
                                         })}
                                     </div>
-                                    <div className="ml-9 p-2 bg-slate-50 text-[10px] text-slate-600 italic rounded">
-                                        <span className="font-bold">Explanation:</span> <span dangerouslySetInnerHTML={{ __html: renderMathInHtml(q.explanation || 'N/A') }}></span>
+                                    <div className="ml-9 p-2 bg-slate-50 text-[10px] text-slate-600 italic rounded flex flex-col gap-1">
+                                        {q.concept && <div><span className="font-bold">Concept:</span> <span dangerouslySetInnerHTML={{ __html: renderMathInHtml(q.concept) }}></span></div>}
+                                        <div><span className="font-bold">Explanation:</span> <span dangerouslySetInnerHTML={{ __html: renderMathInHtml(q.explanation || 'N/A') }}></span></div>
+                                        {q.examTip && <div><span className="font-bold text-amber-700">Exam Tip:</span> <span dangerouslySetInnerHTML={{ __html: renderMathInHtml(q.examTip) }}></span></div>}
+                                        {q.commonMistake && <div><span className="font-bold text-red-700">Common Mistake:</span> <span dangerouslySetInnerHTML={{ __html: renderMathInHtml(q.commonMistake) }}></span></div>}
+                                        {q.mnemonic && <div><span className="font-bold text-purple-700">Memory Trick:</span> <span dangerouslySetInnerHTML={{ __html: renderMathInHtml(q.mnemonic) }}></span></div>}
                                     </div>
                                 </div>
                             );

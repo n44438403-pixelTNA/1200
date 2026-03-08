@@ -254,7 +254,7 @@ export const TodayMcqSession: React.FC<Props> = ({ user, topics, onClose, onComp
         const topicAnalysis: Record<string, { correct: number, total: number, percentage: number }> = {};
 
         const omrData: { qIndex: number, selected: number, correct: number, timeSpent?: number }[] = [];
-        const wrongQuestions: { question: string, qIndex: number, explanation?: string, correctAnswer?: string | number }[] = [];
+        const wrongQuestions: { question: string, qIndex: number, explanation?: string, correctAnswer?: string | number, concept?: string, examTip?: string, commonMistake?: string, mnemonic?: string }[] = [];
 
         currentMcqData.forEach((q, idx) => {
             const t = (q.topic || 'General').trim();
@@ -276,7 +276,11 @@ export const TodayMcqSession: React.FC<Props> = ({ user, topics, onClose, onComp
                     question: q.question,
                     qIndex: idx,
                     explanation: q.explanation,
-                    correctAnswer: q.correctAnswer
+                    correctAnswer: q.correctAnswer,
+                    concept: q.concept,
+                    examTip: q.examTip,
+                    commonMistake: q.commonMistake,
+                    mnemonic: q.mnemonic
                 });
             }
 
@@ -287,7 +291,11 @@ export const TodayMcqSession: React.FC<Props> = ({ user, topics, onClose, onComp
                     question: q.question,
                     qIndex: idx,
                     correctAnswer: q.correctAnswer,
-                    explanation: q.explanation
+                    explanation: q.explanation,
+                    concept: q.concept,
+                    examTip: q.examTip,
+                    commonMistake: q.commonMistake,
+                    mnemonic: q.mnemonic
                 });
             }
         });

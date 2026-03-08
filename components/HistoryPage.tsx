@@ -295,10 +295,10 @@ export const HistoryPage: React.FC<Props> = ({ user, onUpdateUser, settings }) =
                                                 <div
                                                     key={i}
                                                     // onClick removed to disable interaction
-                                                    className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between opacity-90 transition-all group"
+                                                    className="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between opacity-90 transition-all group"
                                                 >
                                                     <div className="flex items-center gap-3">
-                                                        <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-white shadow-sm ${
+                                                        <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-white shadow-sm text-xs ${
                                                             log.type === 'VIDEO' ? 'bg-red-500' :
                                                             log.type === 'PDF' ? 'bg-blue-500' :
                                                             log.type === 'AUDIO' ? 'bg-green-500' :
@@ -415,7 +415,7 @@ export const HistoryPage: React.FC<Props> = ({ user, onUpdateUser, settings }) =
                                     </div>
                                 )}
 
-                                <div className="p-4 flex justify-between items-start">
+                                <div className="p-3 flex justify-between items-start">
                                     <div className="flex-1">
                                         <div className="flex items-center gap-2 mb-1">
                                             <span className={`text-[10px] font-black px-2 py-0.5 rounded-full ${
@@ -443,7 +443,7 @@ export const HistoryPage: React.FC<Props> = ({ user, onUpdateUser, settings }) =
                                 </div>
 
                                 {/* Preview Footer */}
-                                <div className="bg-slate-50 px-4 py-2 border-t border-slate-100 flex justify-between items-center">
+                                <div className="bg-slate-50 px-3 py-2 border-t border-slate-100 flex justify-between items-center">
                                      <span className="text-xs text-slate-500 font-medium">Click to read full note</span>
                                      <div className="text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity">
                                          <ChevronDown size={16} className="-rotate-90" />

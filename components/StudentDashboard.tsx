@@ -1222,25 +1222,25 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
                         </div>
 
                         <div className="grid grid-cols-2 gap-3">
-                            <div className="bg-blue-50 rounded-xl p-4 border border-blue-200">
+                            <div className="bg-blue-50 rounded-xl p-3 border border-blue-200">
                                 <p className="text-xs font-bold text-blue-600 uppercase">Credits</p>
                                 <p className="text-2xl font-black text-blue-600">{user.credits}</p>
                             </div>
-                            <div className="bg-orange-50 rounded-xl p-4 border border-orange-200">
+                            <div className="bg-orange-50 rounded-xl p-3 border border-orange-200">
                                 <p className="text-xs font-bold text-orange-600 uppercase">Streak</p>
                                 <p className="text-2xl font-black text-orange-600">{user.streak} Days</p>
                             </div>
                         </div>
 
                         {/* MY DATA SECTION */}
-                        <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3">
+                        <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-2">
                             <h4 className="font-black text-slate-800 flex items-center gap-2">
                                 <Database size={18} className="text-slate-600"/> My Data
                             </h4>
                             <div className="grid grid-cols-2 gap-2">
                                 <button
                                     onClick={() => setViewingUserHistory(user)}
-                                    className="bg-white p-3 rounded-lg border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-100 flex items-center justify-center gap-2"
+                                    className="bg-white p-2 rounded-lg border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-100 flex items-center justify-center gap-2"
                                 >
                                     <Activity size={14} className="text-blue-500"/> View Full Activity
                                 </button>

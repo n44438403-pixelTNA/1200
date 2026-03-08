@@ -138,15 +138,30 @@ export const getSubjectsList = (classLevel: string, stream: string | null, board
       ].filter(Boolean);
   }
   else if (!isSenior) {
-      selectedSubjects = [
-          pool.math,
-          pool.science,
-          pool.sst,
-          pool.english,
-          pool.hindi,
-          pool.sanskrit,
-          pool.computer
-      ].filter(Boolean);
+      if (board === 'BSEB' && (classLevel === '9' || classLevel === '10')) {
+          selectedSubjects = [
+              pool.math,
+              pool.science,
+              pool.history,
+              pool.geography,
+              pool.polity,
+              pool.economics,
+              pool.english,
+              pool.hindi,
+              pool.sanskrit,
+              pool.computer
+          ].filter(Boolean);
+      } else {
+          selectedSubjects = [
+              pool.math,
+              pool.science,
+              pool.sst,
+              pool.english,
+              pool.hindi,
+              pool.sanskrit,
+              pool.computer
+          ].filter(Boolean);
+      }
   }
   else {
       if (stream === 'Science') {

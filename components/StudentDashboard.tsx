@@ -1422,10 +1422,34 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
 
       // Handle Drill-Down Views (Video, PDF, MCQ, AUDIO)
       if (activeTab === 'VIDEO' || activeTab === 'PDF' || activeTab === 'MCQ' || (activeTab as any) === 'AUDIO') {
-          return renderContentSection(activeTab as any);
+          const content = renderContentSection(activeTab as any);
+          if (content) return content;
       }
 
-      return null;
+      // 🚨 CATCH-ALL FALLBACK (Prevents Blank Screen of Death)
+      return (
+          <div className="flex flex-col items-center justify-center py-20 px-6 text-center animate-in fade-in zoom-in duration-300">
+              <div className="w-24 h-24 bg-red-50 rounded-full flex items-center justify-center mb-6">
+                  <AlertCircle size={48} className="text-red-500" />
+              </div>
+              <h2 className="text-2xl font-black text-slate-800 mb-2">Oops! Content Not Found</h2>
+              <p className="text-slate-500 mb-8 max-w-sm">
+                  We couldn't find the page or content you were looking for. You might have clicked a broken link or the content was removed.
+              </p>
+              <Button
+                  onClick={() => {
+                      onTabChange('HOME');
+                      setContentViewStep('SUBJECTS');
+                  }}
+                  variant="primary"
+                  size="lg"
+                  className="shadow-xl"
+                  icon={<Home />}
+              >
+                  Go to Student Dashboard
+              </Button>
+          </div>
+      );
   };
 
   const isStudyMode = activeTab === 'VIDEO' || activeTab === 'PDF' || activeTab === 'MCQ' || activeTab === 'AUDIO' || (contentViewStep === 'PLAYER' && activeTab !== 'HOME') || activeTab === 'WEEKLY_TEST' || activeTab === 'CHALLENGE_20';

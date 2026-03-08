@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
+import { safeSetLocalStorage } from './utils/safeStorage';
 import { 
   ClassLevel, Subject, Chapter, AppState, Board, Stream, User, ContentType, SystemSettings, ActivityLogEntry, WeeklyTest, LessonContent, ActiveSubscription, InboxMessage
 } from './types';
@@ -109,7 +110,7 @@ const App: React.FC = () => {
   useEffect(() => {
       if (darkMode) document.documentElement.classList.add('dark-mode');
       else document.documentElement.classList.remove('dark-mode');
-      localStorage.setItem('nst_dark_mode', darkMode.toString());
+      safeSetLocalStorage('nst_dark_mode', darkMode.toString());
   }, [darkMode]);
 
   const [state, setState] = useState<AppState>({
@@ -290,7 +291,7 @@ const App: React.FC = () => {
                 subject: p.subject,
                 lesson: p.lesson
             });
-            localStorage.setItem(popupKey, now.toString());
+            safeSetLocalStorage(popupKey, now.toString());
             break; // Show one at a time
         }
     }
@@ -321,7 +322,7 @@ const App: React.FC = () => {
       // update the storage. This handles the case where user installs a new update.
       if (!storedVersion || storedVersion !== APP_VERSION) {
           // console.log(`Updating Local Version: ${storedVersion} -> ${APP_VERSION}`);
-          localStorage.setItem('nst_app_version', APP_VERSION);
+          safeSetLocalStorage('nst_app_version', APP_VERSION);
       }
   }, []);
 
@@ -337,7 +338,7 @@ const App: React.FC = () => {
               // console.log("Cleaned up old Groq keys");
               const updatedSettings = { ...state.settings, deletedGroqKeys: newDeletedKeys };
               setState(prev => ({ ...prev, settings: updatedSettings }));
-              localStorage.setItem('nst_system_settings', JSON.stringify(updatedSettings));
+              safeSetLocalStorage('nst_system_settings', JSON.stringify(updatedSettings));
           }
       }
   }, [state.settings.deletedGroqKeys]);
@@ -374,7 +375,7 @@ const App: React.FC = () => {
     if (state.user.email && ADMIN_EMAILS.includes(state.user.email.toLowerCase()) && state.user.role !== 'ADMIN') {
         const updatedUser = { ...state.user, role: 'ADMIN' as const };
         setState(prev => ({ ...prev, user: updatedUser }));
-        localStorage.setItem('nst_current_user', JSON.stringify(updatedUser));
+        safeSetLocalStorage('nst_current_user', JSON.stringify(updatedUser));
         saveUserToLive(updatedUser);
         return;
     }
@@ -466,7 +467,7 @@ const App: React.FC = () => {
           if (hasUpdates) {
               // SAFE IMPERSONATION: Only save if NOT impersonating
               if (!state.originalAdmin) {
-                  localStorage.setItem('nst_current_user', JSON.stringify(updatedUser));
+                  safeSetLocalStorage('nst_current_user', JSON.stringify(updatedUser));
                   saveUserToLive(updatedUser);
               }
               setState(prev => ({...prev, user: updatedUser}));
@@ -526,7 +527,7 @@ const App: React.FC = () => {
               setState(prev => {
                   const hasChanges = JSON.stringify(prev.settings) !== JSON.stringify({...prev.settings, ...newSettings});
                   if (hasChanges) {
-                      localStorage.setItem('nst_system_settings', JSON.stringify(newSettings));
+                      safeSetLocalStorage('nst_system_settings', JSON.stringify(newSettings));
                       return {...prev, settings: {...prev.settings, ...newSettings}};
                   }
                   return prev;
@@ -536,7 +537,7 @@ const App: React.FC = () => {
               if (newSettings.forceRefreshTimestamp) {
                   const lastRefresh = localStorage.getItem('nst_last_refresh_ts');
                   if (lastRefresh !== newSettings.forceRefreshTimestamp) {
-                      localStorage.setItem('nst_last_refresh_ts', newSettings.forceRefreshTimestamp);
+                      safeSetLocalStorage('nst_last_refresh_ts', newSettings.forceRefreshTimestamp);
                       window.location.reload();
                   }
               }
@@ -569,7 +570,7 @@ const App: React.FC = () => {
                               const firstSeen = localStorage.getItem(key);
                               if (!firstSeen) {
                                   referenceTime = now;
-                                  localStorage.setItem(key, now.toString());
+                                  safeSetLocalStorage(key, now.toString());
                               } else {
                                   referenceTime = parseInt(firstSeen);
                               }
@@ -643,7 +644,7 @@ const App: React.FC = () => {
                  const cloudStr = JSON.stringify(cloudUser);
                  if (currentStr !== cloudStr) {
                      // console.log("Syncing User Profile from Cloud...");
-                     localStorage.setItem('nst_current_user', cloudStr);
+                     safeSetLocalStorage('nst_current_user', cloudStr);
                      setState(prev => ({...prev, user: cloudUser}));
                  }
              }
@@ -666,7 +667,7 @@ const App: React.FC = () => {
 
           if (JSON.stringify(updatedUser) !== JSON.stringify(state.user)) {
                // console.log("Subscription Status Updated (Real-time).");
-               localStorage.setItem('nst_current_user', JSON.stringify(updatedUser));
+               safeSetLocalStorage('nst_current_user', JSON.stringify(updatedUser));
                saveUserToLive(updatedUser);
 
                // Handle Expiry Event (Access Lock)
@@ -749,7 +750,7 @@ const App: React.FC = () => {
                               // Also clear indexedDB via storage util if possible (not exposed here, but we can try)
                               storage.clear().catch(e => console.error(e));
 
-                              localStorage.setItem('nst_last_cache_clear', now.toString());
+                              safeSetLocalStorage('nst_last_cache_clear', now.toString());
                           }
                       }
                   });
@@ -786,7 +787,7 @@ const App: React.FC = () => {
              user = recalculateSubscriptionStatus(user, loadedSettings);
              // Save back any migration changes immediately
              if (JSON.stringify(user) !== loggedInUserStr) {
-                 localStorage.setItem('nst_current_user', JSON.stringify(user));
+                 safeSetLocalStorage('nst_current_user', JSON.stringify(user));
                  // NOTE: We do not call saveUserToLive here to avoid overwriting backend role changes (e.g. if Admin promoted them in DB but local cache is old)
              }
         }
@@ -841,8 +842,8 @@ const App: React.FC = () => {
     const storedSeconds = parseInt(localStorage.getItem('nst_daily_study_seconds') || '0');
 
     if (storedDate !== today) {
-        localStorage.setItem('nst_timer_date', today);
-        localStorage.setItem('nst_daily_study_seconds', '0');
+        safeSetLocalStorage('nst_timer_date', today);
+        safeSetLocalStorage('nst_daily_study_seconds', '0');
         setDailyStudySeconds(0);
     } else {
         setDailyStudySeconds(storedSeconds);
@@ -854,7 +855,7 @@ const App: React.FC = () => {
         interval = setInterval(() => {
             setDailyStudySeconds(prev => {
                 const next = prev + 1;
-                localStorage.setItem('nst_daily_study_seconds', next.toString());
+                safeSetLocalStorage('nst_daily_study_seconds', next.toString());
                 
                 // NEW: CHECK FOR DAILY REWARDS (DYNAMIC)
                 if (state.user && state.settings.engagementRewards) {
@@ -971,12 +972,12 @@ const App: React.FC = () => {
       const logs: ActivityLogEntry[] = storedLogs ? JSON.parse(storedLogs) : [];
       // Keep last 500 logs
       const updatedLogs = [...logs, newLog].slice(-500); 
-      localStorage.setItem('nst_activity_log', JSON.stringify(updatedLogs));
+      safeSetLocalStorage('nst_activity_log', JSON.stringify(updatedLogs));
   };
 
   const updateSettings = (newSettings: SystemSettings) => {
       setState(prev => ({...prev, settings: newSettings}));
-      localStorage.setItem('nst_system_settings', JSON.stringify(newSettings));
+      safeSetLocalStorage('nst_system_settings', JSON.stringify(newSettings));
   };
 
   // Provide a global toggle handler for TTS
@@ -986,14 +987,14 @@ const App: React.FC = () => {
   };
 
   const handleAcceptTerms = () => {
-      localStorage.setItem('nst_terms_accepted', 'true');
+      safeSetLocalStorage('nst_terms_accepted', 'true');
       setShowTerms(false);
       const hasSeenWelcome = localStorage.getItem('nst_has_seen_welcome');
       if (!hasSeenWelcome) setState(prev => ({ ...prev, showWelcome: true }));
   };
 
   const handleStartApp = () => {
-    localStorage.setItem('nst_has_seen_welcome', 'true');
+    safeSetLocalStorage('nst_has_seen_welcome', 'true');
     setState(prev => ({ ...prev, showWelcome: false }));
   };
 
@@ -1015,10 +1016,10 @@ const App: React.FC = () => {
 
     const handleLogin = (user: User) => {
     if (!state.originalAdmin) {
-        localStorage.setItem('nst_current_user', JSON.stringify(user));
+        safeSetLocalStorage('nst_current_user', JSON.stringify(user));
     }
     saveUserToLive(user);
-    localStorage.setItem('nst_has_seen_welcome', 'true');
+    safeSetLocalStorage('nst_has_seen_welcome', 'true');
 
     // Check if onboarding is needed
     if (user.role === 'STUDENT' && !user.profileCompleted) {
@@ -1125,7 +1126,7 @@ const App: React.FC = () => {
     
     if (!state.originalAdmin) {
         saveUserToLive(updatedUser);
-        localStorage.setItem('nst_current_user', JSON.stringify(updatedUser));
+        safeSetLocalStorage('nst_current_user', JSON.stringify(updatedUser));
     }
     setState(prev => ({ ...prev, user: updatedUser }));
   };
@@ -1151,7 +1152,7 @@ const App: React.FC = () => {
 
       // Persist (Only if not impersonating)
       if (!state.originalAdmin) {
-          localStorage.setItem('nst_current_user', JSON.stringify(updatedUser));
+          safeSetLocalStorage('nst_current_user', JSON.stringify(updatedUser));
           saveUserToLive(updatedUser);
       }
   };
@@ -1300,7 +1301,7 @@ const App: React.FC = () => {
              }
              const updatedUser = { ...state.user, credits: state.user.credits - cost };
              if (!state.originalAdmin) {
-                 localStorage.setItem('nst_current_user', JSON.stringify(updatedUser));
+                 safeSetLocalStorage('nst_current_user', JSON.stringify(updatedUser));
                  saveUserToLive(updatedUser);
              }
              setState(prev => ({...prev, user: updatedUser}));
@@ -1401,7 +1402,7 @@ const App: React.FC = () => {
 
              const updatedUser = { ...state.user, credits: state.user.credits - cost };
              if (!state.originalAdmin) {
-                 localStorage.setItem('nst_current_user', JSON.stringify(updatedUser));
+                 safeSetLocalStorage('nst_current_user', JSON.stringify(updatedUser));
                  saveUserToLive(updatedUser);
              }
              setState(prev => ({...prev, user: updatedUser}));
@@ -1619,7 +1620,7 @@ const App: React.FC = () => {
             const updatedUser = { ...state.user, credits: state.user.credits - cost };
 
             if (!state.originalAdmin) {
-                localStorage.setItem('nst_current_user', JSON.stringify(updatedUser));
+                safeSetLocalStorage('nst_current_user', JSON.stringify(updatedUser));
 
                 // Sync to LocalStorage list
                 const storedUsers = localStorage.getItem('nst_users');
@@ -1628,7 +1629,7 @@ const App: React.FC = () => {
                     const idx = allUsers.findIndex((u:User) => u.id === updatedUser.id);
                     if (idx !== -1) {
                         allUsers[idx] = updatedUser;
-                        localStorage.setItem('nst_users', JSON.stringify(allUsers));
+                        safeSetLocalStorage('nst_users', JSON.stringify(allUsers));
                     }
                 }
                 // Sync to Live
@@ -1787,7 +1788,7 @@ const App: React.FC = () => {
       }
 
       if (!state.originalAdmin) {
-          localStorage.setItem('nst_current_user', JSON.stringify(updatedUser));
+          safeSetLocalStorage('nst_current_user', JSON.stringify(updatedUser));
           saveUserToLive(updatedUser);
       }
       setState(prev => ({...prev, user: updatedUser}));
@@ -1804,7 +1805,7 @@ const App: React.FC = () => {
       };
 
       if (!state.originalAdmin) {
-          localStorage.setItem('nst_current_user', JSON.stringify(updatedUser));
+          safeSetLocalStorage('nst_current_user', JSON.stringify(updatedUser));
           saveUserToLive(updatedUser);
       }
       setState(prev => ({...prev, user: updatedUser}));
@@ -1841,7 +1842,7 @@ const App: React.FC = () => {
     const key = `nst_test_attempts_${state.user.id}`;
     const attempts = JSON.parse(localStorage.getItem(key) || '{}');
     attempts[activeWeeklyTest.id] = attempt;
-    localStorage.setItem(key, JSON.stringify(attempts));
+    safeSetLocalStorage(key, JSON.stringify(attempts));
 
     // 2. Firestore Sync (So Admin can see)
     await saveTestResult(state.user.id, attempt);
@@ -1896,7 +1897,7 @@ const App: React.FC = () => {
     }
 
     if (!state.originalAdmin) {
-        localStorage.setItem('nst_current_user', JSON.stringify(updatedUser));
+        safeSetLocalStorage('nst_current_user', JSON.stringify(updatedUser));
         await saveUserToLive(updatedUser);
     }
     setState(prev => ({...prev, user: updatedUser}));
@@ -1948,7 +1949,7 @@ const App: React.FC = () => {
 
     // Save updated history
     if (!state.originalAdmin) {
-        localStorage.setItem('nst_current_user', JSON.stringify(updatedUser));
+        safeSetLocalStorage('nst_current_user', JSON.stringify(updatedUser));
         saveUserToLive(updatedUser);
     }
     setState(prev => ({...prev, user: updatedUser}));
@@ -1973,7 +1974,7 @@ const App: React.FC = () => {
       setPopupQueue(prev => prev.slice(1));
 
       if (type === 'CHALLENGE') {
-          localStorage.setItem('nst_last_daily_challenge_date', new Date().toDateString());
+          safeSetLocalStorage('nst_last_daily_challenge_date', new Date().toDateString());
       } else if (type === 'WELCOME') {
           handleStartApp();
       }
@@ -2018,7 +2019,7 @@ const App: React.FC = () => {
       setActiveWeeklyTest(test);
 
       // 4. Mark as Seen and Close Popup
-      localStorage.setItem('nst_last_daily_challenge_date', new Date().toDateString());
+      safeSetLocalStorage('nst_last_daily_challenge_date', new Date().toDateString());
       setPopupQueue(prev => prev.slice(1)); // Manually close popup without triggering handlePopupClose again (which sets storage too)
   };
 
@@ -2289,7 +2290,7 @@ const App: React.FC = () => {
                                     if(state.user) {
                                        const updated = { ...state.user, board: newBoard };
                                        if (!state.originalAdmin) {
-                                           localStorage.setItem('nst_current_user', JSON.stringify(updated));
+                                           safeSetLocalStorage('nst_current_user', JSON.stringify(updated));
                                            saveUserToLive(updated);
                                        }
                                        setState(prev => ({...prev, user: updated}));
@@ -2581,7 +2582,7 @@ const App: React.FC = () => {
               isManualForce={state.settings.forceUpdate}
               onClose={() => {
                   setShowUpdatePopup(false);
-                  localStorage.setItem(`nst_update_dismissed_${state.settings.latestVersion}`, Date.now().toString());
+                  safeSetLocalStorage(`nst_update_dismissed_${state.settings.latestVersion}`, Date.now().toString());
               }}
           />
       )}

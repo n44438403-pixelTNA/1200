@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { safeSetLocalStorage } from '../utils/safeStorage';
 import { User, Board, ClassLevel, Stream, SystemSettings, RecoveryRequest } from '../types';
 // Import the list of authorized admin emails
 import { ADMIN_EMAILS } from '../constants';
@@ -142,7 +143,7 @@ export const Auth: React.FC<Props> = ({ onLogin, logActivity }) => {
           };
 
           const updatedUsers = [...users, newUser];
-          localStorage.setItem('nst_users', JSON.stringify(updatedUsers));
+          safeSetLocalStorage('nst_users', JSON.stringify(updatedUsers));
           
           // Sync to Firestore
           const firestoreUser = { ...newUser };
@@ -241,7 +242,7 @@ export const Auth: React.FC<Props> = ({ onLogin, logActivity }) => {
 
           // Start Timer Logic
           const ts = Date.now();
-          localStorage.setItem(`login_request_ts_${user.id}`, ts.toString());
+          safeSetLocalStorage(`login_request_ts_${user.id}`, ts.toString());
           setRequestTimestamp(ts);
 
           setPendingLoginUser(user);
@@ -301,7 +302,7 @@ export const Auth: React.FC<Props> = ({ onLogin, logActivity }) => {
               } as User;
 
               const updatedUsers = [...users, appUser];
-              localStorage.setItem('nst_users', JSON.stringify(updatedUsers));
+              safeSetLocalStorage('nst_users', JSON.stringify(updatedUsers));
 
               await saveUserToLive(appUser);
               logActivity("SIGNUP_GOOGLE", "New Student Registered via Google", appUser);

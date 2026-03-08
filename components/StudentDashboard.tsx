@@ -555,16 +555,6 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
           const currentPriority = tierPriority[user.subscriptionTier || 'FREE'] || 0;
           const newPriority = tierPriority[tier] || 0;
 
-              // Force to FREE if subscription ended
-              if (cloudData.isPremium && cloudData.subscriptionEndDate && cloudData.subscriptionTier !== 'LIFETIME') {
-                  if (new Date(cloudData.subscriptionEndDate) < new Date()) {
-                      cloudData.isPremium = false;
-                      cloudData.subscriptionTier = 'FREE';
-                      cloudData.subscriptionLevel = undefined;
-                      needsUpdate = true;
-                  }
-              }
-
           if (isActive && currentPriority > newPriority) {
                // User already has a BETTER active plan, do NOT override tier, just extend date if not lifetime
                if (user.subscriptionTier !== 'LIFETIME') {

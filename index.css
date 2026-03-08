@@ -88,10 +88,11 @@ body {
 
 /* GLOBAL UI STABILITY FIXES */
 body {
-  background-color: #0f1a3a; /* Dark premium background to act as 'letterboxing' on desktop */
+  background-color: #f5f7fb;
+  font-family: system-ui, -apple-system, sans-serif !important;
   display: flex;
   justify-content: center;
-  align-items: flex-start; /* Ensure it starts at the top */
+  align-items: flex-start;
   min-height: 100vh;
   margin: 0;
   padding: 0;
@@ -99,7 +100,7 @@ body {
 
 #root {
   width: 100%;
-  max-width: 1080px; /* Enhanced Mobile/Tablet maximum width for better readability */
+  max-width: 100%;
   min-height: 100vh;
   background-color: #f8fafc; /* Keep the app's actual light background isolated */
   box-shadow: 0 0 50px rgba(0,0,0,0.5); /* Strong shadow for separation */
@@ -140,7 +141,7 @@ button {
 
 /* App Container and Reading Constraints */
 .app-container {
-  max-width: 720px;
+  max-width: 100%;
   margin: auto;
   padding: 16px;
 }
@@ -188,13 +189,7 @@ button {
 }
 
 /* Quick Revision Custom Styles */
-.topic-card {
-  background: white;
-  padding: 24px;
-  border-radius: 16px;
-  margin-bottom: 24px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.04);
-}
+
 
 .note-section {
   display: flex;
@@ -206,6 +201,64 @@ button {
 }
 
 /* Base style for specific note types so they inherit the note-section styling */
+.card {
+  width: calc(100% - 20px) !important;
+  margin: 10px auto !important;
+  padding: 20px !important;
+  border-radius: 20px !important;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08) !important;
+  background: #ffffff !important;
+  margin-bottom: 20px !important;
+}
+
+
+
+.main-container {
+    margin-top: 0px;
+    padding-top: 10px;
+}
+
+.topic-card{
+background:#ffffff;
+padding:22px;
+border-radius:14px;
+box-shadow:0 4px 14px rgba(0,0,0,0.08);
+margin-bottom:30px;
+}
+
+.topic-card h2{
+margin-top:0;
+margin-bottom:15px;
+}
+
+.topic-card div{
+margin-top:12px;
+line-height:1.6;
+}
+
+.visual-facts ul,
+.recap ul{
+padding-left:20px;
+}
+
+.exam{
+background:#eaf5ff;
+padding:10px;
+border-radius:8px;
+}
+
+.mistake{
+background:#ffecec;
+padding:10px;
+border-radius:8px;
+}
+
+.memory{
+background:#f1fff2;
+padding:10px;
+border-radius:8px;
+}
+
 .definition, .example, .exam, .mistake, .memory {
   display: flex;
   flex-direction: column;
@@ -217,42 +270,13 @@ button {
 }
 
 .definition {
-  background: #e0f2fe; /* light blue */
+  background: #e0f2fe;
   border-left: 4px solid #3b82f6;
 }
 
-.topic-card {
-  background: #ffffff;
-  padding: 22px;
-  border-radius: 14px;
-  box-shadow: 0 4px 14px rgba(0,0,0,0.08);
-  margin-bottom: 30px;
-}
-
-.topic-card h2 {
-  margin-top: 0;
-  margin-bottom: 15px;
-}
-
-.topic-card div {
-  margin-top: 12px;
-  line-height: 1.6;
-}
-
-.visual-facts ul,
-.recap ul {
-  padding-left: 20px;
-}
-
 .example {
-  background: #dcfce7; /* light green */
+  background: #dcfce7;
   border-left: 4px solid #22c55e;
-}
-
-.exam {
-  background: #eaf5ff;
-  padding: 10px;
-  border-radius: 8px;
 }
 
 .quick-revision {
@@ -261,16 +285,4 @@ button {
   border-radius: 8px;
   border: 1px dashed #cbd5e1;
   font-weight: 500;
-}
-
-.mistake {
-  background: #ffecec;
-  padding: 10px;
-  border-radius: 8px;
-}
-
-.memory {
-  background: #f1fff2;
-  padding: 10px;
-  border-radius: 8px;
 }

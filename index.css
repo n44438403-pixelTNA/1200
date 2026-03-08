@@ -87,11 +87,13 @@ body {
 
 /* GLOBAL UI STABILITY FIXES */
 body {
-  background-color: #0f172a; /* Dark background to act as 'letterboxing' on desktop */
+  background-color: #0f1a3a; /* Dark premium background to act as 'letterboxing' on desktop */
   display: flex;
   justify-content: center;
   align-items: flex-start; /* Ensure it starts at the top */
   min-height: 100vh;
+  margin: 0;
+  padding: 0;
 }
 
 #root {

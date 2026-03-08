@@ -751,13 +751,15 @@ export const fetchLessonContent = async (
 
               <div class="topic-card">
                   <h2>Topic Title Here</h2>
-                  <div class="definition"><b>📘 Definition</b><p>Detailed explanation here.</p></div>
+                  <div class="definition"><b>📘 Definition</b><br><p>Detailed explanation here.</p></div>
                   <div class="visual-facts"><b>📊 Quick Facts</b><ul><li>Fact 1</li><li>Fact 2</li></ul></div>
-                  <div class="explanation"><b>📝 Explanation / Real Life Example</b><p>Explain it to the student with an analogy.</p></div>
-                  <div class="exam">🎯 <b>Exam Point</b><p>Important exam tip.</p></div>
-                  <div class="mistake">⚠ <b>Common Mistake</b><p>What students get wrong.</p></div>
-                  <div class="memory">🧠 <b>Memory Trick</b><p>Mnemonic to remember.</p></div>
-                  <div class="recap">🔁 <b>Recap</b><ul><li>Point 1</li><li>Point 2</li></ul></div>
+                  <div class="explanation"><b>📝 Explanation / Real Life Example</b><br><p>Explain it to the student with an analogy.</p></div>
+                  <div class="example"><b>🧪 Example</b><br>Give a specific example here.</div>
+                  <div class="exam">🎯 <b>Exam Point:</b><p>Important exam tip.</p></div>
+                  <div class="mistake">⚠ <b>Common Mistake:</b><p>What students get wrong.</p></div>
+                  <div class="memory">🧠 <b>Memory Trick:</b><p>Mnemonic to remember.</p></div>
+                  <div class="recap">🔁 <b>Recap:</b><ul><li>Point 1</li><li>Point 2</li></ul></div>
+                  <div class="quick-revision"><b>Quick Revision:</b> One sentence summary here.</div>
               </div>
 
               1. 🚀 Quick Revision (8-12 bullet points of the most crucial concepts)
@@ -837,13 +839,15 @@ export const fetchLessonContent = async (
        Use the following HTML template structure for EVERY topic so the app can style it correctly. NEVER USE MARKDOWN HEADINGS FOR THESE SECTIONS, USE THE HTML DIVS:
        <div class="topic-card">
            <h2>Topic Title Here</h2>
-           <div class="definition"><b>📘 Definition</b><p>Detailed explanation here.</p></div>
+           <div class="definition"><b>📘 Definition</b><br><p>Detailed explanation here.</p></div>
            <div class="visual-facts"><b>📊 Quick Facts</b><ul><li>Fact 1</li><li>Fact 2</li></ul></div>
-           <div class="explanation"><b>📝 Explanation / Real Life Example</b><p>Explain it to the student with an analogy.</p></div>
-           <div class="exam">🎯 <b>Exam Point</b><p>Important exam tip.</p></div>
-           <div class="mistake">⚠ <b>Common Mistake</b><p>What students get wrong.</p></div>
-           <div class="memory">🧠 <b>Memory Trick</b><p>Mnemonic to remember.</p></div>
-           <div class="recap">🔁 <b>Recap</b><ul><li>Point 1</li><li>Point 2</li></ul></div>
+           <div class="explanation"><b>📝 Explanation / Real Life Example</b><br><p>Explain it to the student with an analogy.</p></div>
+           <div class="example"><b>🧪 Example</b><br>Give a specific example here.</div>
+           <div class="exam">🎯 <b>Exam Point:</b><p>Important exam tip.</p></div>
+           <div class="mistake">⚠ <b>Common Mistake:</b><p>What students get wrong.</p></div>
+           <div class="memory">🧠 <b>Memory Trick:</b><p>Mnemonic to remember.</p></div>
+           <div class="recap">🔁 <b>Recap:</b><ul><li>Point 1</li><li>Point 2</li></ul></div>
+           <div class="quick-revision"><b>Quick Revision:</b> One sentence summary here.</div>
        </div>
        <<<SUMMARY>>>
        [Short 200-300 word Summary Here]
@@ -933,13 +937,15 @@ export const generateCustomNotes = async (userTopic: string, adminPrompt: string
     Ensure the content is well-structured. You MUST output the topics using this exact HTML template structure for EVERY topic so the app can style it correctly. NEVER USE MARKDOWN HEADINGS FOR THESE SECTIONS, USE THE HTML DIVS:
     <div class="topic-card">
         <h2>Topic Title Here</h2>
-        <div class="definition"><b>📘 Definition</b><p>Detailed explanation here.</p></div>
+        <div class="definition"><b>📘 Definition</b><br><p>Detailed explanation here.</p></div>
         <div class="visual-facts"><b>📊 Quick Facts</b><ul><li>Fact 1</li><li>Fact 2</li></ul></div>
-        <div class="explanation"><b>📝 Explanation / Real Life Example</b><p>Explain it to the student with an analogy.</p></div>
-        <div class="exam">🎯 <b>Exam Point</b><p>Important exam tip.</p></div>
-        <div class="mistake">⚠ <b>Common Mistake</b><p>What students get wrong.</p></div>
-        <div class="memory">🧠 <b>Memory Trick</b><p>Mnemonic to remember.</p></div>
-        <div class="recap">🔁 <b>Recap</b><ul><li>Point 1</li><li>Point 2</li></ul></div>
+        <div class="explanation"><b>📝 Explanation / Real Life Example</b><br><p>Explain it to the student with an analogy.</p></div>
+        <div class="example"><b>🧪 Example</b><br>Give a specific example here.</div>
+        <div class="exam">🎯 <b>Exam Point:</b><p>Important exam tip.</p></div>
+        <div class="mistake">⚠ <b>Common Mistake:</b><p>What students get wrong.</p></div>
+        <div class="memory">🧠 <b>Memory Trick:</b><p>Mnemonic to remember.</p></div>
+        <div class="recap">🔁 <b>Recap:</b><ul><li>Point 1</li><li>Point 2</li></ul></div>
+        <div class="quick-revision"><b>Quick Revision:</b> One sentence summary here.</div>
     </div>`;
 
     return await executeWithRotation(async () => {

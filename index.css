@@ -255,6 +255,14 @@ button {
   border-radius: 8px;
 }
 
+.quick-revision {
+  background: #f8fafc;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px dashed #cbd5e1;
+  font-weight: 500;
+}
+
 .mistake {
   background: #ffecec;
   padding: 10px;

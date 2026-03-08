@@ -909,7 +909,7 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
                 <DashboardSectionWrapper id="section_main_actions" label="Main Actions" settings={settings} isLayoutEditing={isLayoutEditing} onToggleVisibility={toggleLayoutVisibility}>
                     <div className="grid grid-cols-2 gap-3">
                         {/* STUDY SECTION (REPLACED MY COURSES) */}
-                        <div className="col-span-2 bg-white rounded-[16px] p-4 border border-slate-100 shadow-[0_4px_10px_rgba(0,0,0,0.04)] mb-3">
+                        <div className="col-span-2 bg-white rounded-[20px] p-5 border border-slate-100 shadow-[0_10px_25px_rgba(0,0,0,0.08)] mb-3">
                             <h3 className="font-black text-slate-800 text-lg mb-3 flex items-center gap-2">
                                 <BookOpen className="text-blue-600" size={24} /> Study
                             </h3>
@@ -1425,11 +1425,11 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
 
   return (
 
-    <div className={`min-h-screen bg-slate-50 pb-[80px] ${!isStudyMode ? 'pt-[85px] px-4' : ''}`}>
+    <div className={`min-h-screen bg-slate-50 pb-[80px] ${!isStudyMode ? 'pt-[74px] px-2.5' : ''}`}>
 
         {/* GLOBAL HEADER DESIGN (Visible on all dashboard tabs) */}
         {!isStudyMode && (
-            <div className="bg-white p-4 shadow-sm border-b border-slate-200 flex items-center justify-between fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[1080px] z-50">
+            <div className="bg-white p-4 shadow-[0_10px_20px_rgba(0,0,0,0.05)] flex items-center justify-between fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[1080px] z-50">
                 <div className="flex items-center gap-3">
                     {/* Menu Button Restored */}
                     <button
@@ -1503,7 +1503,7 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
 
         {/* ADMIN SWITCH BUTTON */}
         {(user.role === 'ADMIN' || isImpersonating) && (
-             <div className="fixed bottom-36 right-4 z-50 flex flex-col gap-3 items-end">
+             <div className="fixed bottom-48 right-4 z-50 flex flex-col gap-3 items-end">
                  <button
                     onClick={() => setIsLayoutEditing(!isLayoutEditing)}
                     className={`p-4 rounded-full shadow-2xl border-2 hover:scale-110 transition-transform flex items-center gap-2 ${isLayoutEditing ? 'bg-yellow-400 text-black border-yellow-500' : 'bg-white text-slate-800 border-slate-200'}`}

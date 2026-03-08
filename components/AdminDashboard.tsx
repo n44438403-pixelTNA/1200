@@ -53,7 +53,7 @@ const DEFAULT_ULTRA_FEATURES = [
     'Spin Wheel (10 Spins/Day)'
 ];
 
-const QUESTION_START_REGEX = /^(?:[\uD83D\uDCD8\u2753]\s*\*\*Question.*\*\*|\*\*Question.*\*\*|📘\s*\*\*Question.*|❓\s*\*\*Question.*|Q\s*\d+[.:)]?|Question\s*\d+[.:)]?)\s*/i;
+const QUESTION_START_REGEX = /^(?:[\uD83D\uDCD8]\s*\*\*Question.*\*\*|\*\*Question.*\*\*|📘\s*\*?\*?Question.*|Q\s*\d+[.:)]?|Question\s*\d+[.:)]?)\s*/i;
 
 const looksLikeQuestionBlock = (lines: string[], index: number): boolean => {
     // If it explicitly matches the strong question regex, we don't even need this fallback,
@@ -2181,12 +2181,32 @@ const AdminDashboardInner: React.FC<Props> = ({ onNavigate, settings, onUpdateSe
 
                               const q = qLine.replace(/^\*\*|\*\*$/g, '').replace(/^(?:❓\s*\*?\*?Question:\*?\*?\s*)/i, '').trim();
 
-                              const opts = [lines[i+qOffset+1], lines[i+qOffset+2], lines[i+qOffset+3], lines[i+qOffset+4]];
+                              // Search forward to find 'Options:' and 'Correct Answer:' to make parsing line-break agnostic.
+                              let optStartIdx = i + qOffset + 1;
+                              while (optStartIdx < lines.length && !/^[A-D1-4a-d][.)]|Options:/i.test(lines[optStartIdx])) {
+                                  optStartIdx++;
+                              }
+                              if (lines[optStartIdx] && /Options:/i.test(lines[optStartIdx])) {
+                                  optStartIdx++; // Skip the 'Options:' header
+                              }
 
-                              // Fix offset for answer and explanation parsing
-                              const ansOffset = qOffset;
+                              const opts = [lines[optStartIdx], lines[optStartIdx+1], lines[optStartIdx+2], lines[optStartIdx+3]];
 
-                          let ansLine = lines[i + ansOffset + 5];
+                              let ansStartIdx = optStartIdx + 4;
+                              while (ansStartIdx < lines.length && !/^(?:✅\s*)?\*?\*?(Answer|Ans|Correct|Correct Answer|उत्तर)\*?\*?\s*[:\s-]*\s*/i.test(lines[ansStartIdx])) {
+                                  ansStartIdx++;
+                              }
+
+                              let ansLine = lines[ansStartIdx];
+                              let expStartIdx = ansStartIdx + 1;
+                              if (ansLine && /^(?:✅\s*)?\*?\*?(Answer|Ans|Correct|Correct Answer|उत्तर)\*?\*?\s*[:\s-]*\s*$/i.test(ansLine)) {
+                                  // The actual answer is on the next line
+                                  ansStartIdx++;
+                                  ansLine = lines[ansStartIdx];
+                                  expStartIdx++;
+                              }
+
+                              const ansOffset = expStartIdx - i - 6;
                           ansLine = ansLine.replace(/^\*\*|\*\*$/g, '');
                           let ansRaw = ansLine.replace(/^(Answer|Ans|Correct|उत्तर)\s*[:\s-]*\s*/i, '').trim();
 
@@ -2372,16 +2392,36 @@ const AdminDashboardInner: React.FC<Props> = ({ onNavigate, settings, onUpdateSe
 
                               const q = qLine.replace(/^\*\*|\*\*$/g, '').replace(/^(?:❓\s*\*?\*?Question:\*?\*?\s*)/i, '').trim();
 
-                              const opts = [lines[i+qOffset+1], lines[i+qOffset+2], lines[i+qOffset+3], lines[i+qOffset+4]];
+                              // Search forward to find 'Options:' and 'Correct Answer:' to make parsing line-break agnostic.
+                              let optStartIdx = i + qOffset + 1;
+                              while (optStartIdx < lines.length && !/^[A-D1-4a-d][.)]|Options:/i.test(lines[optStartIdx])) {
+                                  optStartIdx++;
+                              }
+                              if (lines[optStartIdx] && /Options:/i.test(lines[optStartIdx])) {
+                                  optStartIdx++; // Skip the 'Options:' header
+                              }
 
-                              // Fix offset for answer and explanation parsing
-                              const ansOffset = qOffset;
+                              const opts = [lines[optStartIdx], lines[optStartIdx+1], lines[optStartIdx+2], lines[optStartIdx+3]];
 
-                              let ansLine = lines[i + ansOffset + 5];
+                              let ansStartIdx = optStartIdx + 4;
+                              while (ansStartIdx < lines.length && !/^(?:✅\s*)?\*?\*?(Answer|Ans|Correct|Correct Answer|उत्तर)\*?\*?\s*[:\s-]*\s*/i.test(lines[ansStartIdx])) {
+                                  ansStartIdx++;
+                              }
+
+                              let ansLine = lines[ansStartIdx];
+                              let expStartIdx = ansStartIdx + 1;
+                              if (ansLine && /^(?:✅\s*)?\*?\*?(Answer|Ans|Correct|Correct Answer|उत्तर)\*?\*?\s*[:\s-]*\s*$/i.test(ansLine)) {
+                                  // The actual answer is on the next line
+                                  ansStartIdx++;
+                                  ansLine = lines[ansStartIdx];
+                                  expStartIdx++;
+                              }
+
+                              const ansOffset = expStartIdx - i - 6;
                               // Remove ** wrapper
-                              ansLine = ansLine.replace(/^\*\*|\*\*$/g, '');
+                              if(ansLine) ansLine = ansLine.replace(/^\*\*|\*\*$/g, '');
                               // Remove Label
-                              let ansRaw = ansLine.replace(/^(Answer|Ans|Correct|उत्तर)\s*[:\s-]*\s*/i, '').trim();
+                              let ansRaw = ansLine ? ansLine.replace(/^(?:✅\s*)?\*?\*?(Answer|Ans|Correct|Correct Answer|उत्तर)\*?\*?\s*[:\s-]*\s*/i, '').trim() : 'A';
 
                               // Flexible Answer Parsing
                               let ansIdx = -1;
@@ -2432,7 +2472,12 @@ const AdminDashboardInner: React.FC<Props> = ({ onNavigate, settings, onUpdateSe
                                   question: q,
                                   options: opts,
                                   correctAnswer: ansIdx,
-                                  explanation: explanation,
+                                  explanation: explanation || '',
+                                  concept: concept,
+                                  examTip: examTip,
+                                  commonMistake: commonMistake,
+                                  mnemonic: memoryTrick,
+                                  difficultyLevel: difficultyLevel,
                                   topic: topic || currentGlobalTopic
                               });
 

@@ -1436,7 +1436,25 @@ export const LessonView: React.FC<Props> = ({
                                                                <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs shrink-0 font-bold mt-0.5 ${isCorrect ? 'bg-green-100 text-green-700' : isWrong ? 'bg-red-100 text-red-700' : 'bg-slate-100 text-slate-500'}`}>
                                                                    {idx + 1}
                                                                </span>
-                                                               <div dangerouslySetInnerHTML={{ __html: renderMathInHtml(q.question) }} className="prose prose-sm max-w-none" />
+                                                               <div>
+<div className="mb-2 flex flex-wrap items-center gap-2">
+    {q.difficultyLevel && (
+        <span className={`text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider ${
+            q.difficultyLevel.toLowerCase().includes('easy') ? 'bg-green-100 text-green-700' :
+            q.difficultyLevel.toLowerCase().includes('medium') ? 'bg-yellow-100 text-yellow-700' :
+            'bg-red-100 text-red-700'
+        }`}>
+            {q.difficultyLevel}
+        </span>
+    )}
+    {q.topic && (
+        <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-blue-50 text-blue-600 uppercase tracking-wider">
+            {q.topic}
+        </span>
+    )}
+</div>
+<div dangerouslySetInnerHTML={{ __html: renderMathInHtml(q.question) }} className="prose prose-sm max-w-none" />
+</div>
                                                            </div>
                                                            <SpeakButton text={fullQuestionText} className="shrink-0" settings={settings} />
                                                        </div>
@@ -1509,7 +1527,25 @@ export const LessonView: React.FC<Props> = ({
                                        <div className="flex justify-between items-start mb-4 gap-3">
                                            <div className="font-bold text-slate-800 flex gap-3 leading-relaxed flex-1">
                                                <span className="bg-blue-100 text-blue-700 w-6 h-6 rounded-full flex items-center justify-center text-xs shrink-0 font-bold mt-0.5">{idx + 1}</span>
-                                               <div dangerouslySetInnerHTML={{ __html: renderMathInHtml(q.question) }} className="prose prose-sm max-w-none" />
+                                               <div>
+<div className="mb-2 flex flex-wrap items-center gap-2">
+    {q.difficultyLevel && (
+        <span className={`text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider ${
+            q.difficultyLevel.toLowerCase().includes('easy') ? 'bg-green-100 text-green-700' :
+            q.difficultyLevel.toLowerCase().includes('medium') ? 'bg-yellow-100 text-yellow-700' :
+            'bg-red-100 text-red-700'
+        }`}>
+            {q.difficultyLevel}
+        </span>
+    )}
+    {q.topic && (
+        <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-blue-50 text-blue-600 uppercase tracking-wider">
+            {q.topic}
+        </span>
+    )}
+</div>
+<div dangerouslySetInnerHTML={{ __html: renderMathInHtml(q.question) }} className="prose prose-sm max-w-none" />
+</div>
                                            </div>
                                            <SpeakButton
                                                text={fullQuestionText}
@@ -1656,7 +1692,20 @@ export const LessonView: React.FC<Props> = ({
                                         <span className={`w-6 h-6 flex-shrink-0 rounded-full flex items-center justify-center text-xs font-bold ${isCorrect ? 'bg-green-100 text-green-700' : isAnswered ? 'bg-red-100 text-red-700' : 'bg-slate-100 text-slate-500'}`}>
                                             {idx + 1}
                                         </span>
-                                        <div className="font-bold text-slate-800 text-sm" dangerouslySetInnerHTML={{ __html: renderMathInHtml(q.question) }}></div>
+                                        <div>
+    <div className="mb-1 flex flex-wrap items-center gap-1">
+        {q.difficultyLevel && (
+            <span className={`text-[8px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider ${
+                q.difficultyLevel.toLowerCase().includes('easy') ? 'bg-green-100 text-green-700' :
+                q.difficultyLevel.toLowerCase().includes('medium') ? 'bg-yellow-100 text-yellow-700' :
+                'bg-red-100 text-red-700'
+            }`}>
+                {q.difficultyLevel}
+            </span>
+        )}
+    </div>
+    <div className="font-bold text-slate-800 text-sm" dangerouslySetInnerHTML={{ __html: renderMathInHtml(q.question) }}></div>
+</div>
                                     </div>
                                     <div className="ml-9 space-y-1 mb-2">
                                         {q.options.map((opt, oIdx) => {

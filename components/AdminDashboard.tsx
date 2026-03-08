@@ -2322,8 +2322,7 @@ const AdminDashboardInner: React.FC<Props> = ({ onNavigate, settings, onUpdateSe
               let rawText = importText.trim();
               const newTopicNotes: typeof topicNotes = [];
 
-              // 1. EXTRACT NOTES BLOCKS
-              // Regex to find <NOTE: Topic> Content </NOTE>
+            // 1. EXTRACT EXPLICIT NOTES BLOCKS (<NOTE: Topic> ... </NOTE>)
               const noteRegex = /<NOTE:\s*(.*?)>([\s\S]*?)<\/NOTE>/gi;
               let match;
               while ((match = noteRegex.exec(rawText)) !== null) {
@@ -2341,14 +2340,37 @@ const AdminDashboardInner: React.FC<Props> = ({ onNavigate, settings, onUpdateSe
                   }
               }
 
+            // 1.5 EXTRACT IMPLICIT HTML BLOCKS
+            let textForMcq = rawText.replace(noteRegex, "");
+
+            // Matches any standalone HTML blocks starting with <h...> and ending before the next question marker
+            const implicitHtmlRegex = /(?:^|\n\n)(<h[1-6]>[\s\S]*?)(?=\n\n(?:❓|Question|🔥|📖)|\Z)/gi;
+            let htmlMatch;
+            while ((htmlMatch = implicitHtmlRegex.exec(textForMcq)) !== null) {
+                const htmlContent = htmlMatch[1].trim();
+                if (htmlContent) {
+                    // Try to extract a title from the first <h1>-<h6> tag
+                    let title = "Html Note";
+                    const titleMatch = htmlContent.match(/<h[1-6]>(.*?)<\/h[1-6]>/i);
+                    if (titleMatch) title = titleMatch[1].replace(/<[^>]+>/g, '').trim();
+
+                    newTopicNotes.push({
+                        id: `note-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+                        title: title,
+                        topic: title,
+                        content: htmlContent,
+                        isPremium: false
+                    });
+                }
+            }
+
               // Update Topic Notes State
               if (newTopicNotes.length > 0) {
                   setTopicNotes(prev => [...prev, ...newTopicNotes]);
               }
 
-              // 2. REMOVE NOTES FROM TEXT TO PARSE MCQs
-              // Note: We deliberately handle this to avoid parsing Note content as questions.
-              const textForMcq = rawText.replace(noteRegex, "");
+            // 2. REMOVE IMPLICIT HTML FROM TEXT TO PARSE MCQs
+            textForMcq = textForMcq.replace(implicitHtmlRegex, "\n\n");
 
               // 3. PARSE MCQs (Reusing robust logic applied to cleaned text)
               let newQuestions: MCQItem[] = [];

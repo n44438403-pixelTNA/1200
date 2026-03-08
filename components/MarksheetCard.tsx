@@ -774,9 +774,13 @@ export const MarksheetCard: React.FC<Props> = ({ result, user, settings, onClose
                                                               );
                                                           })}
                                                       </div>
-                                                      <div className="p-2 bg-blue-50 rounded text-blue-800 italic text-[10px]">
-                                                          <span className="font-bold not-italic">Explanation: </span>
-                                                          <span dangerouslySetInnerHTML={{__html: renderMathInHtml(q.explanation || 'Not available')}} />
+                                                      <div className="flex flex-col gap-2 mt-3 p-3 bg-blue-50/50 rounded-xl border border-blue-100 text-[11px]">
+                                                          {q.concept && <div><span className="font-bold text-indigo-700">💡 Concept:</span> <span dangerouslySetInnerHTML={{ __html: renderMathInHtml(q.concept) }}></span></div>}
+                                                          {q.explanation && <div><span className="font-bold text-blue-700">🔎 Explanation:</span> <span dangerouslySetInnerHTML={{ __html: renderMathInHtml(q.explanation) }}></span></div>}
+                                                          {q.examTip && <div><span className="font-bold text-amber-700">🎯 Exam Tip:</span> <span dangerouslySetInnerHTML={{ __html: renderMathInHtml(q.examTip) }}></span></div>}
+                                                          {q.commonMistake && <div><span className="font-bold text-red-700">⚠ Common Mistake:</span> <span dangerouslySetInnerHTML={{ __html: renderMathInHtml(q.commonMistake) }}></span></div>}
+                                                          {q.mnemonic && <div><span className="font-bold text-purple-700">🧠 Memory Trick:</span> <span dangerouslySetInnerHTML={{ __html: renderMathInHtml(q.mnemonic) }}></span></div>}
+                                                          {q.difficultyLevel && <div><span className="font-bold text-slate-700">📊 Difficulty:</span> <span>{q.difficultyLevel}</span></div>}
                                                       </div>
                                                       <div className="mt-2 text-right">
                                                           <SpeakButton
@@ -1255,7 +1259,18 @@ export const MarksheetCard: React.FC<Props> = ({ result, user, settings, onClose
                             if (!access.hasAccess) return null;
                             return (
                                 <button onClick={() => setActiveTab('SOLUTION')} className={`px-4 py-2 text-xs font-bold rounded-t-lg border-b-2 transition-colors whitespace-nowrap ${activeTab === 'SOLUTION' ? 'border-indigo-600 text-indigo-600 bg-indigo-50' : 'border-transparent text-slate-500 hover:bg-slate-50'}`}>
-                                    <FileSearch size={14} className="inline mr-1 mb-0.5" /> Analysis
+                                    <FileSearch size={14} className="inline mr-1 mb-0.5" /> Topic Analysis
+                                </button>
+                            );
+                        })()}
+
+                        {/* Detailed Solutions Tab */}
+                        {(() => {
+                            const access = checkFeatureAccess('MS_ANALYSIS', user, settings || {});
+                            if (!access.hasAccess) return null;
+                            return (
+                                <button onClick={() => setActiveTab('DETAILED_SOLUTIONS')} className={`px-4 py-2 text-xs font-bold rounded-t-lg border-b-2 transition-colors whitespace-nowrap ${activeTab === 'DETAILED_SOLUTIONS' ? 'border-indigo-600 text-indigo-600 bg-indigo-50' : 'border-transparent text-slate-500 hover:bg-slate-50'}`}>
+                                    <BrainCircuit size={14} className="inline mr-1 mb-0.5" /> Detailed Solutions
                                 </button>
                             );
                         })()}
@@ -1296,11 +1311,15 @@ export const MarksheetCard: React.FC<Props> = ({ result, user, settings, onClose
 
                 {activeTab === 'SOLUTION' && isAnalysisUnlocked && (
                     <div className="animate-in slide-in-from-bottom-4">
-                        {/* NEW: Granular Analysis View (Default) */}
+                        {/* Topic-wise Granular Analysis View */}
                         <div className="mb-8">
                             {renderGranularAnalysis()}
                         </div>
+                    </div>
+                )}
 
+                {activeTab === 'DETAILED_SOLUTIONS' && isAnalysisUnlocked && (
+                    <div className="animate-in slide-in-from-bottom-4">
                         {questions && questions.length > 0 ? (
                             <div className="space-y-6">
                                 {questions.map((q, idx) => {
@@ -1331,12 +1350,8 @@ export const MarksheetCard: React.FC<Props> = ({ result, user, settings, onClose
                                                     })}
                                                 </div>
                                             )}
-                                            <div className="p-4 bg-blue-50 border-t border-blue-100 flex flex-col gap-2">
-                                                {q.concept && <div><span className="font-bold text-indigo-700">Concept:</span> <span dangerouslySetInnerHTML={{ __html: renderMathInHtml(q.concept) }}></span></div>}
+                                            <div className="p-4 bg-blue-50 border-t border-blue-100 flex flex-col gap-2 text-sm">
                                                 {q.explanation && <div><span className="font-bold text-blue-700">Explanation:</span> <span dangerouslySetInnerHTML={{ __html: renderMathInHtml(q.explanation) }}></span></div>}
-                                                {q.examTip && <div><span className="font-bold text-amber-700">Exam Tip:</span> <span dangerouslySetInnerHTML={{ __html: renderMathInHtml(q.examTip) }}></span></div>}
-                                                {q.commonMistake && <div><span className="font-bold text-red-700">Common Mistake:</span> <span dangerouslySetInnerHTML={{ __html: renderMathInHtml(q.commonMistake) }}></span></div>}
-                                                {q.mnemonic && <div><span className="font-bold text-purple-700">Memory Trick:</span> <span dangerouslySetInnerHTML={{ __html: renderMathInHtml(q.mnemonic) }}></span></div>}
                                             </div>
                                         </div>
                                     );

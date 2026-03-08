@@ -2212,7 +2212,7 @@ const App: React.FC = () => {
       )}
       
       {/* GLOBAL LIVE DASHBOARD 1 (TOP) */}
-      {state.settings.bannerConfig?.top?.enabled && showTopBanner && (
+      {state.settings.bannerConfig?.top?.enabled && showTopBanner state.view === 'ADMIN_DASHBOARD' && (
           <div
             className="text-[10px] font-bold py-1 overflow-hidden relative whitespace-nowrap z-50 transition-all duration-500 ease-in-out"
             style={{

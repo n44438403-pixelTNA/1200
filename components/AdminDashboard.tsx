@@ -53,7 +53,7 @@ const DEFAULT_ULTRA_FEATURES = [
     'Spin Wheel (10 Spins/Day)'
 ];
 
-const QUESTION_START_REGEX = /^(?:[\uD83D\uDCD8\u2753]\s*\*\*Question.*\*\*|\*\*Question.*\*\*|📘\s*\*\*Question.*|❓\s*\*\*Question.*|Q\s*\d+[.:)]?|Question\s*\d+[.:)]?)\s*/i;
+const QUESTION_START_REGEX = /^(?:[\uD83D\uDCD8]\s*\*\*Question.*\*\*|\*\*Question.*\*\*|📘\s*\*?\*?Question.*|Q\s*\d+[.:)]?|Question\s*\d+[.:)]?)\s*/i;
 
 const looksLikeQuestionBlock = (lines: string[], index: number): boolean => {
     // If it explicitly matches the strong question regex, we don't even need this fallback,
@@ -2250,6 +2250,36 @@ const AdminDashboardInner: React.FC<Props> = ({ onNavigate, settings, onUpdateSe
               let explanation = expLines.join('\n').trim();
               explanation = explanation.replace(/^\*\*/, '').replace(/^(Explanation|Exp|व्याख्या)\s*[:\s-]*(\*\*)?\s*/i, '').replace(/^\*\*/, '').trim();
 
+                              // Search forward to find 'Options:' and 'Correct Answer:' to make parsing line-break agnostic.
+                              let optStartIdx = i + qOffset + 1;
+                              while (optStartIdx < lines.length && !/^[A-D1-4a-d][.)]|Options:/i.test(lines[optStartIdx])) {
+                                  optStartIdx++;
+                              }
+                              if (lines[optStartIdx] && /Options:/i.test(lines[optStartIdx])) {
+                                  optStartIdx++; // Skip the 'Options:' header
+                              }
+
+                              const opts = [lines[optStartIdx], lines[optStartIdx+1], lines[optStartIdx+2], lines[optStartIdx+3]];
+
+                              let ansStartIdx = optStartIdx + 4;
+                              while (ansStartIdx < lines.length && !/^(?:✅\s*)?\*?\*?(Answer|Ans|Correct|Correct Answer|उत्तर)\*?\*?\s*[:\s-]*\s*/i.test(lines[ansStartIdx])) {
+                                  ansStartIdx++;
+                              }
+
+                              let ansLine = lines[ansStartIdx];
+                              let expStartIdx = ansStartIdx + 1;
+                              if (ansLine && /^(?:✅\s*)?\*?\*?(Answer|Ans|Correct|Correct Answer|उत्तर)\*?\*?\s*[:\s-]*\s*$/i.test(ansLine)) {
+                                  // The actual answer is on the next line
+                                  ansStartIdx++;
+                                  ansLine = lines[ansStartIdx];
+                                  expStartIdx++;
+                              }
+
+                              const ansOffset = expStartIdx - i - 6;
+                          ansLine = ansLine.replace(/^\*\*|\*\*$/g, '');
+                          let ansRaw = ansLine.replace(/^(Answer|Ans|Correct|उत्तर)\s*[:\s-]*\s*/i, '').trim();
+
+
               let topic = '';
               const inlineTopicMatch = explanation.match(/Topic:\s*(.*)/i);
               if (inlineTopicMatch) {
@@ -2354,7 +2384,173 @@ const AdminDashboardInner: React.FC<Props> = ({ onNavigate, settings, onUpdateSe
               let newQuestions: MCQItem[] = [];
 
               if (textForMcq.trim().length > 0) {
+
                   newQuestions = parseMCQTextRobust(textForMcq);
+
+                  // MODE A: Tab-Separated
+                  if (textForMcq.includes('\t')) {
+                      const rows = textForMcq.split('\n').filter(r => r.trim());
+                      newQuestions = rows.map((row, idx) => {
+                          let cols = row.split('\t');
+                          if (cols.length < 3 && row.includes(',')) cols = row.split(',');
+                          cols = cols.map(c => c.trim());
+                          if (cols.length < 6) return null;
+
+                          let ansIdx = parseInt(cols[5]) - 1;
+                          if (isNaN(ansIdx)) {
+                              const map: any = { 'A': 0, 'B': 1, 'C': 2, 'D': 3, 'a': 0, 'b': 1, 'c': 2, 'd': 3 };
+                              if (map[cols[5]] !== undefined) ansIdx = map[cols[5]];
+                          }
+
+                          let topic = '';
+                          if (cols.length > 7) topic = cols[7];
+
+                          return {
+                              question: cols[0],
+                              options: [cols[1], cols[2], cols[3], cols[4]],
+                              correctAnswer: (ansIdx >= 0 && ansIdx <= 3) ? ansIdx : 0,
+                              explanation: cols[6] || '',
+                              topic: topic
+                          };
+                      }).filter(q => q !== null) as MCQItem[];
+                  }
+                  // MODE B: Vertical Block (Improved Robustness)
+                  else {
+                      const lines = textForMcq.split('\n').map(l => l.trim()).filter(l => l);
+                      let i = 0;
+                      let currentGlobalTopic = '';
+
+                      while (i < lines.length) {
+                          const line = lines[i];
+
+                          // 1. CHECK FOR TOPIC TAG
+                          const topicTagMatch = line.match(/^<TOPIC:\s*(.*?)>/i);
+                          if (topicTagMatch) {
+                              currentGlobalTopic = topicTagMatch[1].trim();
+                              i++;
+                              continue;
+                          }
+
+                          // 2. CHECK FOR QUESTION START
+                          const isQuestionStart = QUESTION_START_REGEX.test(line) || looksLikeQuestionBlock(lines, i);
+
+                          if (isQuestionStart) {
+                              // Needs at least Q + 4 Options + Ans = 6 lines remaining
+                              if (i + 5 >= lines.length) break;
+
+                              // Clean Question Text (Remove Markdown ** if present)
+                              let qLine = line;
+                              let qOffset = 0;
+
+                              // If we matched the 📘 header, the actual question text is usually a few lines down marked with ❓
+                              if (/📘/.test(line)) {
+                                  for (let j = 1; j <= 4; j++) {
+                                      if (i + j < lines.length && /❓/.test(lines[i+j])) {
+                                          qLine = lines[i+j];
+                                          qOffset = j;
+                                          break;
+                                      }
+                                  }
+                              }
+
+                              const q = qLine.replace(/^\*\*|\*\*$/g, '').replace(/^(?:❓\s*\*?\*?Question:\*?\*?\s*)/i, '').trim();
+
+                              // Search forward to find 'Options:' and 'Correct Answer:' to make parsing line-break agnostic.
+                              let optStartIdx = i + qOffset + 1;
+                              while (optStartIdx < lines.length && !/^[A-D1-4a-d][.)]|Options:/i.test(lines[optStartIdx])) {
+                                  optStartIdx++;
+                              }
+                              if (lines[optStartIdx] && /Options:/i.test(lines[optStartIdx])) {
+                                  optStartIdx++; // Skip the 'Options:' header
+                              }
+
+                              const opts = [lines[optStartIdx], lines[optStartIdx+1], lines[optStartIdx+2], lines[optStartIdx+3]];
+
+                              let ansStartIdx = optStartIdx + 4;
+                              while (ansStartIdx < lines.length && !/^(?:✅\s*)?\*?\*?(Answer|Ans|Correct|Correct Answer|उत्तर)\*?\*?\s*[:\s-]*\s*/i.test(lines[ansStartIdx])) {
+                                  ansStartIdx++;
+                              }
+
+                              let ansLine = lines[ansStartIdx];
+                              let expStartIdx = ansStartIdx + 1;
+                              if (ansLine && /^(?:✅\s*)?\*?\*?(Answer|Ans|Correct|Correct Answer|उत्तर)\*?\*?\s*[:\s-]*\s*$/i.test(ansLine)) {
+                                  // The actual answer is on the next line
+                                  ansStartIdx++;
+                                  ansLine = lines[ansStartIdx];
+                                  expStartIdx++;
+                              }
+
+                              const ansOffset = expStartIdx - i - 6;
+                              // Remove ** wrapper
+                              if(ansLine) ansLine = ansLine.replace(/^\*\*|\*\*$/g, '');
+                              // Remove Label
+                              let ansRaw = ansLine ? ansLine.replace(/^(?:✅\s*)?\*?\*?(Answer|Ans|Correct|Correct Answer|उत्तर)\*?\*?\s*[:\s-]*\s*/i, '').trim() : 'A';
+
+                              // Flexible Answer Parsing
+                              let ansIdx = -1;
+                              if (/^\d+$/.test(ansRaw)) {
+                                  ansIdx = parseInt(ansRaw) - 1;
+                              } else {
+                                  // Extract first letter (A, B, C, D)
+                                  const firstChar = ansRaw.charAt(0).toUpperCase();
+                                  const map: any = { 'A': 0, 'B': 1, 'C': 2, 'D': 3 };
+                                  if (map[firstChar] !== undefined) ansIdx = map[firstChar];
+                              }
+                              // Default to 0 (A) if parsing fails
+                              if (ansIdx < 0 || ansIdx > 3) ansIdx = 0;
+
+                              // Parse Explanation (Optional lines until next Q/Topic)
+                              let expLines = [];
+                              let nextIndex = i + ansOffset + 6;
+
+                              while (nextIndex < lines.length) {
+                                  const nextLine = lines[nextIndex];
+                                  const isNextTopic = /^<TOPIC:\s*(.*?)>/i.test(nextLine);
+                                  const isNextQ = QUESTION_START_REGEX.test(nextLine) || looksLikeQuestionBlock(lines, nextIndex);
+
+                                  if (isNextQ || isNextTopic) break;
+
+                                  expLines.push(nextLine);
+                                  nextIndex++;
+                              }
+
+                              let explanation = expLines.join('\n').trim();
+                              // Improved Explanation Parsing
+                              // 1. Remove leading **
+                              explanation = explanation.replace(/^\*\*/, '');
+                              // 2. Remove Label
+                              explanation = explanation.replace(/^(Explanation|Exp|व्याख्या)\s*[:\s-]*(\*\*)?\s*/i, '');
+                              // 3. Remove leading ** again if left
+                              explanation = explanation.replace(/^\*\*/, '').trim();
+
+                              // Parse Inline Topic (if any) overrides global
+                              let topic = '';
+                              const inlineTopicMatch = explanation.match(/Topic:\s*(.*)/i);
+                              if (inlineTopicMatch) {
+                                  topic = inlineTopicMatch[1].trim();
+                                  explanation = explanation.replace(/Topic:\s*.*$/im, '').trim();
+                              }
+
+                              newQuestions.push({
+                                  question: q,
+                                  options: opts,
+                                  correctAnswer: ansIdx,
+                                  explanation: explanation || '',
+                                  concept: concept,
+                                  examTip: examTip,
+                                  commonMistake: commonMistake,
+                                  mnemonic: memoryTrick,
+                                  difficultyLevel: difficultyLevel,
+                                  topic: topic || currentGlobalTopic
+                              });
+
+                              i = nextIndex;
+                          } else {
+                              i++;
+                          }
+                      }
+                  }
+
               }
 
               if (newQuestions.length > 0) {

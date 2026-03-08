@@ -1425,7 +1425,7 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
 
   return (
 
-    <div className={`min-h-screen bg-slate-50 pb-[80px] ${!isStudyMode ? 'pt-[74px] px-2.5' : ''}`}>
+    <div className={`min-h-screen bg-slate-50 pb-[80px] ${!isStudyMode ? 'pt-[74px] px-2' : ''}`}>
 
         {/* GLOBAL HEADER DESIGN (Visible on all dashboard tabs) */}
         {!isStudyMode && (

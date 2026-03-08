@@ -888,7 +888,7 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
       // 1. HOME TAB
       if (activeTab === 'HOME') {
           return (
-              <div className="space-y-4 pb-24">
+              <div className="space-y-4 pb-12">
                 {/* PERFORMANCE GRAPH */}
                 <DashboardSectionWrapper id="section_performance" label="Performance" settings={settings} isLayoutEditing={isLayoutEditing} onToggleVisibility={toggleLayoutVisibility}>
                     <PerformanceGraph
@@ -1085,7 +1085,7 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
       // if (activeTab === 'REWARDS') return (...); // REMOVED TO PREVENT CRASH
       if (activeTab === 'STORE') return <Store user={user} settings={settings} onUserUpdate={handleUserUpdate} />;
       if (activeTab === 'PROFILE') return (
-                <div className="animate-in fade-in zoom-in duration-300 pb-24">
+                <div className="animate-in fade-in zoom-in duration-300 pb-12">
                     <div className={`rounded-3xl p-8 text-center text-slate-800 mb-6 shadow-sm border border-slate-200 relative overflow-hidden transition-all duration-500 ${
                         user.subscriptionLevel === 'ULTRA' && user.isPremium
                         ? 'bg-gradient-to-br from-slate-200 via-slate-100 to-slate-300 shadow-amber-500/10 ring-2 ring-amber-200/50'
@@ -1435,7 +1435,7 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
 
   return (
 
-    <div className={`min-h-screen bg-slate-50 pb-[100px] ${!isStudyMode ? 'pt-[105px] px-4' : ''}`}>
+    <div className={`min-h-screen bg-slate-50 pb-[80px] ${!isStudyMode ? 'pt-[105px] px-4' : ''}`}>
 
         {/* GLOBAL HEADER DESIGN (Visible on all dashboard tabs) */}
         {!isStudyMode && (
@@ -1869,7 +1869,7 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
         )}
 
         {/* MAIN CONTENT AREA */}
-        <div className="p-4 relative pb-24">
+        <div className="p-4 relative pb-12">
             {renderMainContent()}
 
             {settings?.showFooter !== false && activeTab !== 'REVISION' && (

@@ -11,3 +11,5 @@ Port 5000 is in use, trying another one...
   ➜  Network: http://192.168.0.2:5001/
 [BABEL] Note: The code generator has deoptimised the styling of /app/components/AdminDashboard.tsx as it exceeds the max of 500KB.
 2:45:34 AM [vite] (client) hmr update /components/StudentDashboard.tsx
+2:53:25 AM [vite] (client) hmr update /components/StudentDashboard.tsx
+2:53:36 AM [vite] (client) hmr update /components/StudentDashboard.tsx

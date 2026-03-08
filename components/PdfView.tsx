@@ -1,3 +1,4 @@
+import { safeSetLocalStorage } from '../utils/safeStorage';
 import React, { useState, useEffect, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkMath from 'remark-math';
@@ -656,7 +657,7 @@ export const PdfView: React.FC<Props> = ({
 
           let updatedUser = { ...user, credits: user.credits - price };
           if (enableAuto) updatedUser.isAutoDeductEnabled = true;
-          localStorage.setItem('nst_current_user', JSON.stringify(updatedUser));
+          safeSetLocalStorage('nst_current_user', JSON.stringify(updatedUser));
           saveUserToLive(updatedUser);
           onUpdateUser(updatedUser);
 
@@ -668,7 +669,7 @@ export const PdfView: React.FC<Props> = ({
       let updatedUser = { ...user, credits: user.credits - price };
       if (enableAuto) updatedUser.isAutoDeductEnabled = true;
       
-      localStorage.setItem('nst_current_user', JSON.stringify(updatedUser));
+      safeSetLocalStorage('nst_current_user', JSON.stringify(updatedUser));
       saveUserToLive(updatedUser);
       onUpdateUser(updatedUser);
       

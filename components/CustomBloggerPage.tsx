@@ -1,3 +1,4 @@
+import { safeSetLocalStorage } from '../utils/safeStorage';
 import React, { useEffect, useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { rtdb } from '../firebase';
@@ -23,7 +24,7 @@ export const CustomBloggerPage: React.FC<Props> = ({ onBack }) => {
         const data = snapshot.val();
         if (data) {
             setContent(data);
-            localStorage.setItem('nst_custom_blogger_page', data);
+            safeSetLocalStorage('nst_custom_blogger_page', data);
         }
     });
 

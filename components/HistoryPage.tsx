@@ -1,3 +1,4 @@
+import { safeSetLocalStorage } from '../utils/safeStorage';
 import React, { useState, useEffect, useMemo } from 'react';
 import { LessonContent, User, SystemSettings, UsageHistoryEntry, MCQResult } from '../types';
 import { BookOpen, Calendar, ChevronDown, ChevronUp, Trash2, Search, FileText, CheckCircle2, Lock, AlertCircle, Folder } from 'lucide-react';
@@ -110,7 +111,7 @@ export const HistoryPage: React.FC<Props> = ({ user, onUpdateUser, settings }) =
       if (cost > 0) {
           const updatedUser: any = { ...user, credits: user.credits - cost };
           onUpdateUser(updatedUser);
-          localStorage.setItem('nst_current_user', JSON.stringify(updatedUser));
+          safeSetLocalStorage('nst_current_user', JSON.stringify(updatedUser));
           saveUserToLive(updatedUser);
       }
 

@@ -1,3 +1,4 @@
+import { safeSetLocalStorage } from '../utils/safeStorage';
 import React, { useState, useEffect } from 'react';
 import { Chapter, ContentType, User, Subject, Board, ClassLevel, Stream, SystemSettings } from '../types';
 import { Crown, BookOpen, Lock, X, HelpCircle, FileText, Video, PlayCircle, ArrowLeft, Loader2, Sparkles, CheckCircle, Zap } from 'lucide-react';
@@ -59,7 +60,7 @@ export const PremiumModal: React.FC<Props> = ({ chapter, user, credits, isAdmin,
   const handleClose = () => {
       // Record timestamp if not subscribed, to trigger potential "Abandonment Discount" later
       if (!user.isPremium) {
-          localStorage.setItem('nst_store_last_visit', Date.now().toString());
+          safeSetLocalStorage('nst_store_last_visit', Date.now().toString());
       }
       onClose();
   };

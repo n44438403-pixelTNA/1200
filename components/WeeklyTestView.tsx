@@ -1,3 +1,4 @@
+import { safeSetLocalStorage } from '../utils/safeStorage';
 
 import React, { useState, useEffect, useRef } from 'react';
 import { WeeklyTest, MCQItem } from '../types';
@@ -54,7 +55,7 @@ export const WeeklyTestView: React.FC<Props> = ({ test, onComplete, onExit }) =>
     
     if (!startTime) {
       startTime = Date.now().toString();
-      localStorage.setItem(STORAGE_KEY, startTime);
+      safeSetLocalStorage(STORAGE_KEY, startTime);
     }
     
     const elapsedSeconds = Math.floor((Date.now() - parseInt(startTime)) / 1000);

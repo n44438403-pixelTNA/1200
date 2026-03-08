@@ -1,3 +1,4 @@
+import { safeSetLocalStorage } from '../utils/safeStorage';
 
 import React, { useState, useEffect } from 'react';
 import { Chapter, User, Subject, SystemSettings, MCQResult, PerformanceTag } from '../types';
@@ -218,7 +219,7 @@ export const McqView: React.FC<Props> = ({
               message: `Start Premium Test for ${cost} Coins?\nIncludes Instant Explanations & TTS.`,
               onConfirm: () => {
                   const updatedUser = { ...user, credits: user.credits - cost };
-                  localStorage.setItem('nst_current_user', JSON.stringify(updatedUser));
+                  safeSetLocalStorage('nst_current_user', JSON.stringify(updatedUser));
                   saveUserToLive(updatedUser);
                   onUpdateUser(updatedUser);
                   setConfirmConfig(prev => ({...prev, isOpen: false}));
@@ -520,7 +521,7 @@ export const McqView: React.FC<Props> = ({
 
       // 5. Save & Sync
       onUpdateUser(updatedUser); 
-      localStorage.setItem('nst_current_user', JSON.stringify(updatedUser));
+      safeSetLocalStorage('nst_current_user', JSON.stringify(updatedUser));
       saveUserToLive(updatedUser);
       
       // 6. Save detailed attempt to Legacy Local History & Firebase (Only attempted questions)
@@ -540,7 +541,7 @@ export const McqView: React.FC<Props> = ({
       const existingHistoryStr = localStorage.getItem('nst_user_history');
       let history = existingHistoryStr ? JSON.parse(existingHistoryStr) : [];
       history.push(newHistoryItem);
-      localStorage.setItem('nst_user_history', JSON.stringify(history));
+      safeSetLocalStorage('nst_user_history', JSON.stringify(history));
 
       // Sync to Firebase (with Offline Fallback)
       try {
@@ -553,7 +554,7 @@ export const McqView: React.FC<Props> = ({
           console.log("Offline or Error saving history. Queuing for sync.");
           const pending = JSON.parse(localStorage.getItem('nst_pending_sync_results') || '[]');
           pending.push({ userId: user.id, data: newHistoryItem, type: 'HISTORY' });
-          localStorage.setItem('nst_pending_sync_results', JSON.stringify(pending));
+          safeSetLocalStorage('nst_pending_sync_results', JSON.stringify(pending));
       }
 
       if (leveledUp) {
@@ -598,7 +599,7 @@ export const McqView: React.FC<Props> = ({
                   message: `Unlock answers & mistakes for ${cost} Coins?`,
                   onConfirm: () => {
                       const updatedUser = { ...user, credits: user.credits - cost };
-                      localStorage.setItem('nst_current_user', JSON.stringify(updatedUser));
+                      safeSetLocalStorage('nst_current_user', JSON.stringify(updatedUser));
                       saveUserToLive(updatedUser);
                       onUpdateUser(updatedUser);
                       setConfirmConfig(prev => ({...prev, isOpen: false}));
@@ -656,7 +657,7 @@ export const McqView: React.FC<Props> = ({
           onConfirm: () => {
               // Deduct Credits
               const updatedUser = { ...user, credits: user.credits - cost };
-              localStorage.setItem('nst_current_user', JSON.stringify(updatedUser));
+              safeSetLocalStorage('nst_current_user', JSON.stringify(updatedUser));
               saveUserToLive(updatedUser);
               onUpdateUser(updatedUser);
 

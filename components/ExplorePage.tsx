@@ -1,3 +1,4 @@
+import { safeSetLocalStorage } from '../utils/safeStorage';
 import React, { useState, useEffect } from 'react';
 import { User, SystemSettings, WeeklyTest, Challenge20, StudentTab } from '../types';
 import { BannerCarousel } from './BannerCarousel';
@@ -78,7 +79,7 @@ export const ExplorePage: React.FC<Props> = ({ user, settings, onTabChange, onSt
                      if (logs.length > 0) {
                          try {
                              await generateMorningInsight(logs, settings, (banner) => {
-                                 localStorage.setItem('nst_morning_banner', JSON.stringify(banner));
+                                 safeSetLocalStorage('nst_morning_banner', JSON.stringify(banner));
                                  setMorningBanner(banner);
                              });
                          } catch(e) {}

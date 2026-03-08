@@ -1,3 +1,4 @@
+import { safeSetLocalStorage } from '../utils/safeStorage';
 import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Bell } from 'lucide-react';
 import { ref, query, limitToLast, onValue } from 'firebase/database';
@@ -12,7 +13,7 @@ export const UniversalInfoPage: React.FC<Props> = ({ onBack }) => {
 
     useEffect(() => {
         // Mark as read
-        localStorage.setItem('nst_last_read_update', Date.now().toString());
+        safeSetLocalStorage('nst_last_read_update', Date.now().toString());
 
         const q = query(ref(rtdb, 'universal_updates'), limitToLast(50));
         const unsubscribe = onValue(q, (snapshot) => {

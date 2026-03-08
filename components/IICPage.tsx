@@ -1,3 +1,4 @@
+import { safeSetLocalStorage } from '../utils/safeStorage';
 import React, { useState, useEffect } from 'react';
 import { IICPost, User } from '../types';
 import { Image as ImageIcon, Video, Type, Send, Trash2, Calendar, User as UserIcon, Upload, Link } from 'lucide-react';
@@ -71,7 +72,7 @@ export const IICPage: React.FC<Props> = ({ user, onBack }) => {
 
       const updatedPosts = [newPost, ...posts];
       setPosts(updatedPosts);
-      localStorage.setItem('nst_iic_posts', JSON.stringify(updatedPosts));
+      safeSetLocalStorage('nst_iic_posts', JSON.stringify(updatedPosts));
       
       // Reset Form
       setTitle('');
@@ -87,7 +88,7 @@ export const IICPage: React.FC<Props> = ({ user, onBack }) => {
           onConfirm: () => {
               const updated = posts.filter(p => p.id !== id);
               setPosts(updated);
-              localStorage.setItem('nst_iic_posts', JSON.stringify(updated));
+              safeSetLocalStorage('nst_iic_posts', JSON.stringify(updated));
           }
       });
   };

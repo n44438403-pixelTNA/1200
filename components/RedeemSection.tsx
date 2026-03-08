@@ -1,3 +1,4 @@
+import { safeSetLocalStorage } from '../utils/safeStorage';
 import React, { useState } from 'react';
 import { Gift, ArrowRight, AlertCircle, CheckCircle } from 'lucide-react';
 import { User, SystemSettings, SubscriptionHistoryEntry } from '../types';
@@ -213,10 +214,10 @@ export const RedeemSection: React.FC<Props> = ({ user, onSuccess }) => {
             const userIdx = allUsers.findIndex(u => u.id === user.id);
             if (userIdx !== -1) {
                 allUsers[userIdx] = updatedUser;
-                localStorage.setItem('nst_users', JSON.stringify(allUsers));
+                safeSetLocalStorage('nst_users', JSON.stringify(allUsers));
             }
         }
-        localStorage.setItem('nst_current_user', JSON.stringify(updatedUser));
+        safeSetLocalStorage('nst_current_user', JSON.stringify(updatedUser));
         await saveUserToLive(updatedUser); 
 
         setStatus('SUCCESS');

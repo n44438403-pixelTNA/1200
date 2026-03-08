@@ -53,19 +53,30 @@ const DEFAULT_ULTRA_FEATURES = [
     'Spin Wheel (10 Spins/Day)'
 ];
 
-const QUESTION_START_REGEX = /^(\*\*)?(Q\s*\d+[.:)]?|\d+[.:)]|Question\s*\d+[.:)]?)(\*\*)?\s*/i;
+const QUESTION_START_REGEX = /^(?:📘\s*)?(\*\*)?(Q\s*\d+[.:)]?|\d+[.:)]|Question\s*\d+[.:)]?)(\*\*)?\s*/i;
+
+// New pattern to catch headers that look like questions but might not strictly start with 'Q'
+// e.g. "📘 **Question 1**" where there might be a trailing **
+const ADVANCED_QUESTION_START_REGEX = /^(?:📘\s*)?(\*\*)?(Question\s*\d+|Q\s*\d+|\d+)(?:\s*.*)?(\*\*)?\s*$/i;
 
 const looksLikeQuestionBlock = (lines: string[], index: number): boolean => {
-    // Check if line index + 5 (Answer line) exists
-    if (index + 5 >= lines.length) return false;
+    // We don't just check +5 or +6 anymore because of variable lines like "Options:" or "PYQ Inspired"
+    // Instead we scan ahead up to 10 lines to see if we find a valid Answer block
+    for (let i = 1; i <= 10; i++) {
+        if (index + i >= lines.length) return false;
 
-    // Check Answer pattern on line index + 5
-    const ansLine = lines[index + 5];
-    // Remove Markdown Bolding (**Answer**) if present
-    const cleanAnsLine = ansLine.replace(/^\*\*|\*\*$/g, '');
+        const nextLine = lines[index + i];
+        if (QUESTION_START_REGEX.test(nextLine) || ADVANCED_QUESTION_START_REGEX.test(nextLine)) {
+            // Found another question before an answer, so this wasn't a valid block
+            return false;
+        }
 
-    // Check if it starts with Answer/Ans/Correct/उत्तर
-    return /^(Answer|Ans|Correct|उत्तर)\s*[:\s-]*\s*/i.test(cleanAnsLine);
+        const cleanLine = nextLine.replace(/^\*\*|\*\*$/g, '').trim();
+        if (/^(?:✅\s*)?(?:\*\*)?(Answer|Ans|Correct|उत्तर)(?:\s*Answer)?(?:\*\*)?\s*[:\s-]*\s*/i.test(cleanLine)) {
+            return true;
+        }
+    }
+    return false;
 };
 
 interface Props {
@@ -2136,61 +2147,170 @@ const AdminDashboardInner: React.FC<Props> = ({ onNavigate, settings, onUpdateSe
                       const line = lines[i];
                       
                       // Check for Question Start
-                      const isQuestionStart = QUESTION_START_REGEX.test(line) || looksLikeQuestionBlock(lines, i);
+                      const isQuestionStart = QUESTION_START_REGEX.test(line) || ADVANCED_QUESTION_START_REGEX.test(line) || looksLikeQuestionBlock(lines, i);
 
                       if (isQuestionStart) {
-                          if (i + 5 >= lines.length) break;
+                          // Sometimes the question is on the next line (e.g. "📘 **Question 1**\n❓ **Question:** text")
+                          let qLineIndex = i;
+                          let q = line.replace(/^\*\*|\*\*$/g, '');
 
-                          // Clean Question Text (Remove Markdown ** if present)
-                          const q = line.replace(/^\*\*|\*\*$/g, '');
+                          if (ADVANCED_QUESTION_START_REGEX.test(line) && i + 1 < lines.length) {
+                                // check if next line is topic, or pyq
+                                let j = i + 1;
+                                while(j < lines.length && (lines[j].match(/^(?:🔥\s*)?PYQ/i) || lines[j].match(/^(?:📖\s*)?Topic/i))) {
+                                    j++;
+                                }
+                                if(j < lines.length && lines[j].match(/^(?:❓\s*)?(?:\*\*)?Question/i)) {
+                                    q = lines[j].replace(/^(?:❓\s*)?(?:\*\*)?Question\s*:\s*(?:\*\*)?\s*/i, '').trim();
+                                    qLineIndex = j;
 
-                          const opts = [lines[i+1], lines[i+2], lines[i+3], lines[i+4]];
-
-                          let ansLine = lines[i+5];
-                          ansLine = ansLine.replace(/^\*\*|\*\*$/g, '');
-                          let ansRaw = ansLine.replace(/^(Answer|Ans|Correct|उत्तर)\s*[:\s-]*\s*/i, '').trim();
-
-                          let ansIdx = parseInt(ansRaw) - 1;
-                          if (isNaN(ansIdx)) {
-                              const firstChar = ansRaw.charAt(0).toUpperCase();
-                              const map: any = { 'A': 0, 'B': 1, 'C': 2, 'D': 3 };
-                              if (map[firstChar] !== undefined) ansIdx = map[firstChar];
-                          }
-                          if (ansIdx < 0 || ansIdx > 3) ansIdx = 0;
-
-                          let expLines = [];
-                          let nextIndex = i + 6;
-
-                          while (nextIndex < lines.length) {
-                              const line = lines[nextIndex];
-                              const isNewQuestion = QUESTION_START_REGEX.test(line) || looksLikeQuestionBlock(lines, nextIndex);
-                              if (isNewQuestion) break;
-                              expLines.push(line);
-                              nextIndex++;
+                                    // Handle case where question text is on the NEXT line after "Question:" label
+                                    if (!q && j + 1 < lines.length && !lines[j+1].match(/^Options:/i)) {
+                                        qLineIndex++;
+                                        q = lines[qLineIndex].replace(/^\*\*|\*\*$/g, '').trim();
+                                    }
+                                }
                           }
 
-                          let explanation = expLines.join('\n').trim();
-                          // Improved Explanation Parsing
-                          explanation = explanation.replace(/^\*\*/, '');
-                          explanation = explanation.replace(/^(Explanation|Exp|व्याख्या)\s*[:\s-]*(\*\*)?\s*/i, '');
-                          explanation = explanation.replace(/^\*\*/, '').trim();
+                          if (qLineIndex + 5 >= lines.length) break;
 
-                          let topic = '';
-                          const topicMatch = explanation.match(/Topic:\s*(.*)/i);
-                          if (topicMatch) {
-                              topic = topicMatch[1].trim();
-                              explanation = explanation.replace(/Topic:\s*.*$/im, '').trim();
+                          let nextIdx = qLineIndex + 1;
+                          if(lines[nextIdx].match(/^Options:/i)) {
+                              nextIdx++;
                           }
 
-                          newQuestions.push({
-                              question: q,
-                              options: opts,
-                              correctAnswer: ansIdx,
-                              explanation: explanation,
-                              topic: topic
-                          });
+                          if (nextIdx + 4 >= lines.length) break;
 
-                          i = nextIndex;
+                          const opts = [lines[nextIdx], lines[nextIdx+1], lines[nextIdx+2], lines[nextIdx+3]];
+
+                              let ansLineIdx = nextIdx + 4;
+                              let ansLine = lines[ansLineIdx];
+                              let nextIndex = ansLineIdx + 1;
+
+                              // Remove ** wrapper
+                              ansLine = ansLine.replace(/^\*\*|\*\*$/g, '');
+                              // If it's a label-only line like "✅ Correct Answer:"
+                              // the actual answer might be on the next line.
+                              let ansRaw = ansLine.replace(/^(?:✅\s*)?(?:\*\*)?(Answer|Ans|Correct|उत्तर)(?:\s*Answer)?(?:\*\*)?\s*[:\s-]*\s*/i, '').trim();
+
+                              if (!ansRaw && nextIndex < lines.length) {
+                                  ansRaw = lines[nextIndex].replace(/^\*\*|\*\*$/g, '').trim();
+                                  nextIndex++;
+                              }
+
+                              // Flexible Answer Parsing
+                              let ansIdx = -1;
+
+                              // Check if the answer starts with an option letter like A), B), C), D)
+                              const matchPrefix = ansRaw.match(/^([a-dA-D])\)/);
+                              if (matchPrefix) {
+                                  const map: any = { 'A': 0, 'B': 1, 'C': 2, 'D': 3 };
+                                  ansIdx = map[matchPrefix[1].toUpperCase()];
+                              } else if (/^\d+$/.test(ansRaw)) {
+                                  ansIdx = parseInt(ansRaw) - 1;
+                              } else {
+                                  // Extract first letter (A, B, C, D)
+                                  // BUT check against the options array instead of strictly relying on starting letter if we have full text
+                                  const firstChar = ansRaw.charAt(0).toUpperCase();
+                                  const map: any = { 'A': 0, 'B': 1, 'C': 2, 'D': 3 };
+
+                                  if (ansRaw.length > 2 && opts.findIndex(o => o.includes(ansRaw)) !== -1) {
+                                      ansIdx = opts.findIndex(o => o.includes(ansRaw));
+                                  } else if (map[firstChar] !== undefined) {
+                                      ansIdx = map[firstChar];
+                                  } else {
+                                      // match by looking at option prefixes
+                                      opts.forEach((o, oidx) => {
+                                          if (ansRaw.includes(o)) ansIdx = oidx;
+                                      })
+                                  }
+                              }
+                              // Default to 0 (A) if parsing fails
+                              if (ansIdx < 0 || ansIdx > 3) ansIdx = 0;
+
+                              // Parse Explanation (Optional lines until next Q/Topic)
+                              let expLines = [];
+
+                              while (nextIndex < lines.length) {
+                                  const nextLine = lines[nextIndex];
+                                  const isNextTopic = /^<TOPIC:\s*(.*?)>/i.test(nextLine);
+                                  const isNextQ = QUESTION_START_REGEX.test(nextLine) || ADVANCED_QUESTION_START_REGEX.test(nextLine) || looksLikeQuestionBlock(lines, nextIndex);
+
+                                  if (isNextQ || isNextTopic) break;
+
+                                  expLines.push(nextLine);
+                                  nextIndex++;
+                              }
+
+                              let explanation = expLines.join('\n').trim();
+                              // Improved Explanation Parsing
+                              // 1. Remove leading **
+                              explanation = explanation.replace(/^\*\*/, '');
+                              // 2. Remove Label
+                              explanation = explanation.replace(/^(Explanation|Exp|व्याख्या)\s*[:\s-]*(\*\*)?\s*/i, '');
+                              // 3. Remove leading ** again if left
+                              explanation = explanation.replace(/^\*\*/, '').trim();
+
+                              // Parse Advanced Fields
+                              let topic = '';
+                              let concept = '';
+                              let examTip = '';
+                              let commonMistake = '';
+                              let mnemonic = '';
+                              let difficultyLevel = '';
+
+                              const extractField = (regex: RegExp, text: string) => {
+                                  const match = text.match(regex);
+                                  if (match) {
+                                      const val = match[1].trim();
+                                      return { val, newText: text.replace(regex, '').trim() };
+                                  }
+                                  return { val: '', newText: text };
+                              };
+
+                              let parsedText = explanation;
+
+                              const topicRes = extractField(/Topic:\s*(.*)/i, parsedText);
+                              topic = topicRes.val; parsedText = topicRes.newText;
+
+                              const diffRes = extractField(/(?:📊\s*)?Difficulty Level:\s*(.*)/i, parsedText);
+                              difficultyLevel = diffRes.val; parsedText = diffRes.newText;
+
+                              const trickRes = extractField(/(?:🧠\s*)?Memory Trick:\s*([\s\S]*?)(?=(?:📊|⚠|🎯|💡|🔎|📖|Topic:|Difficulty Level:|Common Mistake:|Exam Tip:|Concept:|Explanation:|$))/i, parsedText);
+                              mnemonic = trickRes.val; parsedText = trickRes.newText;
+
+                              const mistakeRes = extractField(/(?:⚠\s*)?Common Mistake:\s*([\s\S]*?)(?=(?:📊|🧠|🎯|💡|🔎|📖|Topic:|Difficulty Level:|Memory Trick:|Exam Tip:|Concept:|Explanation:|$))/i, parsedText);
+                              commonMistake = mistakeRes.val; parsedText = mistakeRes.newText;
+
+                              const tipRes = extractField(/(?:🎯\s*)?Exam Tip:\s*([\s\S]*?)(?=(?:📊|⚠|🧠|💡|🔎|📖|Topic:|Difficulty Level:|Common Mistake:|Memory Trick:|Concept:|Explanation:|$))/i, parsedText);
+                              examTip = tipRes.val; parsedText = tipRes.newText;
+
+                              const conceptRes = extractField(/(?:💡\s*)?Concept:\s*([\s\S]*?)(?=(?:📊|⚠|🧠|🎯|🔎|📖|Topic:|Difficulty Level:|Common Mistake:|Memory Trick:|Exam Tip:|Explanation:|$))/i, parsedText);
+                              concept = conceptRes.val; parsedText = conceptRes.newText;
+
+                              const expRes = extractField(/(?:🔎\s*)?Explanation:\s*([\s\S]*?)(?=(?:📊|⚠|🧠|🎯|💡|📖|Topic:|Difficulty Level:|Common Mistake:|Memory Trick:|Exam Tip:|Concept:|$))/i, parsedText);
+                              if (expRes.val) {
+                                  explanation = expRes.val;
+                                  parsedText = expRes.newText;
+                              } else {
+                                  // Fallback: Whatever is left is the explanation
+                                  explanation = parsedText;
+                              }
+
+                              newQuestions.push({
+                                  question: q,
+                                  options: opts,
+                                  correctAnswer: ansIdx,
+                                  explanation: explanation.replace(/^\*\*/, '').trim(),
+                                  topic: topic,
+                                  concept,
+                                  examTip,
+                                  commonMistake,
+                                  mnemonic,
+                                  difficultyLevel
+                              });
+
+                              i = nextIndex;
                       } else {
                           i++;
                       }
@@ -2310,6 +2430,39 @@ const AdminDashboardInner: React.FC<Props> = ({ onNavigate, settings, onUpdateSe
                           }
 
                           // 2. CHECK FOR QUESTION START
+
+                          const isQuestionStart = QUESTION_START_REGEX.test(line) || ADVANCED_QUESTION_START_REGEX.test(line) || looksLikeQuestionBlock(lines, i);
+
+                          if (isQuestionStart) {
+                              let qLineIndex = i;
+                              let q = line.replace(/^\*\*|\*\*$/g, '');
+
+                              if (ADVANCED_QUESTION_START_REGEX.test(line) && i + 1 < lines.length) {
+                                    let j = i + 1;
+                                    while(j < lines.length && (lines[j].match(/^(?:🔥\s*)?PYQ/i) || lines[j].match(/^(?:📖\s*)?Topic/i))) {
+                                        j++;
+                                    }
+                                    if(j < lines.length && lines[j].match(/^(?:❓\s*)?(?:\*\*)?Question/i)) {
+                                        q = lines[j].replace(/^(?:❓\s*)?(?:\*\*)?Question\s*:\s*(?:\*\*)?\s*/i, '').trim();
+                                        qLineIndex = j;
+
+                                        // Handle case where question text is on the NEXT line after "Question:" label
+                                        if (!q && j + 1 < lines.length && !lines[j+1].match(/^Options:/i)) {
+                                            qLineIndex++;
+                                            q = lines[qLineIndex].replace(/^\*\*|\*\*$/g, '').trim();
+                                        }
+                                    }
+                              }
+
+                              if (qLineIndex + 5 >= lines.length) break;
+
+                              let nextIdx = qLineIndex + 1;
+                              if(lines[nextIdx].match(/^Options:/i)) {
+                                  nextIdx++;
+                              }
+
+                              if (nextIdx + 4 >= lines.length) break;
+
                           const isAdvancedStart = ADVANCED_START_REGEX.test(line);
                           const isSimpleStart = !isAdvancedStart && (QUESTION_START_REGEX.test(line) || looksLikeQuestionBlock(lines, i));
 
@@ -2420,40 +2573,65 @@ const AdminDashboardInner: React.FC<Props> = ({ onNavigate, settings, onUpdateSe
 
                           } else if (isSimpleStart) {
                               // Needs at least Q + 4 Options + Ans = 6 lines remaining
-                              if (i + 5 >= lines.length) break;
+                              if (i + 5 >= lines.length) brea
 
-                              // Clean Question Text (Remove Markdown ** if present)
-                              const q = line.replace(/^\*\*|\*\*$/g, '');
+                              const opts = [lines[nextIdx], lines[nextIdx+1], lines[nextIdx+2], lines[nextIdx+3]];
 
-                              const opts = [lines[i+1], lines[i+2], lines[i+3], lines[i+4]];
+                              let ansLineIdx = nextIdx + 4;
+                              let ansLine = lines[ansLineIdx];
+                              let nextIndex = ansLineIdx + 1;
 
-                              let ansLine = lines[i+5];
                               // Remove ** wrapper
                               ansLine = ansLine.replace(/^\*\*|\*\*$/g, '');
-                              // Remove Label
-                              let ansRaw = ansLine.replace(/^(Answer|Ans|Correct|उत्तर)\s*[:\s-]*\s*/i, '').trim();
+                              // If it's a label-only line like "✅ Correct Answer:"
+                              // the actual answer might be on the next line.
+                              let ansRaw = ansLine.replace(/^(?:✅\s*)?(?:\*\*)?(Answer|Ans|Correct|उत्तर)(?:\s*Answer)?(?:\*\*)?\s*[:\s-]*\s*/i, '').trim();
+
+                              if (!ansRaw && nextIndex < lines.length) {
+                                  ansRaw = lines[nextIndex].replace(/^\*\*|\*\*$/g, '').trim();
+                                  nextIndex++;
+                              }
 
                               // Flexible Answer Parsing
                               let ansIdx = -1;
-                              if (/^\d+$/.test(ansRaw)) {
+
+                              // Check if the answer starts with an option letter like A), B), C), D)
+                              const matchPrefix = ansRaw.match(/^([a-dA-D])\)/);
+                              if (matchPrefix) {
+                                  const map: any = { 'A': 0, 'B': 1, 'C': 2, 'D': 3 };
+                                  ansIdx = map[matchPrefix[1].toUpperCase()];
+                              } else if (/^\d+$/.test(ansRaw)) {
                                   ansIdx = parseInt(ansRaw) - 1;
                               } else {
                                   // Extract first letter (A, B, C, D)
+                                  // BUT check against the options array instead of strictly relying on starting letter if we have full text
                                   const firstChar = ansRaw.charAt(0).toUpperCase();
                                   const map: any = { 'A': 0, 'B': 1, 'C': 2, 'D': 3 };
-                                  if (map[firstChar] !== undefined) ansIdx = map[firstChar];
+
+                                  if (ansRaw.length > 2 && opts.findIndex(o => o.includes(ansRaw)) !== -1) {
+                                      ansIdx = opts.findIndex(o => o.includes(ansRaw));
+                                  } else if (map[firstChar] !== undefined) {
+                                      ansIdx = map[firstChar];
+                                  } else {
+                                      // match by looking at option prefixes
+                                      opts.forEach((o, oidx) => {
+                                          if (ansRaw.includes(o)) ansIdx = oidx;
+                                      })
+                                  }
                               }
                               // Default to 0 (A) if parsing fails
                               if (ansIdx < 0 || ansIdx > 3) ansIdx = 0;
 
                               // Parse Explanation (Optional lines until next Q/Topic)
                               let expLines = [];
-                              let nextIndex = i + 6;
 
                               while (nextIndex < lines.length) {
                                   const nextLine = lines[nextIndex];
-                                  const isNextTopic = /^<TOPIC:\s*(.*?)>/i.test(nextLine);
+                                  const isNextTopic = /^<TOPIC:\s*(.*?)>/i.test(nextL
+                                  const isNextQ = QUESTION_START_REGEX.test(nextLine) || ADVANCED_QUESTION_START_REGEX.test(nextLine) || looksLikeQuestionBlock(lines, nextIndex);
+
                                   const isNextQ = QUESTION_START_REGEX.test(nextLine) || looksLikeQuestionBlock(lines, nextIndex) || ADVANCED_START_REGEX.test(nextLine);
+
 
                                   if (isNextQ || isNextTopic) break;
 
@@ -2470,20 +2648,63 @@ const AdminDashboardInner: React.FC<Props> = ({ onNavigate, settings, onUpdateSe
                               // 3. Remove leading ** again if left
                               explanation = explanation.replace(/^\*\*/, '').trim();
 
-                              // Parse Inline Topic (if any) overrides global
+                              // Parse Advanced Fields
                               let topic = '';
-                              const inlineTopicMatch = explanation.match(/Topic:\s*(.*)/i);
-                              if (inlineTopicMatch) {
-                                  topic = inlineTopicMatch[1].trim();
-                                  explanation = explanation.replace(/Topic:\s*.*$/im, '').trim();
+                              let concept = '';
+                              let examTip = '';
+                              let commonMistake = '';
+                              let mnemonic = '';
+                              let difficultyLevel = '';
+
+                              const extractField = (regex: RegExp, text: string) => {
+                                  const match = text.match(regex);
+                                  if (match) {
+                                      const val = match[1].trim();
+                                      return { val, newText: text.replace(regex, '').trim() };
+                                  }
+                                  return { val: '', newText: text };
+                              };
+
+                              let parsedText = explanation;
+
+                              const topicRes = extractField(/Topic:\s*(.*)/i, parsedText);
+                              topic = topicRes.val; parsedText = topicRes.newText;
+
+                              const diffRes = extractField(/(?:📊\s*)?Difficulty Level:\s*(.*)/i, parsedText);
+                              difficultyLevel = diffRes.val; parsedText = diffRes.newText;
+
+                              const trickRes = extractField(/(?:🧠\s*)?Memory Trick:\s*([\s\S]*?)(?=(?:📊|⚠|🎯|💡|🔎|📖|Topic:|Difficulty Level:|Common Mistake:|Exam Tip:|Concept:|Explanation:|$))/i, parsedText);
+                              mnemonic = trickRes.val; parsedText = trickRes.newText;
+
+                              const mistakeRes = extractField(/(?:⚠\s*)?Common Mistake:\s*([\s\S]*?)(?=(?:📊|🧠|🎯|💡|🔎|📖|Topic:|Difficulty Level:|Memory Trick:|Exam Tip:|Concept:|Explanation:|$))/i, parsedText);
+                              commonMistake = mistakeRes.val; parsedText = mistakeRes.newText;
+
+                              const tipRes = extractField(/(?:🎯\s*)?Exam Tip:\s*([\s\S]*?)(?=(?:📊|⚠|🧠|💡|🔎|📖|Topic:|Difficulty Level:|Common Mistake:|Memory Trick:|Concept:|Explanation:|$))/i, parsedText);
+                              examTip = tipRes.val; parsedText = tipRes.newText;
+
+                              const conceptRes = extractField(/(?:💡\s*)?Concept:\s*([\s\S]*?)(?=(?:📊|⚠|🧠|🎯|🔎|📖|Topic:|Difficulty Level:|Common Mistake:|Memory Trick:|Exam Tip:|Explanation:|$))/i, parsedText);
+                              concept = conceptRes.val; parsedText = conceptRes.newText;
+
+                              const expRes = extractField(/(?:🔎\s*)?Explanation:\s*([\s\S]*?)(?=(?:📊|⚠|🧠|🎯|💡|📖|Topic:|Difficulty Level:|Common Mistake:|Memory Trick:|Exam Tip:|Concept:|$))/i, parsedText);
+                              if (expRes.val) {
+                                  explanation = expRes.val;
+                                  parsedText = expRes.newText;
+                              } else {
+                                  // Fallback: Whatever is left is the explanation
+                                  explanation = parsedText;
                               }
 
                               newQuestions.push({
                                   question: q,
                                   options: opts,
                                   correctAnswer: ansIdx,
-                                  explanation: explanation,
-                                  topic: topic || currentGlobalTopic
+                                  explanation: explanation.replace(/^\*\*/, '').trim(),
+                                  topic: topic || currentGlobalTopic,
+                                  concept,
+                                  examTip,
+                                  commonMistake,
+                                  mnemonic,
+                                  difficultyLevel
                               });
 
                               i = nextIndex;

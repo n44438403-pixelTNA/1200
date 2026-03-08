@@ -53,19 +53,42 @@ const DEFAULT_ULTRA_FEATURES = [
     'Spin Wheel (10 Spins/Day)'
 ];
 
-const QUESTION_START_REGEX = /^(\*\*)?(Q\s*\d+[.:)]?|\d+[.:)]|Question\s*\d+[.:)]?)(\*\*)?\s*/i;
+const QUESTION_START_REGEX = /^(?:[\uD83D\uDCD8\u2753]\s*\*\*Question.*\*\*|\*\*Question.*\*\*|📘\s*\*\*Question.*|❓\s*\*\*Question.*|Q\s*\d+[.:)]?|Question\s*\d+[.:)]?)\s*/i;
 
 const looksLikeQuestionBlock = (lines: string[], index: number): boolean => {
+    // If it explicitly matches the strong question regex, we don't even need this fallback,
+    // but if we do, ensure it doesn't just trigger on any numbered list.
+    const line = lines[index];
+
+    // Strict requirement: Must start with Q, Question, or the specific emojis.
+    // If it starts with just a number (e.g. "1. "), we ONLY treat it as a question
+    // IF the 5th line down is explicitly an answer line AND the next 4 lines look like options.
+    const startsWithNumber = /^\d+[.:)]\s/.test(line);
+
+    if (!startsWithNumber && !/^(?:[\uD83D\uDCD8\u2753]|\*\*Question|Q\s*\d|Question\s*\d)/i.test(line)) {
+         return false; // Definitely not a question block
+    }
+
     // Check if line index + 5 (Answer line) exists
     if (index + 5 >= lines.length) return false;
 
     // Check Answer pattern on line index + 5
     const ansLine = lines[index + 5];
     // Remove Markdown Bolding (**Answer**) if present
-    const cleanAnsLine = ansLine.replace(/^\*\*|\*\*$/g, '');
+    const cleanAnsLine = ansLine.replace(/^\*\*|\*\*$/g, '').trim();
 
     // Check if it starts with Answer/Ans/Correct/उत्तर
-    return /^(Answer|Ans|Correct|उत्तर)\s*[:\s-]*\s*/i.test(cleanAnsLine);
+    const hasAnswer = /^(?:✅\s*)?\*?\*?(Answer|Ans|Correct|Correct Answer|उत्तर)\*?\*?\s*[:\s-]*\s*/i.test(cleanAnsLine);
+
+    if (hasAnswer && startsWithNumber) {
+        // Extra validation for options to avoid matching random numbered lists in explanations
+        const opt1 = lines[index + 1];
+        if (!/^[A-D1-4a-d][.)]/i.test(opt1) && !/^Options:/i.test(opt1)) {
+            return false;
+        }
+    }
+
+    return hasAnswer;
 };
 
 interface Props {

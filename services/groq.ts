@@ -610,20 +610,23 @@ export const fetchLessonContent = async (
           ${competitionConstraints}
           
           STRICT FORMAT RULE:
-          Return ONLY a valid JSON array. No markdown blocks, no extra text.
+          Return ONLY a valid JSON array. No markdown blocks, no extra text. Do NOT number the questions in the question text.
           [
             {
-              "question": "Question text",
+              "question": "Question text (without numbering)",
               "options": ["A", "B", "C", "D"],
               "correctAnswer": 0, // Index 0-3
               "explanation": "Logical explanation here",
               "mnemonic": "Short memory trick",
-              "concept": "Core concept"
+              "concept": "Core concept",
+              "examTip": "Board exam tip or repeated question alert",
+              "commonMistake": "Common student mistake",
+              "difficultyLevel": "Easy" // "Easy", "Medium", or "Hard"
             }
           ]
           
           CRITICAL: You MUST return EXACTLY ${effectiveCount} questions. 
-          Provide a very diverse set of questions covering every small detail of the chapter.`;
+          Provide a very diverse set of questions covering every small detail of the chapter. Provide advanced details (examTip, commonMistake, concept, difficultyLevel) for an app-like premium experience.`;
       }
 
       let data: any[] = [];

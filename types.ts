@@ -800,6 +800,9 @@ export interface MCQItem {
   mnemonic?: string; // Memory Trick
   concept?: string; // Full concept explanation
   topic?: string; // NEW
+  examTip?: string; // Exam Tip
+  commonMistake?: string; // Common Mistake
+  difficultyLevel?: 'Easy' | 'Medium' | 'Hard' | string; // Difficulty Level
 }
 
 // NEW: Performance Analytics
@@ -840,6 +843,10 @@ export interface MCQResult {
     qIndex: number;
     correctAnswer?: string | number;
     explanation?: string;
+    concept?: string;
+    examTip?: string;
+    commonMistake?: string;
+    mnemonic?: string;
   }[];
   topicAnalysis?: Record<string, { correct: number, total: number, percentage: number }>; // NEW: Granular Analysis
   ultraAnalysisReport?: string;

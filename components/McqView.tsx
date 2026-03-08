@@ -381,12 +381,16 @@ export const McqView: React.FC<Props> = ({
                     question: q.question,
                     qIndex: idx,
                     correctAnswer: q.correctAnswer,
-                    explanation: q.explanation
+                    explanation: q.explanation,
+                    concept: q.concept,
+                    examTip: q.examTip,
+                    commonMistake: q.commonMistake,
+                    mnemonic: q.mnemonic
                 };
             }
             return null;
         })
-        .filter((item): item is { question: string; qIndex: number, correctAnswer: number } => item !== null);
+        .filter((item): item is { question: string; qIndex: number, correctAnswer: number, explanation?: string, concept?: string, examTip?: string, commonMistake?: string, mnemonic?: string } => item !== null);
 
       // Performance Label based on marks (Excllent, Good, Average, Bad)
       const scorePct = (score / attemptsCount) * 100;

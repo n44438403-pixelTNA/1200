@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect, useRef } from 'react';
+import { safeSetLocalStorage } from '../utils/safeStorage';
 import { Chapter, User, Subject, SystemSettings } from '../types';
 import { PlayCircle, Lock, ArrowLeft, Crown, AlertCircle, CheckCircle, Youtube, Maximize } from 'lucide-react';
 import { getChapterData, saveUserToLive } from '../firebase';
@@ -65,7 +66,7 @@ export const VideoPlaylistView: React.FC<Props> = ({
               if (storedUser && storedUser.id === user.id) {
                   const newUsage = [historyEntry, ...(storedUser.usageHistory || [])].slice(0, 100); // Keep last 100
                   const updatedUser = { ...storedUser, usageHistory: newUsage };
-                  localStorage.setItem('nst_current_user', JSON.stringify(updatedUser));
+                  safeSetLocalStorage('nst_current_user', JSON.stringify(updatedUser));
                   onUpdateUser(updatedUser);
                   saveUserToLive(updatedUser);
               }
@@ -216,7 +217,7 @@ export const VideoPlaylistView: React.FC<Props> = ({
           updatedUser.isAutoDeductEnabled = true;
       }
 
-      localStorage.setItem('nst_current_user', JSON.stringify(updatedUser));
+      safeSetLocalStorage('nst_current_user', JSON.stringify(updatedUser));
       saveUserToLive(updatedUser); // Cloud Sync
       onUpdateUser(updatedUser); // Update Parent State
       

@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
+import { safeSetLocalStorage } from '../utils/safeStorage';
 import { User, Subject, StudentTab, SystemSettings, CreditPackage, WeeklyTest, Chapter, MCQItem, Challenge20 } from '../types';
 import { updateUserStatus, db, saveUserToLive, getChapterData, rtdb, saveAiInteraction, saveDemandRequest, uploadProfilePicture } from '../firebase';
 import { doc, onSnapshot } from 'firebase/firestore';
@@ -145,7 +146,7 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
 
           // Optimistically update local UI
           const updatedUser = { ...user, photoURL: newUrl };
-          localStorage.setItem('nst_current_user', JSON.stringify(updatedUser));
+          safeSetLocalStorage('nst_current_user', JSON.stringify(updatedUser));
 
           // Tell parent or state to re-render
           // Since user is a prop and the sync can take a second, force reload to immediately show the picture
@@ -186,7 +187,7 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
                  const interval = (settings.popupConfigs.expiryWarningIntervalMinutes || 60) * 60 * 1000;
                  if (now - lastShown > interval) {
                      showAlert(`⚠️ Your subscription expires in ${Math.ceil(diffHours)} hours! Renew now to keep uninterrupted access.`, "INFO", "Expiry Warning");
-                     localStorage.setItem(`last_expiry_warn_${user.id}`, now.toString());
+                     safeSetLocalStorage(`last_expiry_warn_${user.id}`, now.toString());
                      return; // Show one at a time
                  }
              }
@@ -202,7 +203,7 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
                      ? "🚀 Upgrade to Premium to unlock Full Subject Notes, Ad-Free Videos, and AI tools!"
                      : "💎 Go Ultra! Get unlimited access to Competition Mode, Deep Dive Notes, and AI Chat.";
                  showAlert(msg, "INFO", "Upgrade Available");
-                 localStorage.setItem(`last_upsell_${user.id}`, now.toString());
+                 safeSetLocalStorage(`last_upsell_${user.id}`, now.toString());
                  return; // Show one at a time
              }
           }
@@ -225,7 +226,7 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
                       const interval = 2 * 60 * 60 * 1000;
                       if (now - lastShown > interval) {
                           showAlert(`🎉 ${event.eventName} is LIVE! Get ${event.discountPercent}% OFF on subscriptions right now!`, "SUCCESS", "Special Event");
-                          localStorage.setItem(`last_event_promo_${user.id}_${event.eventName}`, now.toString());
+                          safeSetLocalStorage(`last_event_promo_${user.id}_${event.eventName}`, now.toString());
                           return;
                       }
                   }
@@ -238,7 +239,7 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
               const interval = 4 * 60 * 60 * 1000; // Every 4 hours
               if (now - lastShown > interval) {
                   showAlert("🌟 GLOBAL FREE ACCESS IS LIVE! Enjoy everything for free!", "SUCCESS", "Special Event");
-                  localStorage.setItem(`last_global_free_${user.id}`, now.toString());
+                  safeSetLocalStorage(`last_global_free_${user.id}`, now.toString());
                   return;
               }
           }
@@ -248,7 +249,7 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
               const interval = 4 * 60 * 60 * 1000; // Every 4 hours
               if (now - lastShown > interval) {
                   showAlert("⚡ CREDIT FREE EVENT IS LIVE! Unlock content without using your coins!", "SUCCESS", "Special Event");
-                  localStorage.setItem(`last_credit_free_${user.id}`, now.toString());
+                  safeSetLocalStorage(`last_credit_free_${user.id}`, now.toString());
                   return;
               }
           }
@@ -271,7 +272,7 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
                               popupMsg += `\n\nCode: ${popup.copyableText}`;
                           }
                           showAlert(popupMsg, "INFO", popup.title);
-                          localStorage.setItem(`${popupId}_${user.id}`, now.toString());
+                          safeSetLocalStorage(`${popupId}_${user.id}`, now.toString());
                           return; // Show one at a time
                       }
                   }
@@ -305,7 +306,7 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
                       const alertKey = `nst_update_alert_shown_${latest.id}`;
                       if (!localStorage.getItem(alertKey)) {
                           showAlert(`New Content Available: ${latest.text}`, 'INFO', 'New Update');
-                          localStorage.setItem(alertKey, 'true');
+                          safeSetLocalStorage(alertKey, 'true');
                       }
               } else {
                   setHasNewUpdate(false);
@@ -379,7 +380,7 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
       const isNew = (Date.now() - new Date(user.createdAt).getTime()) < 10 * 60 * 1000;
       if (isNew && !user.redeemedReferralCode && !localStorage.getItem(`referral_shown_${user.id}`)) {
           setShowReferralPopup(true);
-          localStorage.setItem(`referral_shown_${user.id}`, 'true');
+          safeSetLocalStorage(`referral_shown_${user.id}`, 'true');
       }
   }, [user.id, user.createdAt, user.redeemedReferralCode]);
 
@@ -413,7 +414,7 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
           const newRoutine = generateDailyRoutine(user);
           const updatedUser = { ...user, dailyRoutine: newRoutine };
           if (!isImpersonating) {
-              localStorage.setItem('nst_current_user', JSON.stringify(updatedUser));
+              safeSetLocalStorage('nst_current_user', JSON.stringify(updatedUser));
               saveUserToLive(updatedUser);
           }
           onRedeemSuccess(updatedUser);
@@ -448,7 +449,7 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
       try {
           const notes = await generateCustomNotes(aiTopic, settings?.aiNotesPrompt || '', settings?.aiModel);
           setAiResult(notes);
-          localStorage.setItem(usageKey, (currentUsage + 1).toString());
+          safeSetLocalStorage(usageKey, (currentUsage + 1).toString());
           saveAiInteraction({
               id: `ai-note-${Date.now()}`,
               userId: user.id,
@@ -475,7 +476,7 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
       const currentConfig = currentLayout[sectionId] || { id: sectionId, visible: true };
       const newLayout = { ...currentLayout, [sectionId]: { ...currentConfig, visible: !currentConfig.visible } };
       const newSettings = { ...settings, dashboardLayout: newLayout };
-      localStorage.setItem('nst_system_settings', JSON.stringify(newSettings));
+      safeSetLocalStorage('nst_system_settings', JSON.stringify(newSettings));
       saveUserToLive(user);
       window.location.reload(); 
   };
@@ -535,7 +536,7 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
               };
               const updatedUser = { ...user, inbox: [newMsg, ...(user.inbox || [])] };
               handleUserUpdate(updatedUser);
-              localStorage.setItem(`reward_claimed_${user.id}_${yDateStr}`, 'true');
+              safeSetLocalStorage(`reward_claimed_${user.id}_${yDateStr}`, 'true');
           }
       }
   }, [user.id]);
@@ -643,7 +644,7 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
       const interval = setInterval(() => {
           updateUserStatus(user.id, dailyStudySeconds);
           const todayStr = new Date().toDateString();
-          localStorage.setItem(`activity_${user.id}_${todayStr}`, dailyStudySeconds.toString());
+          safeSetLocalStorage(`activity_${user.id}_${todayStr}`, dailyStudySeconds.toString());
           const accountAgeHours = (Date.now() - new Date(user.createdAt).getTime()) / (1000 * 60 * 60);
           const firstDayBonusClaimed = localStorage.getItem(`first_day_ultra_${user.id}`);
           if (accountAgeHours < 24 && dailyStudySeconds >= 3600 && !firstDayBonusClaimed) {
@@ -658,14 +659,14 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
                   const storedUsers = JSON.parse(localStorage.getItem('nst_users') || '[]');
                   const idx = storedUsers.findIndex((u:User) => u.id === user.id);
                   if (idx !== -1) storedUsers[idx] = updatedUser;
-                  localStorage.setItem('nst_users', JSON.stringify(storedUsers));
-                  localStorage.setItem('nst_current_user', JSON.stringify(updatedUser));
-                  localStorage.setItem(`first_day_ultra_${user.id}`, 'true');
+                  safeSetLocalStorage('nst_users', JSON.stringify(storedUsers));
+                  safeSetLocalStorage('nst_current_user', JSON.stringify(updatedUser));
+                  safeSetLocalStorage(`first_day_ultra_${user.id}`, 'true');
                   onRedeemSuccess(updatedUser);
                   showAlert("🎉 FIRST DAY BONUS: You unlocked 1 Hour Free ULTRA Subscription!", 'SUCCESS');
               } else {
                   // Mark claimed anyway so it doesn't trigger again
-                  localStorage.setItem(`first_day_ultra_${user.id}`, 'true');
+                  safeSetLocalStorage(`first_day_ultra_${user.id}`, 'true');
               }
           }
       }, 60000); 
@@ -691,8 +692,8 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
       const userIdx = storedUsers.findIndex((u:User) => u.id === updatedUser.id);
       if (userIdx !== -1) {
           storedUsers[userIdx] = updatedUser;
-          localStorage.setItem('nst_users', JSON.stringify(storedUsers));
-          if (!isImpersonating) { localStorage.setItem('nst_current_user', JSON.stringify(updatedUser)); saveUserToLive(updatedUser); }
+          safeSetLocalStorage('nst_users', JSON.stringify(storedUsers));
+          if (!isImpersonating) { safeSetLocalStorage('nst_current_user', JSON.stringify(updatedUser)); saveUserToLive(updatedUser); }
           onRedeemSuccess(updatedUser); 
       }
   };
@@ -800,7 +801,7 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
               category: 'Essential',
               items: [
                   { id: 'INBOX', label: 'Inbox', icon: Mail, color: 'indigo', action: () => { setShowInbox(true); setShowSidebar(false); } },
-                  { id: 'UPDATES', label: 'Notifications', icon: Bell, color: 'red', action: () => { onTabChange('UPDATES'); setHasNewUpdate(false); localStorage.setItem('nst_last_read_update', Date.now().toString()); setShowSidebar(false); } },
+                  { id: 'UPDATES', label: 'Notifications', icon: Bell, color: 'red', action: () => { onTabChange('UPDATES'); setHasNewUpdate(false); safeSetLocalStorage('nst_last_read_update', Date.now().toString()); setShowSidebar(false); } },
               ]
           },
           {
@@ -898,7 +899,7 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
                             targetSeconds={dailyTargetSeconds}
                             onSetTarget={(s) => {
                                 setDailyTargetSeconds(s);
-                                localStorage.setItem(`nst_goal_${user.id}`, (s / 3600).toString());
+                                safeSetLocalStorage(`nst_goal_${user.id}`, (s / 3600).toString());
                             }}
                         />
 
@@ -1718,7 +1719,7 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
                                   }
 
                                   // Increment Usage
-                                  localStorage.setItem(todayKey, (used + 1).toString());
+                                  safeSetLocalStorage(todayKey, (used + 1).toString());
                               }
 
                               // Update User
@@ -1810,7 +1811,7 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
                                         // Also save locally just in case
                                         const existing = JSON.parse(localStorage.getItem('nst_demand_requests') || '[]');
                                         existing.push(request);
-                                        localStorage.setItem('nst_demand_requests', JSON.stringify(existing));
+                                        safeSetLocalStorage('nst_demand_requests', JSON.stringify(existing));
                                     })
                                     .catch(() => showAlert("Failed to send request.", 'ERROR'));
                             }}

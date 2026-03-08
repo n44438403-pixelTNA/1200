@@ -1,5 +1,6 @@
 
 import React, { useEffect, useState, useRef } from 'react';
+import { safeSetLocalStorage } from '../utils/safeStorage';
 import { User, ViewState, SystemSettings, Subject, Chapter, MCQItem, RecoveryRequest, ActivityLogEntry, LeaderboardEntry, RecycleBinItem, Stream, Board, ClassLevel, GiftCode, SubscriptionPlan, CreditPackage, SpinReward, HtmlModule, PremiumNoteSlot, ContentInfoConfig, ContentInfoItem, SubscriptionHistoryEntry, UniversalAnalysisLog, ContentType, LessonContent, DeepDiveEntry, AdditionalNoteEntry } from '../types';
 import { List, LayoutDashboard, Users, Search, Trash2, Save, X, Eye, EyeOff, Shield, Megaphone, CheckCircle, ListChecks, Database, FileText, Monitor, Sparkles, Banknote, BrainCircuit, AlertOctagon, ArrowLeft, Key, Bell, ShieldCheck, Lock, Globe, Layers, Zap, PenTool, RefreshCw, RotateCcw, Plus, LogOut, Download, Upload, CreditCard, Ticket, Video, Image as ImageIcon, Type, Link, FileJson, Activity, AlertTriangle, Gift, Book, Mail, Edit3, MessageSquare, ShoppingBag, Cloud, Rocket, Code2, Layers as LayersIcon, Wifi, WifiOff, Copy, Crown, Gamepad2, Calendar, BookOpen, Image, HelpCircle, Youtube, Play, Star, Trophy, Palette, Settings, Headphones, Layout, Bot, LayoutDashboard as DashboardIcon, Loader2, Gauge, LayoutGrid, ArrowUpCircle } from 'lucide-react';
 import { getSubjectsList, DEFAULT_SUBJECTS, DEFAULT_APP_FEATURES, ALL_APP_FEATURES, STUDENT_APP_FEATURES, DEFAULT_CONTENT_INFO_CONFIG, ADMIN_PERMISSIONS, APP_VERSION, STATIC_SYLLABUS, LEVEL_UNLOCKABLE_FEATURES } from '../constants';
@@ -547,7 +548,7 @@ const AdminDashboardInner: React.FC<Props> = ({ onNavigate, settings, onUpdateSe
   const handleBoardChange = (board: Board) => {
       setAdminBoardContext(board);
       if (currentUser?.id) {
-          localStorage.setItem(`nst_admin_board_pref_${currentUser.id}`, board);
+          safeSetLocalStorage(`nst_admin_board_pref_${currentUser.id}`, board);
       }
   };
 
@@ -1126,7 +1127,7 @@ const AdminDashboardInner: React.FC<Props> = ({ onNavigate, settings, onUpdateSe
       setLocalSettings({...localSettings, weeklyTests: updatedTests});
       
       // Save immediately
-      localStorage.setItem('nst_system_settings', JSON.stringify({...localSettings, weeklyTests: updatedTests}));
+      safeSetLocalStorage('nst_system_settings', JSON.stringify({...localSettings, weeklyTests: updatedTests}));
       
       // Reset Form
       setTestName('');
@@ -1176,7 +1177,7 @@ const AdminDashboardInner: React.FC<Props> = ({ onNavigate, settings, onUpdateSe
 
               setUsers(sortedUsers);
               prevUsersRef.current = sortedUsers;
-              localStorage.setItem('nst_users', JSON.stringify(sortedUsers));
+              safeSetLocalStorage('nst_users', JSON.stringify(sortedUsers));
           }
       });
 
@@ -1249,7 +1250,7 @@ const AdminDashboardInner: React.FC<Props> = ({ onNavigate, settings, onUpdateSe
           const now = new Date();
           const validItems = binItems.filter(item => new Date(item.expiresAt) > now);
           if (validItems.length !== binItems.length) {
-              localStorage.setItem('nst_recycle_bin', JSON.stringify(validItems));
+              safeSetLocalStorage('nst_recycle_bin', JSON.stringify(validItems));
           }
           setRecycleBin(validItems);
       }
@@ -1328,7 +1329,7 @@ const AdminDashboardInner: React.FC<Props> = ({ onNavigate, settings, onUpdateSe
               delete settingsToSave.apiKeys; // REMOVE KEYS FROM PUBLIC
 
               onUpdateSettings(settingsToUse);
-              localStorage.setItem('nst_system_settings', JSON.stringify(settingsToSave));
+              safeSetLocalStorage('nst_system_settings', JSON.stringify(settingsToSave));
 
               // SYNC TO FIREBASE (Attempt if online, even if RTDB check failed)
               if (isFirebaseConnected || navigator.onLine) {
@@ -1365,7 +1366,7 @@ const AdminDashboardInner: React.FC<Props> = ({ onNavigate, settings, onUpdateSe
       const updated = { ...localSettings, [key]: newVal };
       setLocalSettings(updated);
       if(onUpdateSettings) onUpdateSettings(updated);
-      localStorage.setItem('nst_system_settings', JSON.stringify(updated));
+      safeSetLocalStorage('nst_system_settings', JSON.stringify(updated));
       logActivity("SETTINGS_TOGGLED", `Toggled ${key} to ${newVal}`);
   };
 
@@ -1392,7 +1393,7 @@ const AdminDashboardInner: React.FC<Props> = ({ onNavigate, settings, onUpdateSe
 
       const newBin = [...recycleBin, newItem];
       setRecycleBin(newBin);
-      localStorage.setItem('nst_recycle_bin', JSON.stringify(newBin));
+      safeSetLocalStorage('nst_recycle_bin', JSON.stringify(newBin));
       return true;
   };
 
@@ -1404,7 +1405,7 @@ const AdminDashboardInner: React.FC<Props> = ({ onNavigate, settings, onUpdateSe
           const users: User[] = stored ? JSON.parse(stored) : [];
           if (!users.some(u => u.id === item.data.id)) {
               users.push(item.data);
-              localStorage.setItem('nst_users', JSON.stringify(users));
+              safeSetLocalStorage('nst_users', JSON.stringify(users));
           } else {
               alert("User ID already exists. Cannot restore.");
               return;
@@ -1418,7 +1419,7 @@ const AdminDashboardInner: React.FC<Props> = ({ onNavigate, settings, onUpdateSe
           } else {
               current.manualMcqData = [...(current.manualMcqData || []), ...item.data.mcqs];
           }
-          localStorage.setItem(item.restoreKey, JSON.stringify(current));
+          safeSetLocalStorage(item.restoreKey, JSON.stringify(current));
           if (isFirebaseConnected) saveChapterData(item.restoreKey, current);
 
       } else if (item.restoreKey) {
@@ -1426,15 +1427,15 @@ const AdminDashboardInner: React.FC<Props> = ({ onNavigate, settings, onUpdateSe
               const listStr = localStorage.getItem(item.restoreKey);
               const list = listStr ? JSON.parse(listStr) : [];
               list.push(item.data);
-              localStorage.setItem(item.restoreKey, JSON.stringify(list));
+              safeSetLocalStorage(item.restoreKey, JSON.stringify(list));
           } else {
-              localStorage.setItem(item.restoreKey, JSON.stringify(item.data));
+              safeSetLocalStorage(item.restoreKey, JSON.stringify(item.data));
           }
       }
 
       const newBin = recycleBin.filter(i => i.id !== item.id);
       setRecycleBin(newBin);
-      localStorage.setItem('nst_recycle_bin', JSON.stringify(newBin));
+      safeSetLocalStorage('nst_recycle_bin', JSON.stringify(newBin));
       alert("Item Restored!");
       loadData(); 
   };
@@ -1443,7 +1444,7 @@ const AdminDashboardInner: React.FC<Props> = ({ onNavigate, settings, onUpdateSe
       if (window.confirm("PERMANENTLY DELETE? This cannot be undone.")) {
           const newBin = recycleBin.filter(i => i.id !== id);
           setRecycleBin(newBin);
-          localStorage.setItem('nst_recycle_bin', JSON.stringify(newBin));
+          safeSetLocalStorage('nst_recycle_bin', JSON.stringify(newBin));
       }
   };
 
@@ -1455,7 +1456,7 @@ const AdminDashboardInner: React.FC<Props> = ({ onNavigate, settings, onUpdateSe
           // Local Update
           const updated = users.filter(u => u.id !== userId);
           setUsers(updated);
-          localStorage.setItem('nst_users', JSON.stringify(updated));
+          safeSetLocalStorage('nst_users', JSON.stringify(updated));
           
           // Cloud Update
           if (isFirebaseConnected) {
@@ -1674,7 +1675,7 @@ const AdminDashboardInner: React.FC<Props> = ({ onNavigate, settings, onUpdateSe
 
       const updatedList = users.map(u => u.id === editingUser.id ? updatedUser : u);
       setUsers(updatedList);
-      localStorage.setItem('nst_users', JSON.stringify(updatedList));
+      safeSetLocalStorage('nst_users', JSON.stringify(updatedList));
 
       // Cloud Sync
       if (isFirebaseConnected) {
@@ -1710,7 +1711,7 @@ const AdminDashboardInner: React.FC<Props> = ({ onNavigate, settings, onUpdateSe
       const updatedUser = { ...dmUser, inbox: [newMsg, ...(dmUser.inbox || [])] };
       const updatedList = users.map(u => u.id === dmUser.id ? updatedUser : u);
       setUsers(updatedList);
-      localStorage.setItem('nst_users', JSON.stringify(updatedList));
+      safeSetLocalStorage('nst_users', JSON.stringify(updatedList));
       
       // Cloud Sync
       if (isFirebaseConnected) {
@@ -1781,7 +1782,7 @@ const AdminDashboardInner: React.FC<Props> = ({ onNavigate, settings, onUpdateSe
           }
           const updated = [...newCodes, ...giftCodes];
           setGiftCodes(updated);
-          localStorage.setItem('nst_admin_codes', JSON.stringify(updated));
+          safeSetLocalStorage('nst_admin_codes', JSON.stringify(updated));
           alert(`${newCodeCount} Codes Generated Successfully!`);
       } catch (error: any) {
           console.error("Code Generation Error:", error);
@@ -1792,7 +1793,7 @@ const AdminDashboardInner: React.FC<Props> = ({ onNavigate, settings, onUpdateSe
   const deleteCode = (id: string) => {
       const updated = giftCodes.filter(c => c.id !== id);
       setGiftCodes(updated);
-      localStorage.setItem('nst_admin_codes', JSON.stringify(updated));
+      safeSetLocalStorage('nst_admin_codes', JSON.stringify(updated));
   };
 
   // --- SUBJECT MANAGER (New) ---
@@ -1802,7 +1803,7 @@ const AdminDashboardInner: React.FC<Props> = ({ onNavigate, settings, onUpdateSe
       const newSubject = { id, name: newSubName, icon: newSubIcon, color: newSubColor };
       const updatedPool = { ...DEFAULT_SUBJECTS, ...customSubjects, [id]: newSubject };
       setCustomSubjects(updatedPool); // This only stores custom ones technically in state, but logic handles merge
-      localStorage.setItem('nst_custom_subjects_pool', JSON.stringify(updatedPool));
+      safeSetLocalStorage('nst_custom_subjects_pool', JSON.stringify(updatedPool));
       setNewSubName('');
       alert("Subject Added!");
   };
@@ -1991,7 +1992,7 @@ const AdminDashboardInner: React.FC<Props> = ({ onNavigate, settings, onUpdateSe
               premiumLink: d.premium,
               price: d.price
           };
-          localStorage.setItem(key, JSON.stringify(newData));
+          safeSetLocalStorage(key, JSON.stringify(newData));
           updates[key] = newData;
       });
 
@@ -2447,7 +2448,7 @@ const AdminDashboardInner: React.FC<Props> = ({ onNavigate, settings, onUpdateSe
       // Update State
       const updatedList = users.map(u => u.id === user.id ? updatedUser : u);
       setUsers(updatedList);
-      localStorage.setItem('nst_users', JSON.stringify(updatedList));
+      safeSetLocalStorage('nst_users', JSON.stringify(updatedList));
       
       // Update Cloud
       if (isFirebaseConnected) await saveUserToLive(updatedUser);
@@ -2471,7 +2472,7 @@ const AdminDashboardInner: React.FC<Props> = ({ onNavigate, settings, onUpdateSe
       
       const updatedList = users.map(u => u.id === user.id ? updatedUser : u);
       setUsers(updatedList);
-      localStorage.setItem('nst_users', JSON.stringify(updatedList));
+      safeSetLocalStorage('nst_users', JSON.stringify(updatedList));
       
       if (isFirebaseConnected) await saveUserToLive(updatedUser);
       
@@ -3789,7 +3790,7 @@ const AdminDashboardInner: React.FC<Props> = ({ onNavigate, settings, onUpdateSe
                                           const updated = [...(localSettings.featuredItems || []), newItem];
                                           setLocalSettings({...localSettings, featuredItems: updated});
                                           // Save immediately to preview
-                                          localStorage.setItem('nst_system_settings', JSON.stringify({...localSettings, featuredItems: updated}));
+                                          safeSetLocalStorage('nst_system_settings', JSON.stringify({...localSettings, featuredItems: updated}));
                                       }
                                   }}
                                   className="w-full p-2 border rounded-lg"
@@ -8528,7 +8529,7 @@ Capital of India?       Mumbai  Delhi   Kolkata Chennai 2       Delhi is the cap
                       ))}
                   </div>
                   <textarea value={dbContent} onChange={e => setDbContent(e.target.value)} className="w-full h-96 bg-slate-950 text-green-400 font-mono text-xs p-4 rounded-lg focus:outline-none border border-slate-800 resize-none" spellCheck={false} />
-                  <button onClick={() => { localStorage.setItem(dbKey, dbContent); alert("Database Updated Forcefully!"); }} className="mt-4 bg-red-600 text-white px-6 py-3 rounded-lg font-bold w-full hover:bg-red-700">⚠️ SAVE CHANGES (DANGEROUS)</button>
+                  <button onClick={() => { safeSetLocalStorage(dbKey, dbContent); alert("Database Updated Forcefully!"); }} className="mt-4 bg-red-600 text-white px-6 py-3 rounded-lg font-bold w-full hover:bg-red-700">⚠️ SAVE CHANGES (DANGEROUS)</button>
               </div>
           </div>
       )}
@@ -9826,7 +9827,7 @@ Capital of India?       Mumbai  Delhi   Kolkata Chennai 2       Delhi is the cap
                   <div className="flex gap-2">
                       <button 
                           onClick={() => {
-                              localStorage.setItem('nst_custom_blogger_page', customBloggerCode);
+                              safeSetLocalStorage('nst_custom_blogger_page', customBloggerCode);
                               if(isFirebaseConnected) {
                                   // Sync to Firebase for Universal Access
                                   set(ref(rtdb, 'custom_blogger_page'), customBloggerCode);

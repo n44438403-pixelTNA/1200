@@ -691,9 +691,9 @@ const RevisionHubComponent: React.FC<Props> = ({ user, onTabChange, settings, on
     }
 
     return (
-        <div className="space-y-6 pb-24 p-4 animate-in fade-in relative">
+        <div className="space-y-4 pb-12 p-3 animate-in fade-in relative">
             {/* MODE SWITCHER */}
-            <div className="flex justify-center mb-4">
+            <div className="flex justify-center mb-2">
                 <div className="bg-slate-100 p-1 rounded-full flex gap-1 shadow-inner">
                     {(() => {
                         const freeAccess = checkFeatureAccess('REVISION_HUB_FREE', user, settings || {});
@@ -764,34 +764,31 @@ const RevisionHubComponent: React.FC<Props> = ({ user, onTabChange, settings, on
                 </div>
             </div>
 
-            {/* DAILY BRIEFING */}            <div className="bg-white p-5 rounded-2xl border border-slate-200 flex items-center gap-4 shadow-sm relative overflow-hidden z-10 mb-6">
-                <div className="bg-blue-50 p-3 rounded-xl shadow-inner text-blue-600 z-10">
-                    <BrainCircuit size={28} />
+            {/* DAILY BRIEFING */}            <div className="bg-white p-3 rounded-2xl border border-slate-200 flex items-center gap-3 shadow-sm relative overflow-hidden z-10 mb-4">
+                <div className="bg-blue-50 p-2 rounded-xl shadow-inner text-blue-600 z-10">
+                    <BrainCircuit size={24} />
                 </div>
                 <div className="z-10 flex-1">
-                    <p className="text-lg font-black text-slate-800 tracking-tight leading-snug">
+                    <p className="text-md font-black text-slate-800 tracking-tight leading-snug">
                         Hello, <span className="text-blue-600">{user.name}</span>! 👋
                     </p>
-                    <p className="text-sm text-slate-500 font-medium">
-                        You have <span className="font-black text-blue-600">{pendingNotes.length} notes</span> to read and <span className="font-black text-purple-600">{pendingMcqs.length} MCQs</span> pending.
+                    <p className="text-xs text-slate-500 font-medium">
+                        You have <span className="font-black text-blue-600">{pendingNotes.length} notes</span> and <span className="font-black text-purple-600">{pendingMcqs.length} MCQs</span> pending.
                     </p>
                 </div>
             </div>
 
             {/* LOGIC EXPLANATION FOR USER */}
-            <div className="bg-purple-50 p-4 rounded-xl border border-purple-100 mb-6">
-                <p className="text-xs text-purple-800 leading-relaxed">
-                    <strong className="text-sm">Revision & Spaced Repetition Logic:</strong>
-                    <br/>• Score &lt; 50% (Weak) → Retest in 3 Days
-                    <br/>• Score 50-80% (Average) → Retest in 5 Days
-                    <br/>• Score &gt; 80% (Strong) → Retest in 10 Days
-                    <br/>• 30-Day Mastery Logic: If score &gt; 80% twice consecutively, mastered for 30 Days.
-                    <br/>• Mistake Pattern: Automatically captures and schedules incorrect answers.
+            <div className="bg-purple-50 p-3 rounded-xl border border-purple-100 mb-4">
+                <p className="text-[10px] text-purple-800 leading-tight">
+                    <strong className="text-xs">Revision Logic:</strong>
+                    <br/>• Weak (&lt;50%) → 3 Days | Avg (50-80%) → 5 Days | Strong (&gt;80%) → 10 Days
+                    <br/>• Mastered: &gt;80% twice consecutively (30 Days)
                 </p>
             </div>
 
             {/* NEW TAB SYSTEM (Phase 3 Compression) */}
-            <div className="flex p-1 bg-slate-100 rounded-xl mb-6 relative z-10">
+            <div className="flex p-1 bg-slate-100 rounded-xl mb-4 relative z-10">
                 <button
                     onClick={() => setActiveFilter('TODAY')}
                     className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2 ${

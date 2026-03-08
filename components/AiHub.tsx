@@ -175,10 +175,10 @@ export const AiHub: React.FC<Props> = ({ user, onTabChange, settings }) => {
     const eventSlides = getEventSlides();
 
     return (
-        <div className="space-y-6 pb-24 p-4 animate-in fade-in">
+        <div className="space-y-4 pb-12 p-3 animate-in fade-in">
              {/* EVENT BANNERS */}
              {eventSlides.length > 0 && (
-                <div className="h-48 shadow-lg rounded-2xl overflow-hidden">
+                <div className="h-40 shadow-lg rounded-2xl overflow-hidden">
                     <BannerCarousel
                         slides={eventSlides}
                         autoPlay={true}
@@ -216,49 +216,43 @@ export const AiHub: React.FC<Props> = ({ user, onTabChange, settings }) => {
             )}
 
             {/* HEADER */}
-            <div className="bg-gradient-to-br from-indigo-900 to-slate-900 p-6 rounded-3xl text-white shadow-xl relative overflow-hidden">
+            <div className="bg-gradient-to-br from-indigo-900 to-slate-900 p-4 rounded-2xl text-white shadow-lg relative overflow-hidden">
                 <div className="relative z-10">
-                    <h2 className="text-2xl font-black mb-1 flex items-center gap-2">
+                    <h2 className="text-xl font-black mb-1 flex items-center gap-2">
                         <Sparkles className="text-yellow-400" /> AI Center
                     </h2>
-                    <p className="text-indigo-200 text-sm">Your personal learning assistant powered by advanced AI.</p>
+                    <p className="text-indigo-200 text-xs">Your personal learning assistant powered by advanced AI.</p>
                 </div>
-                <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/20 rounded-full blur-3xl"></div>
+                <div className="absolute top-0 right-0 w-24 h-24 bg-indigo-500/20 rounded-full blur-2xl"></div>
             </div>
 
             {/* AI TOOLS COMPRESSED VIEW */}
-            <div className="grid grid-cols-1 gap-4">
+            <div className="grid grid-cols-2 gap-3">
                 {/* 1. CHAT TUTOR */}
                 <button
                     onClick={() => onTabChange('AI_CHAT')}
-                    className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex items-center gap-4 hover:shadow-md transition-all active:scale-[0.98]"
+                    className="bg-white p-3 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center gap-2 hover:shadow-md transition-all active:scale-[0.98] text-center"
                 >
-                    <div className="bg-indigo-100 text-indigo-600 p-3 rounded-xl">
-                        <Bot size={24} />
+                    <div className="bg-indigo-100 text-indigo-600 p-2 rounded-xl">
+                        <Bot size={20} />
                     </div>
-                    <div className="flex-1 text-left">
-                        <h3 className="font-bold text-slate-800">Chat with AI Tutor</h3>
-                        <p className="text-xs text-slate-500">Instant answers to any question.</p>
-                    </div>
-                    <div className="text-slate-300">
-                        <Zap size={16} />
+                    <div>
+                        <h3 className="font-bold text-slate-800 text-sm">Chat Tutor</h3>
+                        <p className="text-[10px] text-slate-500 line-clamp-2">Instant answers to any question.</p>
                     </div>
                 </button>
 
                 {/* 2. REPLACED: NOTES GENERATOR -> AI STUDY PLANNER */}
                 <button
                     onClick={() => setShowPlannerModal(true)}
-                    className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex items-center gap-4 hover:shadow-md transition-all active:scale-[0.98]"
+                    className="bg-white p-3 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center gap-2 hover:shadow-md transition-all active:scale-[0.98] text-center"
                 >
-                    <div className="bg-pink-100 text-pink-600 p-3 rounded-xl">
-                        <Calendar size={24} />
+                    <div className="bg-pink-100 text-pink-600 p-2 rounded-xl">
+                        <Calendar size={20} />
                     </div>
-                    <div className="flex-1 text-left">
-                        <h3 className="font-bold text-slate-800">AI Personalized Plans</h3>
-                        <p className="text-xs text-slate-500">Get a study routine based on your history.</p>
-                    </div>
-                    <div className="text-slate-300">
-                        <Zap size={16} />
+                    <div>
+                        <h3 className="font-bold text-slate-800 text-sm">AI Plans</h3>
+                        <p className="text-[10px] text-slate-500 line-clamp-2">Get a routine based on history.</p>
                     </div>
                 </button>
 

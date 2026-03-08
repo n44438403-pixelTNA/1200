@@ -3,6 +3,7 @@
 
 body {
     font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+    background: #f5f7fb;
 }
 
 /* Vercel Toast Hide */
@@ -220,22 +221,48 @@ button {
   border-left: 4px solid #3b82f6;
 }
 
+.topic-card {
+  background: #ffffff;
+  padding: 22px;
+  border-radius: 14px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+  margin-bottom: 30px;
+}
+
+.topic-card h2 {
+  margin-top: 0;
+  margin-bottom: 15px;
+}
+
+.topic-card div {
+  margin-top: 12px;
+  line-height: 1.6;
+}
+
+.visual-facts ul,
+.recap ul {
+  padding-left: 20px;
+}
+
 .example {
   background: #dcfce7; /* light green */
   border-left: 4px solid #22c55e;
 }
 
 .exam {
-  background: #fef08a; /* light yellow */
-  border-left: 4px solid #eab308;
+  background: #eaf5ff;
+  padding: 10px;
+  border-radius: 8px;
 }
 
 .mistake {
-  background: #fee2e2; /* light red */
-  border-left: 4px solid #ef4444;
+  background: #ffecec;
+  padding: 10px;
+  border-radius: 8px;
 }
 
 .memory {
-  background: #f3e8ff; /* light purple */
-  border-left: 4px solid #a855f7;
+  background: #f1fff2;
+  padding: 10px;
+  border-radius: 8px;
 }

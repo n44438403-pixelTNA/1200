@@ -747,29 +747,33 @@ export const fetchLessonContent = async (
               
               STRUCTURE EXACTLY AS FOLLOWS (Template):
 
+              You MUST output the topics using this exact HTML template structure for EVERY topic so the app can style it correctly. NEVER USE MARKDOWN HEADINGS FOR THESE SECTIONS, USE THE HTML DIVS:
+
+              <div class="topic-card">
+                  <h2>Topic Title Here</h2>
+                  <div class="definition"><b>📘 Definition</b><p>Detailed explanation here.</p></div>
+                  <div class="visual-facts"><b>📊 Quick Facts</b><ul><li>Fact 1</li><li>Fact 2</li></ul></div>
+                  <div class="explanation"><b>📝 Explanation / Real Life Example</b><p>Explain it to the student with an analogy.</p></div>
+                  <div class="exam">🎯 <b>Exam Point</b><p>Important exam tip.</p></div>
+                  <div class="mistake">⚠ <b>Common Mistake</b><p>What students get wrong.</p></div>
+                  <div class="memory">🧠 <b>Memory Trick</b><p>Mnemonic to remember.</p></div>
+                  <div class="recap">🔁 <b>Recap</b><ul><li>Point 1</li><li>Point 2</li></ul></div>
+              </div>
+
               1. 🚀 Quick Revision (8-12 bullet points of the most crucial concepts)
 
-              2. 📘 Topic 1 (Sub-topic name)
-                 - Definition (Simple language)
-                 - Explanation (Step-by-step)
-                 - Real Life Example (Connect with student)
-                 - Diagram (Text-based ASCII if possible, or describe it)
-                 - Important Points Box: Highlight 📌 Exam Point, 📌 Common Mistake, 📌 Memory Trick
-                 - 🔁 Topic Quick Recap (4-5 bullet points, one line summary, keyword list e.g., "• Needs sunlight • Produces glucose")
+              2. 📘 Topic Cards (Use the exact HTML structure provided above for EVERY major topic in the chapter. Generate as many <div class="topic-card"> blocks as needed to cover the chapter fully).
 
-              3. 📘 Topic 2 (Same structure as above)
-                 ... (Repeat for all key topics)
-
-              4. 🟡 Memory Anchors (Very Powerful)
+              3. 🟡 Memory Anchors (Very Powerful)
                  - For every important concept, provide: 🧠 Trick, 🔗 Link to previous concept, and 📊 Table comparison (e.g., Difference between X and Y).
 
-              5. 🔴 Final Chapter Brain Map
+              4. 🔴 Final Chapter Brain Map
                  - "Chapter in 60 Seconds"
                  - 10 bullet chain flow / small flow diagram (Ultra revision material).
 
-              6. 📝 20 Practice MCQs (At the very end, with Answer Key and Solutions)
+              5. 📝 20 Practice MCQs (At the very end, with Answer Key and Solutions)
               
-              Ensure you follow this strict Topic Wise Deep Dive structure.`;
+              Ensure you follow this strict Topic Wise Deep Dive structure using the HTML classes provided.`;
           } else {
               // FREE PROMPT (200-300 Words)
               prompt = `${customInstruction}
@@ -830,6 +834,17 @@ export const fetchLessonContent = async (
        OUTPUT FORMAT STRICTLY:
        <<<PREMIUM>>>
        [Detailed Content Here including Introduction, Key Concepts, Tables, Flowcharts, Formulas, Exam Alerts etc.]
+       Use the following HTML template structure for EVERY topic so the app can style it correctly. NEVER USE MARKDOWN HEADINGS FOR THESE SECTIONS, USE THE HTML DIVS:
+       <div class="topic-card">
+           <h2>Topic Title Here</h2>
+           <div class="definition"><b>📘 Definition</b><p>Detailed explanation here.</p></div>
+           <div class="visual-facts"><b>📊 Quick Facts</b><ul><li>Fact 1</li><li>Fact 2</li></ul></div>
+           <div class="explanation"><b>📝 Explanation / Real Life Example</b><p>Explain it to the student with an analogy.</p></div>
+           <div class="exam">🎯 <b>Exam Point</b><p>Important exam tip.</p></div>
+           <div class="mistake">⚠ <b>Common Mistake</b><p>What students get wrong.</p></div>
+           <div class="memory">🧠 <b>Memory Trick</b><p>Mnemonic to remember.</p></div>
+           <div class="recap">🔁 <b>Recap</b><ul><li>Point 1</li><li>Point 2</li></ul></div>
+       </div>
        <<<SUMMARY>>>
        [Short 200-300 word Summary Here]
        `;
@@ -915,7 +930,17 @@ export const generateCustomNotes = async (userTopic: string, adminPrompt: string
     
     TOPIC: ${userTopic}
     
-    Ensure the content is well-structured with headings and bullet points.`;
+    Ensure the content is well-structured. You MUST output the topics using this exact HTML template structure for EVERY topic so the app can style it correctly. NEVER USE MARKDOWN HEADINGS FOR THESE SECTIONS, USE THE HTML DIVS:
+    <div class="topic-card">
+        <h2>Topic Title Here</h2>
+        <div class="definition"><b>📘 Definition</b><p>Detailed explanation here.</p></div>
+        <div class="visual-facts"><b>📊 Quick Facts</b><ul><li>Fact 1</li><li>Fact 2</li></ul></div>
+        <div class="explanation"><b>📝 Explanation / Real Life Example</b><p>Explain it to the student with an analogy.</p></div>
+        <div class="exam">🎯 <b>Exam Point</b><p>Important exam tip.</p></div>
+        <div class="mistake">⚠ <b>Common Mistake</b><p>What students get wrong.</p></div>
+        <div class="memory">🧠 <b>Memory Trick</b><p>Mnemonic to remember.</p></div>
+        <div class="recap">🔁 <b>Recap</b><ul><li>Point 1</li><li>Point 2</li></ul></div>
+    </div>`;
 
     return await executeWithRotation(async () => {
         return await callGroqApi([{ role: "user", content: prompt }], modelName);

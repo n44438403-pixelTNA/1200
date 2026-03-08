@@ -8,3 +8,28 @@
   ➜  Local:   http://localhost:5000/
   ➜  Network: http://192.168.0.2:5000/
 [BABEL] Note: The code generator has deoptimised the styling of /app/components/AdminDashboard.tsx as it exceeds the max of 500KB.
+
+10:18:23 AM [vite] (client) hmr update /index.css, /index.css?direct
+10:18:48 AM [vite] (client) hmr update /index.css, /index.css?direct
+10:21:16 AM [vite] (client) hmr update /App.tsx, /components/StudentDashboard.tsx, /components/AdminDashboard.tsx, /components/StudentAiAssistant.tsx, /components/SyllabusManager.tsx, /components/admin/ChallengeCreator20.tsx
+10:21:38 AM [vite] (client) hmr update /App.tsx, /components/StudentDashboard.tsx, /components/AdminDashboard.tsx, /components/StudentAiAssistant.tsx, /components/SyllabusManager.tsx, /components/admin/ChallengeCreator20.tsx
+10:22:00 AM [vite] (client) hmr update /App.tsx, /components/StudentDashboard.tsx, /components/AdminDashboard.tsx, /components/StudentAiAssistant.tsx, /components/SyllabusManager.tsx, /components/admin/ChallengeCreator20.tsx
+10:30:19 AM [vite] (client) hmr update /index.css, /index.css?direct
+10:30:51 AM [vite] (client) hmr update /App.tsx, /components/StudentDashboard.tsx, /components/AdminDashboard.tsx, /components/StudentAiAssistant.tsx, /components/SyllabusManager.tsx, /components/admin/ChallengeCreator20.tsx
+10:31:01 AM [vite] (client) hmr update /App.tsx, /components/StudentDashboard.tsx, /components/AdminDashboard.tsx, /components/StudentAiAssistant.tsx, /components/SyllabusManager.tsx, /components/admin/ChallengeCreator20.tsx
+10:31:08 AM [vite] (client) hmr update /App.tsx, /components/StudentDashboard.tsx, /components/AdminDashboard.tsx, /components/StudentAiAssistant.tsx, /components/SyllabusManager.tsx, /components/admin/ChallengeCreator20.tsx
+10:41:20 AM [vite] (client) hmr update /components/AdminDashboard.tsx
+10:42:24 AM [vite] (client) hmr update /components/AdminDashboard.tsx
+10:42:49 AM [vite] (client) hmr update /components/AdminDashboard.tsx
+10:42:57 AM [vite] (client) hmr update /components/AdminDashboard.tsx
+10:43:04 AM [vite] (client) hmr update /components/AdminDashboard.tsx
+10:43:30 AM [vite] (client) hmr update /components/AdminDashboard.tsx
+10:44:11 AM [vite] (client) hmr update /components/AdminDashboard.tsx
+10:52:59 AM [vite] (client) hmr update /components/AdminDashboard.tsx
+10:53:47 AM [vite] (client) hmr update /components/AdminDashboard.tsx
+10:54:43 AM [vite] (client) hmr update /components/AdminDashboard.tsx
+10:55:20 AM [vite] (client) hmr update /components/AdminDashboard.tsx
+10:55:55 AM [vite] (client) hmr update /components/AdminDashboard.tsx
+11:17:30 AM [vite] (client) hmr update /components/AdminDashboard.tsx
+11:17:30 AM [vite] (client) hmr update /components/AdminDashboard.tsx
+11:24:17 AM [vite] (client) hmr update /components/AdminDashboard.tsx

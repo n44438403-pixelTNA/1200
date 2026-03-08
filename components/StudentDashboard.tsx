@@ -1427,36 +1427,17 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
       }
 
       // 🚨 CATCH-ALL FALLBACK (Prevents Blank Screen of Death)
-      return (
-          <div className="flex flex-col items-center justify-center py-20 px-6 text-center animate-in fade-in zoom-in duration-300">
-              <div className="w-24 h-24 bg-red-50 rounded-full flex items-center justify-center mb-6">
-                  <AlertCircle size={48} className="text-red-500" />
-              </div>
-              <h2 className="text-2xl font-black text-slate-800 mb-2">Oops! Content Not Found</h2>
-              <p className="text-slate-500 mb-8 max-w-sm">
-                  We couldn't find the page or content you were looking for. You might have clicked a broken link or the content was removed.
-              </p>
-              <Button
-                  onClick={() => {
-                      onTabChange('HOME');
-                      setContentViewStep('SUBJECTS');
-                  }}
-                  variant="primary"
-                  size="lg"
-                  className="shadow-xl"
-                  icon={<Home />}
-              >
-                  Go to Student Dashboard
-              </Button>
-          </div>
-      );
+      // NOTE: We do not return the fallback here because other tabs like REVISION, HISTORY, etc.
+      // are rendered OUTSIDE of renderMainContent().
+      // If we return the fallback here, it will block rendering of those tabs.
+      return null;
   };
 
   const isStudyMode = activeTab === 'VIDEO' || activeTab === 'PDF' || activeTab === 'MCQ' || activeTab === 'AUDIO' || (contentViewStep === 'PLAYER' && activeTab !== 'HOME') || activeTab === 'WEEKLY_TEST' || activeTab === 'CHALLENGE_20';
 
   return (
 
-    <div className={`min-h-screen bg-slate-50 pb-[80px] ${!isStudyMode ? 'pt-[74px] px-0' : ''}`}>
+    <div className={`min-h-screen bg-slate-50 pb-[80px] px-0`}>
 
         {/* GLOBAL HEADER DESIGN (Visible on all dashboard tabs) */}
         {!isStudyMode && (

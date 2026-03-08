@@ -1,3 +1,4 @@
+import { safeSetLocalStorage } from '../utils/safeStorage';
 import React, { useState } from 'react';
 import { X, Gift, Check, ArrowRight } from 'lucide-react';
 import { User } from '../types';
@@ -86,7 +87,7 @@ export const ReferralPopup: React.FC<Props> = ({ user, onClose, onUpdateUser }) 
                 if (u.id === referrer.id) return { ...u, ...referrerUpdates };
                 return u;
             });
-            localStorage.setItem('nst_users', JSON.stringify(newUsersList));
+            safeSetLocalStorage('nst_users', JSON.stringify(newUsersList));
             
             // Sync
             saveUserToLive(updatedUser);

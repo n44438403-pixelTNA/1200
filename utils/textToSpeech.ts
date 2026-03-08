@@ -1,3 +1,4 @@
+import { safeSetLocalStorage } from '../utils/safeStorage';
 
 export const getAvailableVoices = (): Promise<SpeechSynthesisVoice[]> => {
     if (!('speechSynthesis' in window)) {
@@ -40,7 +41,7 @@ export const getCategorizedVoices = async () => {
 };
 
 export const setPreferredVoice = (voiceURI: string) => {
-    localStorage.setItem('nst_preferred_voice_uri', voiceURI);
+    safeSetLocalStorage('nst_preferred_voice_uri', voiceURI);
 };
 
 export const getPreferredVoice = async (): Promise<SpeechSynthesisVoice | undefined> => {

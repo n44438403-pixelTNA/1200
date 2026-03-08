@@ -1,3 +1,4 @@
+import { safeSetLocalStorage } from '../../utils/safeStorage';
 
 import React, { useState, useEffect } from 'react';
 import { SystemSettings } from '../../types';
@@ -49,7 +50,7 @@ export const NstaFeatureManager: React.FC<Props> = ({ settings, onUpdateSettings
         onUpdateSettings(updatedSettings);
 
         // Also persist locally as fallback
-        localStorage.setItem('nst_system_settings', JSON.stringify(updatedSettings));
+        safeSetLocalStorage('nst_system_settings', JSON.stringify(updatedSettings));
 
         alert("NSTA Configuration Saved Successfully!");
     };

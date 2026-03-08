@@ -1,3 +1,4 @@
+import { safeSetLocalStorage } from '../utils/safeStorage';
 import React, { useEffect, useState } from 'react';
 import { X, Rocket, Download } from 'lucide-react';
 import { TimeConfig } from '../types';
@@ -53,7 +54,7 @@ export const UpdatePopup: React.FC<Props> = ({ latestVersion, updateUrl, launchD
                 const key = `nst_update_first_seen_${latestVersion}`;
                 const firstSeen = localStorage.getItem(key);
                 if (!firstSeen) {
-                    localStorage.setItem(key, now.toString());
+                    safeSetLocalStorage(key, now.toString());
                     deadline = now + graceDuration;
                 } else {
                     deadline = parseInt(firstSeen) + graceDuration;

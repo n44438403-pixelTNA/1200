@@ -1,3 +1,4 @@
+import { safeSetLocalStorage } from '../utils/safeStorage';
 
 import { QuestionBankItem, Challenge20, ClassLevel, MCQItem } from '../types';
 
@@ -21,7 +22,7 @@ export const saveQuestionsToBank = async (questions: MCQItem[], subject: string,
         }));
         
         const updatedBank = [...bank, ...newItems];
-        localStorage.setItem(BANK_KEY, JSON.stringify(updatedBank));
+        safeSetLocalStorage(BANK_KEY, JSON.stringify(updatedBank));
         console.log(`Saved ${newItems.length} questions to Bank.`);
         return true;
     } catch (e) {
@@ -72,7 +73,7 @@ export const saveChallenge20 = async (challenge: Challenge20) => {
         const filtered = challenges.filter(c => c.id !== challenge.id);
         
         const updated = [...filtered, challenge];
-        localStorage.setItem(CHALLENGES_KEY, JSON.stringify(updated));
+        safeSetLocalStorage(CHALLENGES_KEY, JSON.stringify(updated));
         
         // Also save questions to bank implicitly if needed, but usually we do that separately
         return true;
@@ -107,7 +108,7 @@ export const deleteChallenge20 = async (id: string) => {
     
     const challenges: Challenge20[] = JSON.parse(stored);
     const updated = challenges.filter(c => c.id !== id);
-    localStorage.setItem(CHALLENGES_KEY, JSON.stringify(updated));
+    safeSetLocalStorage(CHALLENGES_KEY, JSON.stringify(updated));
 };
 
 export const cleanupExpiredChallenges = async () => {
@@ -121,7 +122,7 @@ export const cleanupExpiredChallenges = async () => {
     const active = challenges.filter(c => new Date(c.expiryDate) > now);
     
     if (active.length !== challenges.length) {
-        localStorage.setItem(CHALLENGES_KEY, JSON.stringify(active));
+        safeSetLocalStorage(CHALLENGES_KEY, JSON.stringify(active));
         console.log("Cleaned up expired challenges.");
     }
 };

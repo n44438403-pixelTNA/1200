@@ -1,3 +1,4 @@
+import { safeSetLocalStorage } from '../utils/safeStorage';
 import React, { useState, useEffect } from 'react';
 // Sync check
 import type { MCQResult, User, SystemSettings } from '../types';
@@ -420,7 +421,7 @@ export const MarksheetCard: React.FC<Props> = ({ result, user, settings, onClose
               credits: skipCost ? user.credits : user.credits - cost,
               mcqHistory: updatedHistory
           };
-          localStorage.setItem('nst_current_user', JSON.stringify(updatedUser));
+          safeSetLocalStorage('nst_current_user', JSON.stringify(updatedUser));
           await saveUserToLive(updatedUser);
           if (onUpdateUser) onUpdateUser(updatedUser);
 

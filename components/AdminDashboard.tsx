@@ -2293,9 +2293,10 @@ const AdminDashboardInner: React.FC<Props> = ({ onNavigate, settings, onUpdateSe
                   }
                   // MODE B: Vertical Block (Improved Robustness)
                   else {
-                      const lines = textForMcq.split('\n').map(l => l.trim()).filter(l => l);
+                      const lines = textForMcq.split('\n').map(l => l.trim()).filter(l => l && !l.startsWith('---'));
                       let i = 0;
                       let currentGlobalTopic = '';
+                      const ADVANCED_START_REGEX = /^(📘|\uD83D\uDCD8)?\s*\*\*(Question|Q)\s*\d+\*\*/i;
 
                       while (i < lines.length) {
                           const line = lines[i];
@@ -2309,9 +2310,115 @@ const AdminDashboardInner: React.FC<Props> = ({ onNavigate, settings, onUpdateSe
                           }
 
                           // 2. CHECK FOR QUESTION START
-                          const isQuestionStart = QUESTION_START_REGEX.test(line) || looksLikeQuestionBlock(lines, i);
+                          const isAdvancedStart = ADVANCED_START_REGEX.test(line);
+                          const isSimpleStart = !isAdvancedStart && (QUESTION_START_REGEX.test(line) || looksLikeQuestionBlock(lines, i));
 
-                          if (isQuestionStart) {
+                          if (isAdvancedStart) {
+                              let qData: MCQItem = {
+                                  topic: currentGlobalTopic,
+                                  question: '',
+                                  options: [],
+                                  correctAnswer: 0,
+                                  explanation: '',
+                                  concept: '',
+                                  examTip: '',
+                                  commonMistake: '',
+                                  mnemonic: '',
+                                  difficultyLevel: ''
+                              };
+
+                              i++; // Move past the start line
+
+                              // Extract metadata before Options:
+                              while (i < lines.length && !/^Options:/i.test(lines[i]) && !/^[A-D]\)/i.test(lines[i])) {
+                                  let mLine = lines[i];
+                                  if (/^📖\s*Topic:/i.test(mLine)) {
+                                      qData.topic = mLine.replace(/^📖\s*Topic:\s*/i, '').trim();
+                                  } else if (/^❓\s*\*\*Question:\*\*/i.test(mLine)) {
+                                      qData.question = mLine.replace(/^❓\s*\*\*Question:\*\*\s*/i, '').trim();
+                                  } else if (!/^🔥/.test(mLine)) {
+                                      if (!qData.question) qData.question = mLine;
+                                      else qData.question += '\n' + mLine;
+                                  }
+                                  i++;
+                              }
+
+                              // If "Options:" line exists, skip it
+                              if (i < lines.length && /^Options:/i.test(lines[i])) {
+                                  i++;
+                              }
+
+                              // Extract 4 options
+                              while (i < lines.length && qData.options.length < 4) {
+                                  if (/^[A-D]\)/i.test(lines[i])) {
+                                      qData.options.push(lines[i].replace(/^[A-D]\)\s*/i, '').trim());
+                                  } else if (lines[i].trim()) {
+                                      qData.options.push(lines[i].trim());
+                                  }
+                                  i++;
+                              }
+
+                              // Find Answer line
+                              while (i < lines.length && !/^✅\s*\*\*Correct Answer:\*\*/i.test(lines[i])) {
+                                  i++;
+                              }
+                              if (i < lines.length) {
+                                  i++; // Skip the ✅ **Correct Answer:** line
+
+                                  if (i < lines.length) {
+                                      let ansIdx = -1;
+                                      // Match from the original line before replacing
+                                      let match = lines[i].match(/^([A-D])\)/i) || lines[i].match(/^([A-D])/i);
+                                      if (match) {
+                                          const map: any = { 'A': 0, 'B': 1, 'C': 2, 'D': 3 };
+                                          ansIdx = map[match[1].toUpperCase()];
+                                      }
+                                      if (ansIdx < 0 || ansIdx > 3) ansIdx = 0;
+                                      qData.correctAnswer = ansIdx;
+                                      i++;
+                                  }
+                              }
+
+                              // Extract the rest of the fields until next question or topic
+                              let currentField = 'explanation';
+                              while (i < lines.length) {
+                                  let nLine = lines[i];
+                                  if (ADVANCED_START_REGEX.test(nLine) || /^<TOPIC:/i.test(nLine) || QUESTION_START_REGEX.test(nLine)) {
+                                      break;
+                                  }
+
+                                  if (/^💡\s*\*\*Concept:\*\*/i.test(nLine)) {
+                                      currentField = 'concept';
+                                      nLine = nLine.replace(/^💡\s*\*\*Concept:\*\*\s*/i, '').trim();
+                                  } else if (/^🔎\s*\*\*Explanation:\*\*/i.test(nLine)) {
+                                      currentField = 'explanation';
+                                      nLine = nLine.replace(/^🔎\s*\*\*Explanation:\*\*\s*/i, '').trim();
+                                  } else if (/^🎯\s*\*\*Exam Tip:\*\*/i.test(nLine)) {
+                                      currentField = 'examTip';
+                                      nLine = nLine.replace(/^🎯\s*\*\*Exam Tip:\*\*\s*/i, '').trim();
+                                  } else if (/^⚠\s*\*\*Common Mistake:\*\*/i.test(nLine)) {
+                                      currentField = 'commonMistake';
+                                      nLine = nLine.replace(/^⚠\s*\*\*Common Mistake:\*\*\s*/i, '').trim();
+                                  } else if (/^🧠\s*\*\*Memory Trick:\*\*/i.test(nLine)) {
+                                      currentField = 'mnemonic';
+                                      nLine = nLine.replace(/^🧠\s*\*\*Memory Trick:\*\*\s*/i, '').trim();
+                                  } else if (/^📊\s*\*\*Difficulty Level:\*\*/i.test(nLine)) {
+                                      currentField = 'difficultyLevel';
+                                      nLine = nLine.replace(/^📊\s*\*\*Difficulty Level:\*\*\s*/i, '').replace(/^[🟡🔴🟢]\s*/, '').trim();
+                                  }
+
+                                  if (nLine) {
+                                      // @ts-ignore
+                                      if (qData[currentField]) qData[currentField] += '\n' + nLine;
+                                      // @ts-ignore
+                                      else qData[currentField] = nLine;
+                                  }
+                                  i++;
+                              }
+
+                              newQuestions.push(qData);
+
+                          } else if (isSimpleStart) {
                               // Needs at least Q + 4 Options + Ans = 6 lines remaining
                               if (i + 5 >= lines.length) break;
 
@@ -2346,7 +2453,7 @@ const AdminDashboardInner: React.FC<Props> = ({ onNavigate, settings, onUpdateSe
                               while (nextIndex < lines.length) {
                                   const nextLine = lines[nextIndex];
                                   const isNextTopic = /^<TOPIC:\s*(.*?)>/i.test(nextLine);
-                                  const isNextQ = QUESTION_START_REGEX.test(nextLine) || looksLikeQuestionBlock(lines, nextIndex);
+                                  const isNextQ = QUESTION_START_REGEX.test(nextLine) || looksLikeQuestionBlock(lines, nextIndex) || ADVANCED_START_REGEX.test(nextLine);
 
                                   if (isNextQ || isNextTopic) break;
 

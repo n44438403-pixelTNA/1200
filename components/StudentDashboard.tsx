@@ -61,6 +61,8 @@ import { ExplorePage } from './ExplorePage';
 import { StudentHistoryModal } from './StudentHistoryModal';
 import { generateDailyRoutine } from '../utils/routineGenerator';
 import { FloatingActionMenu } from './FloatingActionMenu';
+import { StudentBottomNav } from './student/dashboard/StudentBottomNav';
+import { HomeTab } from './student/dashboard/HomeTab';
 // @ts-ignore
 import jsPDF from 'jspdf';
 // @ts-ignore
@@ -907,117 +909,21 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
       // 1. HOME TAB
       if (activeTab === 'HOME') {
           return (
-              <div className="space-y-3">
-                {/* PERFORMANCE GRAPH */}
-                <DashboardSectionWrapper id="section_performance" label="Performance" settings={settings} isLayoutEditing={isLayoutEditing} onToggleVisibility={toggleLayoutVisibility}>
-                    <PerformanceGraph
-                        history={user.mcqHistory || []}
-                        user={user}
-                        onViewNotes={(topic) => {
-                            onTabChange('PDF');
-                        }}
-                    />
-                </DashboardSectionWrapper>
-
-                {/* STUDY TIMER & MYSTERY BUTTON */}
-                <DashboardSectionWrapper id="section_timer" label="Study Goal" settings={settings} isLayoutEditing={isLayoutEditing} onToggleVisibility={toggleLayoutVisibility}>
-                    <div className="relative">
-                        <StudyGoalTimer
-                            dailyStudySeconds={dailyStudySeconds}
-                            targetSeconds={dailyTargetSeconds}
-                            onSetTarget={(s) => {
-                                setDailyTargetSeconds(s);
-                                safeSetLocalStorage(`nst_goal_${user.id}`, (s / 3600).toString());
-                            }}
-                        />
-
-                    </div>
-                </DashboardSectionWrapper>
-
-                {/* MAIN ACTION BUTTONS (RESTORED OLD LAYOUT) */}
-                <DashboardSectionWrapper id="section_main_actions" label="Main Actions" settings={settings} isLayoutEditing={isLayoutEditing} onToggleVisibility={toggleLayoutVisibility}>
-                    <div className="grid grid-cols-2 gap-3 w-[96%] mx-auto">
-                        {/* STUDY SECTION (REPLACED MY COURSES) */}
-                        <div className="col-span-2 bg-white rounded-[20px] p-5 border border-slate-100 shadow-[0_10px_25px_rgba(0,0,0,0.08)] mb-3">
-                            <h3 className="font-black text-slate-800 text-lg mb-3 flex items-center gap-2">
-                                <BookOpen className="text-blue-600" size={24} /> Study
-                            </h3>
-                            <div className="grid grid-cols-2 gap-3">
-                                {getSubjectsList(user.classLevel || '10', user.stream || 'Science', user.board).map((subject) => {
-                                    if ((settings?.hiddenSubjects || []).includes(subject.id)) return null;
-                                    return (
-                                        <button
-                                            key={subject.id}
-                                            onClick={() => {
-                                                onTabChange('COURSES');
-                                                handleContentSubjectSelect(subject);
-                                            }}
-                                            className={`flex flex-col items-center justify-center gap-2 p-3 rounded-2xl transition-all active:scale-95 border-2 ${
-                                                subject.id.includes('science') ? 'bg-purple-50 border-purple-100 text-purple-700' :
-                                                subject.id.includes('math') ? 'bg-blue-50 border-blue-100 text-blue-700' :
-                                                subject.id.includes('social') ? 'bg-orange-50 border-orange-100 text-orange-700' :
-                                                'bg-slate-50 border-slate-100 text-slate-700'
-                                            }`}
-                                        >
-                                            <div className={`p-2 rounded-full bg-white shadow-sm`}>
-                                                {/* Simple Icon Mapping or default */}
-                                                <BookOpen size={20} className={
-                                                    subject.id.includes('science') ? 'text-purple-600' :
-                                                    subject.id.includes('math') ? 'text-blue-600' :
-                                                    subject.id.includes('social') ? 'text-orange-600' :
-                                                    'text-slate-600'
-                                                } />
-                                            </div>
-                                            <span className="text-[10px] font-bold uppercase text-center leading-tight">
-                                                {subject.name}
-                                            </span>
-                                        </button>
-                                    );
-                                })}
-                            </div>
-                        </div>
-
-                        {(() => {
-                            // UNLOCKED AS PER REQUEST
-                            const isLocked = false;
-                            return (
-                                <button
-                                    onClick={() => {
-                                        onTabChange('ANALYTICS');
-                                    }}
-                                    className={`bg-white border-2 border-slate-100 p-4 rounded-3xl shadow-sm flex flex-col items-center justify-center gap-2 group active:scale-95 transition-all hover:border-blue-200 h-32 relative overflow-hidden ${isLocked ? 'opacity-50 grayscale cursor-not-allowed' : ''}`}
-                                >
-                                    <BarChart3 size={28} className="text-blue-600 mb-1" />
-                                    <span className="font-black text-slate-700 text-sm tracking-wide uppercase text-center">My Analysis</span>
-                                    {isLocked && <div className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full"><Lock size={12} /></div>}
-                                </button>
-                            );
-                        })()}
-
-                        {(() => {
-                            // Using VIDEO_ACCESS as proxy for Universal Video as it's the closest content type
-                            const access = checkFeatureAccess('VIDEO_ACCESS', user, settings || {});
-                            const isLocked = !access.hasAccess;
-                            return (
-                                <button
-                                    onClick={() => {
-                                        if (isLocked) { showAlert("🔒 Video content is locked by Admin.", "ERROR"); return; }
-                                        onTabChange('UNIVERSAL_VIDEO');
-                                    }}
-                                    className={`bg-white border-2 border-slate-100 p-4 rounded-3xl shadow-sm flex flex-col items-center justify-center gap-2 group active:scale-95 transition-all hover:border-rose-200 h-32 relative overflow-hidden ${isLocked ? 'opacity-50 grayscale cursor-not-allowed' : ''}`}
-                                >
-                                    <div className="relative">
-                                        <Video size={28} className="text-rose-600 mb-1" />
-                                        <div className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full animate-pulse border border-white"></div>
-                                    </div>
-                                    <span className="font-black text-slate-700 text-sm tracking-wide uppercase text-center">Universal Video</span>
-                                    {isLocked && <div className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full"><Lock size={12} /></div>}
-                                </button>
-                            );
-                        })()}
-                    </div>
-                </DashboardSectionWrapper>
-              </div>
+              <HomeTab
+                  user={user}
+                  settings={settings}
+                  dailyStudySeconds={dailyStudySeconds}
+                  dailyTargetSeconds={dailyTargetSeconds}
+                  setDailyTargetSeconds={(s) => {
+                      setDailyTargetSeconds(s);
+                      safeSetLocalStorage(`nst_goal_${user.id}`, (s / 3600).toString());
+                  }}
+                  isLayoutEditing={isLayoutEditing}
+                  toggleLayoutVisibility={toggleLayoutVisibility}
+                  onTabChange={onTabChange}
+                  handleContentSubjectSelect={handleContentSubjectSelect}
+                  showAlert={showAlert}
+              />
           );
       }
 
@@ -1953,48 +1859,11 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
         {/* FIXED BOTTOM NAVIGATION */}
 
         {!(activeTab === 'VIDEO' || activeTab === 'PDF' || activeTab === 'MCQ' || activeTab === 'AUDIO' || (contentViewStep === 'PLAYER' && (activeTab as any) !== 'HOME') || activeTab === 'WEEKLY_TEST' || activeTab === 'CHALLENGE_20') && (
-        <div className="fixed bottom-0 left-0 right-0 max-w-[1080px] mx-auto bg-white border-t border-slate-200 shadow-[0_-4px_10px_rgba(0,0,0,0.05)] z-[9999] pb-[env(safe-area-inset-bottom,0px)]">
-            <div className="flex justify-around items-center h-[65px] py-[6px]">
-                <button onClick={() => { onTabChange('HOME'); setContentViewStep('SUBJECTS'); }} className={`flex flex-col items-center justify-center w-full h-full gap-1.5 ${activeTab === 'HOME' ? 'text-blue-600' : 'text-slate-400'}`}>
-                    <Home size={24} fill={activeTab === 'HOME' ? "currentColor" : "none"} />
-                    <span className="text-[12px] font-bold">Home</span>
-                </button>
-
-                <button
-                    onClick={() => {
-                        onTabChange('REVISION' as any);
-                    }}
-                    className={`flex flex-col items-center justify-center w-full h-full gap-1.5 ${activeTab === 'REVISION' ? 'text-blue-600' : 'text-slate-400'}`}
-                >
-                    <div className="relative">
-                        <BrainCircuit size={24} fill={activeTab === 'REVISION' ? "currentColor" : "none"} />
-                    </div>
-                    <span className="text-[12px] font-bold">Revision</span>
-                </button>
-
-                <button
-                    onClick={() => {
-                        onTabChange('AI_HUB');
-                    }}
-                    className={`flex flex-col items-center justify-center w-full h-full gap-1.5 ${activeTab === 'AI_HUB' ? 'text-blue-600' : 'text-slate-400'}`}
-                >
-                    <div className="relative">
-                        <Sparkles size={24} fill={activeTab === 'AI_HUB' ? "currentColor" : "none"} />
-                    </div>
-                    <span className="text-[12px] font-bold">AI Hub</span>
-                </button>
-
-                <button onClick={() => onTabChange('HISTORY')} className={`flex flex-col items-center justify-center w-full h-full gap-1.5 ${activeTab === 'HISTORY' ? 'text-blue-600' : 'text-slate-400'}`}>
-                    <History size={24} />
-                    <span className="text-[12px] font-bold">History</span>
-                </button>
-
-                <button onClick={() => onTabChange('PROFILE')} className={`flex flex-col items-center justify-center w-full h-full gap-1.5 ${activeTab === 'PROFILE' ? 'text-blue-600' : 'text-slate-400'}`}>
-                    <UserIconOutline size={24} fill={activeTab === 'PROFILE' ? "currentColor" : "none"} />
-                    <span className="text-[12px] font-bold">Profile</span>
-                </button>
-            </div>
-        </div>
+            <StudentBottomNav
+                activeTab={activeTab}
+                onTabChange={onTabChange}
+                setContentViewStep={setContentViewStep}
+            />
         )}
 
         {/* SIDEBAR OVERLAY (INLINE) */}

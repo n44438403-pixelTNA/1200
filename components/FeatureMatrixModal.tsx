@@ -2,7 +2,7 @@
 import React from 'react';
 import { X, Check, Lock, AlertTriangle, Crown, List, Shield, Zap, Sparkles, BookOpen, Star, Layout, MessageSquare, Gamepad2, Trophy, Video, FileText, Headphones } from 'lucide-react';
 import { SystemSettings } from '../types';
-import { NSTA_DEFAULT_FEATURES } from '../constants';
+import { NSTA_DEFAULT_FEATURES, DEFAULT_PLAN_COMPARISON } from '../constants';
 
 interface Props {
   isOpen: boolean;

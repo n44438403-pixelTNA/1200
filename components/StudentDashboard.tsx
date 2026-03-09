@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { safeSetLocalStorage } from '../utils/safeStorage';
+import { safeSetLocalStorage, saveUserLocal } from '../utils/safeStorage';
 import { User, Subject, StudentTab, SystemSettings, CreditPackage, WeeklyTest, Chapter, MCQItem, Challenge20 } from '../types';
 import { updateUserStatus, db, saveUserToLive, getChapterData, rtdb, saveAiInteraction, saveDemandRequest, uploadProfilePicture } from '../firebase';
 import { doc, onSnapshot } from 'firebase/firestore';
@@ -146,7 +146,7 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
 
           // Optimistically update local UI
           const updatedUser = { ...user, photoURL: newUrl };
-          safeSetLocalStorage('nst_current_user', JSON.stringify(updatedUser));
+          saveUserLocal(updatedUser);
 
           // Tell parent or state to re-render
           // Since user is a prop and the sync can take a second, force reload to immediately show the picture
@@ -414,7 +414,7 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
           const newRoutine = generateDailyRoutine(user);
           const updatedUser = { ...user, dailyRoutine: newRoutine };
           if (!isImpersonating) {
-              safeSetLocalStorage('nst_current_user', JSON.stringify(updatedUser));
+              saveUserLocal(updatedUser);
               saveUserToLive(updatedUser);
           }
           onRedeemSuccess(updatedUser);
@@ -642,9 +642,13 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
 
   useEffect(() => {
       const interval = setInterval(() => {
-          updateUserStatus(user.id, dailyStudySeconds);
+          if (dailyStudySeconds % 60 === 0) {
+              updateUserStatus(user.id, dailyStudySeconds);
+          }
           const todayStr = new Date().toDateString();
-          safeSetLocalStorage(`activity_${user.id}_${todayStr}`, dailyStudySeconds.toString());
+          if (dailyStudySeconds % 10 === 0) {
+              safeSetLocalStorage(`activity_${user.id}_${todayStr}`, dailyStudySeconds.toString());
+          }
           const accountAgeHours = (Date.now() - new Date(user.createdAt).getTime()) / (1000 * 60 * 60);
           const firstDayBonusClaimed = localStorage.getItem(`first_day_ultra_${user.id}`);
           if (accountAgeHours < 24 && dailyStudySeconds >= 3600 && !firstDayBonusClaimed) {
@@ -660,7 +664,7 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
                   const idx = storedUsers.findIndex((u:User) => u.id === user.id);
                   if (idx !== -1) storedUsers[idx] = updatedUser;
                   safeSetLocalStorage('nst_users', JSON.stringify(storedUsers));
-                  safeSetLocalStorage('nst_current_user', JSON.stringify(updatedUser));
+                  saveUserLocal(updatedUser);
                   safeSetLocalStorage(`first_day_ultra_${user.id}`, 'true');
                   onRedeemSuccess(updatedUser);
                   showAlert("🎉 FIRST DAY BONUS: You unlocked 1 Hour Free ULTRA Subscription!", 'SUCCESS');
@@ -698,7 +702,7 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
       safeSetLocalStorage('nst_users', JSON.stringify(storedUsers));
 
       if (!isImpersonating) {
-          safeSetLocalStorage('nst_current_user', JSON.stringify(updatedUser));
+          saveUserLocal(updatedUser);
           saveUserToLive(updatedUser);
       }
       onRedeemSuccess(updatedUser);

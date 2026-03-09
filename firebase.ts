@@ -218,10 +218,43 @@ export const getUserData = async (userId: string) => {
         if (coreData) {
              // Fetch segregated bulky data
              const bulkySnap = await getDoc(doc(db, "user_data", userId)).catch(() => null);
+             let fullData = { ...coreData };
              if (bulkySnap && bulkySnap.exists()) {
-                  return { ...coreData, ...bulkySnap.data() };
+                  fullData = { ...fullData, ...bulkySnap.data() };
              }
-             return coreData;
+
+             // Fetch subcollections to merge if missing or to update
+             try {
+                 const historySnap = await getDocs(collection(db, "users", userId, "history"));
+                 if (!historySnap.empty) {
+                     const historyItems = historySnap.docs.map(doc => doc.data());
+                     // Merge history items with mcqHistory if needed, or replace if empty
+                     if (!fullData.mcqHistory || fullData.mcqHistory.length === 0) {
+                         fullData.mcqHistory = historyItems.sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());
+                     } else {
+                         // Simple merge to ensure no items are lost
+                         const existingIds = new Set(fullData.mcqHistory.map((item: any) => item.id));
+                         const newItems = historyItems.filter(item => !existingIds.has(item.id));
+                         fullData.mcqHistory = [...newItems, ...fullData.mcqHistory].sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());
+                     }
+                 }
+
+                 const testResultsSnap = await getDocs(collection(db, "users", userId, "test_results"));
+                 if (!testResultsSnap.empty) {
+                     const testItems = testResultsSnap.docs.map(doc => doc.data());
+                     if (!fullData.testResults || fullData.testResults.length === 0) {
+                         fullData.testResults = testItems.sort((a: any, b: any) => new Date(b.submittedAt || b.date).getTime() - new Date(a.submittedAt || a.date).getTime());
+                     } else {
+                         const existingIds = new Set(fullData.testResults.map((item: any) => item.testId || item.id));
+                         const newItems = testItems.filter(item => !existingIds.has(item.testId || item.id));
+                         fullData.testResults = [...newItems, ...fullData.testResults].sort((a: any, b: any) => new Date(b.submittedAt || b.date).getTime() - new Date(a.submittedAt || a.date).getTime());
+                     }
+                 }
+             } catch (subErr) {
+                 console.error("Error fetching subcollections:", subErr);
+             }
+
+             return fullData;
         }
 
         return null;

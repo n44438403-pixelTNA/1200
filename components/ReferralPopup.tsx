@@ -1,4 +1,4 @@
-import { safeSetLocalStorage } from '../utils/safeStorage';
+import { safeSetLocalStorage, saveUserLocal } from '../utils/safeStorage';
 import React, { useState } from 'react';
 import { X, Gift, Check, ArrowRight } from 'lucide-react';
 import { User } from '../types';

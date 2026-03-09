@@ -1,4 +1,4 @@
-import { safeSetLocalStorage } from '../utils/safeStorage';
+import { safeSetLocalStorage, saveUserLocal } from '../utils/safeStorage';
 import React, { useState } from 'react';
 import { User, Board, ClassLevel, Stream } from '../types';
 import { saveUserToLive } from '../firebase';
@@ -89,7 +89,7 @@ export const Onboarding: React.FC<Props> = ({ user, onComplete, onLogout }) => {
           } else {
              safeSetLocalStorage('nst_users', JSON.stringify([updatedUser]));
           }
-          safeSetLocalStorage('nst_current_user', JSON.stringify(updatedUser));
+          saveUserLocal(updatedUser);
 
           onComplete(updatedUser);
       } catch (error) {

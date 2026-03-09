@@ -1,4 +1,4 @@
-import { safeSetLocalStorage } from '../utils/safeStorage';
+import { safeSetLocalStorage, saveUserLocal } from '../utils/safeStorage';
 
 import React, { useState, useEffect, useRef } from 'react';
 import { WeeklyTest, MCQItem } from '../types';

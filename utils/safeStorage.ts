@@ -1,3 +1,30 @@
+import { storage } from './storage';
+
+export const saveUserLocal = async (user: any) => {
+    if (!user) return;
+
+    // Separate bulky data from lightweight user
+    const {
+        mcqHistory,
+        testResults,
+        usageHistory,
+        inbox,
+        progress,
+        ...lightweightUser
+    } = user;
+
+    // Save lightweight to localStorage
+    safeSetLocalStorage('nst_current_user', JSON.stringify(lightweightUser));
+
+    // Save bulky to IndexedDB
+    const bulkyData = { mcqHistory, testResults, usageHistory, inbox, progress };
+    try {
+        await storage.setItem(`nst_user_bulky_${user.id}`, bulkyData);
+    } catch (err) {
+        console.error('Error saving bulky data to IndexedDB:', err);
+    }
+};
+
 export const safeSetLocalStorage = (key: string, value: string) => {
     try {
         localStorage.setItem(key, value);

@@ -59,8 +59,9 @@ export class ErrorBoundary extends Component<Props, State> {
                 </button>
 
                 <button
-                  onClick={() => {
+                  onClick={async () => {
                       localStorage.clear(); 
+                      await storage.clear();
                       window.location.reload();
                   }}
                   className="w-full bg-slate-100 text-slate-600 font-bold py-3.5 rounded-xl flex items-center justify-center gap-2 hover:bg-slate-200 transition-colors"

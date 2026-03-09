@@ -1,4 +1,4 @@
-import { safeSetLocalStorage } from '../utils/safeStorage';
+import { safeSetLocalStorage, saveUserLocal } from '../utils/safeStorage';
 
 import { ClassLevel, Subject, Chapter, LessonContent, Language, Board, Stream, ContentType, MCQItem, SystemSettings } from "../types";
 import { STATIC_SYLLABUS, DEFAULT_SUBJECTS } from "../constants";

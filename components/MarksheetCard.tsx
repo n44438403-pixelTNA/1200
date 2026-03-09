@@ -899,7 +899,7 @@ export const MarksheetCard: React.FC<Props> = ({ result, user, settings, onClose
               </div>
               <div className="bg-white border border-slate-200 rounded-2xl p-4 text-center shadow-sm">
                   <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Speed</p>
-                  <p className="text-xl font-black text-slate-800">{result.averageTimePerQuestion.toFixed(1)}s</p>
+                  <p className="text-xl font-black text-slate-800">{(result.averageTimePerQuestion || 0).toFixed(1)}s</p>
                   <p className="text-[8px] text-slate-400 uppercase">per question</p>
               </div>
               <div className="bg-white border border-slate-200 rounded-2xl p-4 text-center shadow-sm flex flex-col items-center justify-center">

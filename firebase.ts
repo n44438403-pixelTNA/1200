@@ -218,10 +218,24 @@ export const getUserData = async (userId: string) => {
         if (coreData) {
              // Fetch segregated bulky data
              const bulkySnap = await getDoc(doc(db, "user_data", userId)).catch(() => null);
+             let bulkyData = {};
              if (bulkySnap && bulkySnap.exists()) {
-                  return { ...coreData, ...bulkySnap.data() };
+                  bulkyData = bulkySnap.data();
              }
-             return coreData;
+
+             // Fetch history subcollection
+             const historySnap = await getDocs(collection(db, "users", userId, "history")).catch(() => null);
+             if (historySnap && !historySnap.empty) {
+                  (bulkyData as any).mcqHistory = historySnap.docs.map(d => d.data());
+             }
+
+             // Fetch test_results subcollection
+             const testResultsSnap = await getDocs(collection(db, "users", userId, "test_results")).catch(() => null);
+             if (testResultsSnap && !testResultsSnap.empty) {
+                  (bulkyData as any).testResults = testResultsSnap.docs.map(d => d.data());
+             }
+
+             return { ...coreData, ...bulkyData };
         }
 
         return null;

@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { safeSetLocalStorage } from '../utils/safeStorage';
+import { safeSetLocalStorage, saveUserLocal } from '../utils/safeStorage';
 import { Chapter, User, Subject, SystemSettings } from '../types';
 import { Music, Lock, ArrowLeft, Crown, AlertCircle, Headphones, Play, Mic2, BarChart2 } from 'lucide-react';
 import { getChapterData, saveUserToLive } from '../firebase';
@@ -120,7 +120,7 @@ export const AudioPlaylistView: React.FC<Props> = ({
       let updatedUser = { ...user, credits: user.credits - price };
       if (enableAuto) updatedUser.isAutoDeductEnabled = true;
 
-      safeSetLocalStorage('nst_current_user', JSON.stringify(updatedUser));
+      saveUserLocal(updatedUser);
       saveUserToLive(updatedUser);
       onUpdateUser(updatedUser);
       

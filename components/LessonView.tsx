@@ -1,4 +1,4 @@
-import { safeSetLocalStorage } from '../utils/safeStorage';
+import { safeSetLocalStorage, saveUserLocal } from '../utils/safeStorage';
 
 import React, { useState, useEffect, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
@@ -689,7 +689,7 @@ export const LessonView: React.FC<Props> = ({
         if (cost > 0) {
             const updatedUser = { ...user, credits: user.credits - cost };
             onUpdateUser(updatedUser);
-            safeSetLocalStorage('nst_current_user', JSON.stringify(updatedUser));
+            saveUserLocal(updatedUser);
             saveUserToLive(updatedUser);
         }
 

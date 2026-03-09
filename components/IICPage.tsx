@@ -1,4 +1,4 @@
-import { safeSetLocalStorage } from '../utils/safeStorage';
+import { safeSetLocalStorage, saveUserLocal } from '../utils/safeStorage';
 import React, { useState, useEffect } from 'react';
 import { IICPost, User } from '../types';
 import { Image as ImageIcon, Video, Type, Send, Trash2, Calendar, User as UserIcon, Upload, Link } from 'lucide-react';

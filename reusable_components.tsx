@@ -286,7 +286,8 @@ export const NotesViewer: React.FC<NotesViewerProps> = ({ content, language, set
 // 5. EXTRACTED MARKSHEET ANALYSIS COMPONENT
 // ==========================================
 
-import { Grid, BookOpen, Lightbulb, AlertCircle, BarChart, TrendingUp, TrendingDown, Target, Brain, Share2, Download, FileText, BrainCircuit, FileSearch } from 'lucide-react';
+import { Grid, BookOpen, Lightbulb, AlertCircle, BarChart, TrendingUp, TrendingDown, Target, Brain, Share2, Download, FileText, BrainCircuit, FileSearch, StopCircle, Play, Volume2 } from 'lucide-react';
+import { SpeakButton } from './components/SpeakButton';
 
 interface MarksheetAnalyzerProps {
     result: MCQResult;
@@ -299,6 +300,17 @@ interface MarksheetAnalyzerProps {
 
 export const MarksheetAnalyzer: React.FC<MarksheetAnalyzerProps> = ({ result, user, settings, onClose, questions }) => {
     const [activeTab, setActiveTab] = useState<'OFFICIAL_MARKSHEET' | 'SOLUTION' | 'OMR' | 'DETAILED_SOLUTIONS'>('OFFICIAL_MARKSHEET');
+
+    // TTS Playlist State
+    const [playlist, setPlaylist] = useState<string[]>([]);
+    const [currentTrack, setCurrentTrack] = useState(0);
+    const [isPlayingAll, setIsPlayingAll] = useState(false);
+
+    const stopPlaylist = () => {
+        setIsPlayingAll(false);
+        setCurrentTrack(0);
+        // Note: stopSpeech() from textToSpeech utility should be used here if fully integrating
+    };
 
     const totalQ = result.totalQuestions || 1;
     const scorePercent = Math.round((result.score / totalQ) * 100);
@@ -440,17 +452,87 @@ export const MarksheetAnalyzer: React.FC<MarksheetAnalyzerProps> = ({ result, us
     const renderDetailedSolutions = () => {
         if (!questions) return <p className="p-4 text-center text-slate-500">No question data available.</p>;
 
+        const handlePlayAll = () => {
+            const newPlaylist = questions.map((q, idx) => {
+                const cleanQuestion = stripHtml(q.question);
+                const cleanExplanation = q.explanation ? stripHtml(q.explanation) : '';
+                const cleanConcept = q.concept ? stripHtml(q.concept) : '';
+                const cleanExamTip = q.examTip ? stripHtml(q.examTip) : '';
+                const cleanCommonMistake = q.commonMistake ? stripHtml(q.commonMistake) : '';
+                const cleanMemoryTrick = q.mnemonic ? stripHtml(q.mnemonic) : '';
+                const correctAnswerText = q.options ? stripHtml(q.options[q.correctAnswer]) : '';
+
+                let text = `Question ${idx + 1}. ${cleanQuestion}. The correct answer is option ${String.fromCharCode(65 + q.correctAnswer)}, which is ${correctAnswerText}. `;
+                if (cleanConcept) text += `Concept: ${cleanConcept}. `;
+                if (cleanExplanation) text += `Explanation: ${cleanExplanation}. `;
+                if (cleanExamTip) text += `Exam Tip: ${cleanExamTip}. `;
+                if (cleanCommonMistake) text += `Common Mistake: ${cleanCommonMistake}. `;
+                if (cleanMemoryTrick) text += `Memory Trick: ${cleanMemoryTrick}. `;
+                return text;
+            });
+            setPlaylist(newPlaylist);
+            setCurrentTrack(0);
+            setIsPlayingAll(true);
+        };
+
         return (
-            <div className="space-y-6 animate-in slide-in-from-bottom-4">
+            <div className="space-y-6 animate-in slide-in-from-bottom-4 mt-6">
+                <div className="flex justify-between items-center border-b-2 border-slate-100 pb-3 mb-6">
+                    <h3 className="font-black text-slate-800 text-xl flex items-center gap-2">
+                        <BookOpen size={24} className="text-blue-600" /> Full Solution & Analysis
+                    </h3>
+                    <div className="flex gap-2">
+                        {isPlayingAll ? (
+                            <button onClick={stopPlaylist} className="px-3 py-1.5 bg-red-100 text-red-700 rounded-lg text-xs font-bold hover:bg-red-200 flex items-center gap-1 shadow-sm transition-all active:scale-95">
+                                <StopCircle size={14} /> Stop
+                            </button>
+                        ) : (
+                            <button onClick={handlePlayAll} className="px-3 py-1.5 bg-indigo-100 text-indigo-700 rounded-lg text-xs font-bold hover:bg-indigo-200 flex items-center gap-1 shadow-sm transition-all active:scale-95">
+                                <Play size={14} /> Play All
+                            </button>
+                        )}
+                    </div>
+                </div>
+
+                {isPlayingAll && (
+                    <div className="mb-6 p-3 bg-indigo-50 border border-indigo-200 rounded-xl flex items-center gap-3 animate-pulse shadow-inner">
+                        <Volume2 size={16} className="text-indigo-600 animate-bounce" />
+                        <span className="text-xs font-bold text-indigo-800">
+                            Playing Question {currentTrack + 1} of {playlist.length}
+                        </span>
+                        <button onClick={stopPlaylist} className="ml-auto p-1 bg-indigo-200 text-indigo-800 rounded-full hover:bg-indigo-300">
+                            <X size={14} />
+                        </button>
+                    </div>
+                )}
                 {questions.map((q, idx) => {
                     const omrEntry = result.omrData?.find(d => d.qIndex === idx);
                     const userSelected = omrEntry ? omrEntry.selected : -1;
                     const isCorrect = userSelected === q.correctAnswer;
                     const isSkipped = userSelected === -1;
 
+                    // Prepare TTS Text
+                    const cleanQuestion = stripHtml(q.question);
+                    const cleanExplanation = q.explanation ? stripHtml(q.explanation) : '';
+                    const cleanConcept = q.concept ? stripHtml(q.concept) : '';
+                    const cleanExamTip = q.examTip ? stripHtml(q.examTip) : '';
+                    const cleanCommonMistake = q.commonMistake ? stripHtml(q.commonMistake) : '';
+                    const cleanMemoryTrick = q.mnemonic ? stripHtml(q.mnemonic) : '';
+                    const correctAnswerText = q.options ? stripHtml(q.options[q.correctAnswer]) : '';
+
+                    let ttsText = `Question ${idx + 1}. ${cleanQuestion}. The correct answer is option ${String.fromCharCode(65 + q.correctAnswer)}, which is ${correctAnswerText}. `;
+                    if (cleanConcept) ttsText += `Concept: ${cleanConcept}. `;
+                    if (cleanExplanation) ttsText += `Explanation: ${cleanExplanation}. `;
+                    if (cleanExamTip) ttsText += `Exam Tip: ${cleanExamTip}. `;
+                    if (cleanCommonMistake) ttsText += `Common Mistake: ${cleanCommonMistake}. `;
+                    if (cleanMemoryTrick) ttsText += `Memory Trick: ${cleanMemoryTrick}. `;
+
                     return (
-                        <div key={idx} className={`bg-white rounded-2xl border-2 p-5 shadow-sm break-inside-avoid relative transition-all ${isCorrect ? 'border-green-100' : isSkipped ? 'border-slate-200' : 'border-red-100'}`}>
+                        <div key={idx} className={`bg-white rounded-2xl border-2 p-5 shadow-sm break-inside-avoid relative group transition-all ${isCorrect ? 'border-green-100 hover:border-green-200' : isSkipped ? 'border-slate-200 hover:border-slate-300' : 'border-red-100 hover:border-red-200'}`}>
                             <div className="absolute top-4 right-4 flex gap-2">
+                                <div className="opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <SpeakButton text={ttsText} className="bg-slate-100 hover:bg-slate-200 text-slate-600" iconSize={14} />
+                                </div>
                                 <span className={`px-2 py-1 rounded text-[10px] font-black uppercase tracking-wider ${isCorrect ? 'bg-green-100 text-green-700' : isSkipped ? 'bg-slate-100 text-slate-600' : 'bg-red-100 text-red-700'}`}>
                                     {isCorrect ? 'Correct' : isSkipped ? 'Skipped' : 'Incorrect'}
                                 </span>
@@ -496,6 +578,40 @@ export const MarksheetAnalyzer: React.FC<MarksheetAnalyzerProps> = ({ result, us
                                     <div className="p-4 bg-blue-50 border border-blue-100 rounded-[20px] shadow-sm">
                                         <p className="text-[12px] font-bold text-blue-700 mb-2 flex items-center gap-1"><BookOpen size={14} /> Explanation</p>
                                         <div className="text-sm text-slate-700 leading-relaxed font-medium" dangerouslySetInnerHTML={{ __html: renderMathInHtml(q.explanation) }} />
+                                    </div>
+                                )}
+                                {q.examTip && (
+                                    <div className="p-4 bg-amber-50 border border-amber-200 rounded-[20px] shadow-sm">
+                                        <p className="text-[12px] font-bold text-amber-700 mb-2 flex items-center gap-1">
+                                            <Target size={14} /> Exam Tip
+                                        </p>
+                                        <div className="text-sm text-amber-900 leading-relaxed font-medium" dangerouslySetInnerHTML={{ __html: renderMathInHtml(q.examTip) }} />
+                                    </div>
+                                )}
+                                {q.commonMistake && (
+                                    <div className="p-4 bg-red-50 border border-red-100 rounded-[20px] shadow-sm">
+                                        <p className="text-[12px] font-bold text-red-700 mb-2 flex items-center gap-1">
+                                            <AlertCircle size={14} /> Common Mistake
+                                        </p>
+                                        <div className="text-sm text-red-900 leading-relaxed font-medium" dangerouslySetInnerHTML={{ __html: renderMathInHtml(q.commonMistake) }} />
+                                    </div>
+                                )}
+                                {q.mnemonic && (
+                                    <div className="p-4 bg-purple-50 border border-purple-100 rounded-[20px] shadow-sm">
+                                        <p className="text-[12px] font-bold text-purple-700 mb-2 flex items-center gap-1">
+                                            <Brain size={14} /> Memory Trick
+                                        </p>
+                                        <div className="text-sm text-purple-900 leading-relaxed font-medium whitespace-pre-line" dangerouslySetInnerHTML={{ __html: renderMathInHtml(q.mnemonic) }} />
+                                    </div>
+                                )}
+                                {q.difficultyLevel && (
+                                    <div className="p-4 bg-slate-50 border border-slate-200 rounded-[20px] shadow-sm flex items-center gap-3">
+                                        <div className="flex items-center gap-1 text-[12px] font-bold text-slate-700">
+                                            <BarChart size={14} /> Difficulty:
+                                        </div>
+                                        <div className="text-sm text-slate-900 font-black">
+                                            {q.difficultyLevel}
+                                        </div>
                                     </div>
                                 )}
                             </div>

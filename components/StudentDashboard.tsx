@@ -1372,13 +1372,18 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
       if (!externallyHandledTabs.includes(activeTab as any)) {
           return (
               <div className="flex flex-col items-center justify-center h-[60vh] text-center p-6 animate-in fade-in">
-                  <div className="bg-blue-50 p-6 rounded-full mb-4">
-                      <LayoutGrid size={48} className="text-blue-500" />
+                  <div className="bg-white p-4 rounded-3xl mb-4 shadow-sm border border-slate-100 relative overflow-hidden">
+                      {settings?.appLogo ? (
+                          <img src={settings.appLogo} alt="Logo" className="w-20 h-20 object-contain relative z-10" />
+                      ) : (
+                          <BrainCircuit size={64} className="text-blue-500 relative z-10" />
+                      )}
+                      <div className="absolute inset-0 bg-blue-50/50 animate-pulse"></div>
                   </div>
-                  <h3 className="text-2xl font-black text-slate-800 mb-2">Content Not Found</h3>
-                  <p className="text-slate-500 mb-6 max-w-sm">We couldn't find the page you're looking for. It might have been moved or you might need to select a different option.</p>
-                  <button onClick={() => onTabChange('HOME')} className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-8 py-3 rounded-xl shadow-lg active:scale-95 transition-all">
-                      Go to Home
+                  <h3 className="text-2xl font-black text-slate-800 mb-2">Ready to Learn?</h3>
+                  <p className="text-slate-500 mb-8 max-w-sm font-medium">To continue your study, please click Start below.</p>
+                  <button onClick={() => onTabChange('HOME')} className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-black uppercase tracking-widest text-sm px-10 py-4 rounded-2xl shadow-lg shadow-blue-500/30 active:scale-95 transition-all flex items-center gap-2">
+                      Start <Rocket size={18} />
                   </button>
               </div>
           );

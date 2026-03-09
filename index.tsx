@@ -11,18 +11,16 @@ if (!rootElement) {
 
 const root = ReactDOM.createRoot(rootElement);
 root.render(
-  <React.StrictMode>
-    <ErrorBoundary>
-        <App />
-    </ErrorBoundary>
-  </React.StrictMode>
+  <ErrorBoundary>
+      <App />
+  </ErrorBoundary>
 );
 
 import { registerSW } from 'virtual:pwa-register';
 
 if ('serviceWorker' in navigator) {
   registerSW({
-    immediate: true,
+    immediate: false,
     onRegistered(r) {
       console.log('SW Registered:', r);
     },

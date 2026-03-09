@@ -1,4 +1,4 @@
-import { safeSetLocalStorage } from '../utils/safeStorage';
+import { safeSetLocalStorage, saveUserLocal } from '../utils/safeStorage';
 
 import { QuestionBankItem, Challenge20, ClassLevel, MCQItem } from '../types';
 

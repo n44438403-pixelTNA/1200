@@ -1,4 +1,4 @@
-import { safeSetLocalStorage } from '../utils/safeStorage';
+import { safeSetLocalStorage, saveUserLocal } from '../utils/safeStorage';
 
 export const getAvailableVoices = (): Promise<SpeechSynthesisVoice[]> => {
     if (!('speechSynthesis' in window)) {

@@ -1,4 +1,4 @@
-import { safeSetLocalStorage } from '../utils/safeStorage';
+import { safeSetLocalStorage, saveUserLocal } from '../utils/safeStorage';
 import React, { useEffect, useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { rtdb } from '../firebase';

@@ -1,4 +1,4 @@
-import { safeSetLocalStorage } from '../utils/safeStorage';
+import { safeSetLocalStorage, saveUserLocal } from '../utils/safeStorage';
 
 import React, { useState, useEffect } from 'react';
 import { Chapter, User, Subject, SystemSettings, MCQResult, PerformanceTag } from '../types';
@@ -219,7 +219,7 @@ export const McqView: React.FC<Props> = ({
               message: `Start Premium Test for ${cost} Coins?\nIncludes Instant Explanations & TTS.`,
               onConfirm: () => {
                   const updatedUser = { ...user, credits: user.credits - cost };
-                  safeSetLocalStorage('nst_current_user', JSON.stringify(updatedUser));
+                  saveUserLocal(updatedUser);
                   saveUserToLive(updatedUser);
                   onUpdateUser(updatedUser);
                   setConfirmConfig(prev => ({...prev, isOpen: false}));
@@ -521,7 +521,7 @@ export const McqView: React.FC<Props> = ({
 
       // 5. Save & Sync
       onUpdateUser(updatedUser); 
-      safeSetLocalStorage('nst_current_user', JSON.stringify(updatedUser));
+      saveUserLocal(updatedUser);
       saveUserToLive(updatedUser);
       
       // 6. Save detailed attempt to Legacy Local History & Firebase (Only attempted questions)
@@ -599,7 +599,7 @@ export const McqView: React.FC<Props> = ({
                   message: `Unlock answers & mistakes for ${cost} Coins?`,
                   onConfirm: () => {
                       const updatedUser = { ...user, credits: user.credits - cost };
-                      safeSetLocalStorage('nst_current_user', JSON.stringify(updatedUser));
+                      saveUserLocal(updatedUser);
                       saveUserToLive(updatedUser);
                       onUpdateUser(updatedUser);
                       setConfirmConfig(prev => ({...prev, isOpen: false}));
@@ -657,7 +657,7 @@ export const McqView: React.FC<Props> = ({
           onConfirm: () => {
               // Deduct Credits
               const updatedUser = { ...user, credits: user.credits - cost };
-              safeSetLocalStorage('nst_current_user', JSON.stringify(updatedUser));
+              saveUserLocal(updatedUser);
               saveUserToLive(updatedUser);
               onUpdateUser(updatedUser);
 

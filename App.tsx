@@ -2219,7 +2219,7 @@ const App: React.FC = () => {
       <div className="fixed bottom-0 left-0 right-0 h-[env(safe-area-inset-bottom,32px)] bg-slate-900 z-[100]"></div>
 
       {/* WATERMARK LAYER */}
-      {state.settings.isWatermarkEnabled !== false && (
+      {state.settings.isWatermarkEnabled === true && (
       <div className="fixed inset-0 z-[-1] pointer-events-none overflow-hidden select-none">
           {state.settings.appLogo && (
               <img

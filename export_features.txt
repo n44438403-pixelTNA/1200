@@ -1,0 +1,500 @@
+// --- UI DESIGN PRINCIPLES (Premium/App-like Style) ---
+// The app uses a clean, modern, and premium design language.
+// Key characteristics:
+// 1. Backgrounds: Soft slate colors (e.g., bg-slate-50 for app background, bg-white for cards).
+// 2. Padding: Ample padding inside cards and containers (e.g., p-4, p-6).
+// 3. Border Radius: Large border radii for a soft, friendly look (e.g., rounded-xl, rounded-2xl, rounded-3xl).
+// 4. Shadows: Soft, diffuse drop shadows to lift elements off the background (e.g., shadow-sm, shadow-md, shadow-lg, shadow-[0_4px_14px_rgba(0,0,0,0.08)]).
+// 5. Borders: Subtle borders to define edges without being harsh (e.g., border border-slate-100, border-slate-200).
+// 6. Typography: System fonts, clear hierarchy (e.g., text-slate-800 for headings, text-slate-500 for secondary text). Font weights are used strategically (e.g., font-black for main titles, font-bold for sub-titles, font-medium for body text).
+// 7. Accents: Use of vibrant but not overwhelming colors for interactive elements or status indicators (e.g., blue-600, green-500, red-500, purple-600).
+// 8. Animations: Smooth transitions and fade-ins (e.g., animate-in fade-in slide-in-from-bottom-4, transition-all).
+// 9. Full Width Cards: Dashboard UI cards span the full width of the screen (w-full with p-0 container padding) to seamlessly align with navigation bars, explicitly avoiding restricted widths or horizontal auto-margins.
+// 10. Multi-line Text: UI list items (such as Notes or PDF titles) allow multi-line text visibility for full reading, explicitly avoiding single-line CSS truncations like truncate or line-clamp-1.
+
+// Example Card Structure:
+// <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-200">
+//     <h3 className="font-black text-slate-800 text-lg mb-4">Card Title</h3>
+//     <p className="text-sm text-slate-500 mb-4">Card Description</p>
+//     <button className="w-full bg-blue-600 text-white font-bold py-3 rounded-xl shadow-lg hover:bg-blue-700 transition-colors">
+//         Action Button
+//     </button>
+// </div>
+
+// --- MCQ SUPPORT CODE ---
+// The app supports advanced MCQs with detailed explanations, concepts, exam tips, common mistakes, and memory tricks.
+// AI prompts generating MCQs must NOT include numbering in the question text.
+
+// MCQItem Interface (from types.ts):
+export interface MCQItem {
+  question: string;
+  options: string[];
+  correctAnswer: number; // Index 0-3
+  explanation: string;
+  mnemonic?: string; // Memory Trick
+  concept?: string; // Full concept explanation
+  topic?: string;
+  examTip?: string; // Exam Tip
+  commonMistake?: string; // Common Mistake
+  difficultyLevel?: 'Easy' | 'Medium' | 'Hard' | string; // Difficulty Level
+}
+
+// State Management (from LessonView.tsx/McqView.tsx):
+// - mcqState: Record<number, number | null> - Tracks selected answers (question index -> option index)
+// - timeSpentPerQuestion: Record<number, number> - Tracks time spent per question
+// - batchIndex: number - Current question or page index
+// - showResults: boolean - Toggles analysis/results view
+// - localMcqData: MCQItem[] - Shuffled/filtered copy of questions for the current session
+
+// Rendering Question & Options (Example Snippet):
+// <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm transition-all hover:shadow-md">
+//     <div className="flex justify-between items-start mb-4 gap-3">
+//         <div className="font-bold text-slate-800 flex gap-3 leading-relaxed flex-1">
+//             <span className="bg-blue-100 text-blue-700 w-6 h-6 rounded-full flex items-center justify-center text-xs shrink-0 font-bold mt-0.5">{idx + 1}</span>
+//             <div dangerouslySetInnerHTML={{ __html: renderMathInHtml(q.question) }} className="prose prose-sm max-w-none" />
+//         </div>
+//         <SpeakButton
+//             text={fullQuestionText}
+//             className="shrink-0"
+//             settings={settings}
+//             autoPlay={autoReadEnabled && !showResults && !showSubmitModal}
+//             onToggleAutoTts={onToggleAutoTts}
+//         />
+//     </div>
+//     <div className="space-y-2">
+//         {q.options.map((opt, oIdx) => {
+//             let btnClass = "w-full text-left p-3 rounded-xl border transition-all text-sm font-medium relative overflow-hidden bg-white border-slate-200 hover:bg-slate-50 hover:border-blue-200";
+//             // ... dynamic styling logic based on selection and correctness ...
+//             return (
+//                 <button key={oIdx} onClick={() => handleOptionSelect(idx, oIdx)} className={btnClass}>
+//                     <span className="relative z-10 flex justify-between items-center w-full gap-2">
+//                         <div dangerouslySetInnerHTML={{ __html: renderMathInHtml(opt) }} className="flex-1" />
+//                     </span>
+//                 </button>
+//             );
+//         })}
+//     </div>
+//     {/* Conditional Explanation Rendering */}
+//     {showExplanation && (
+//         <div className="mt-6 flex flex-col gap-4 animate-in fade-in slide-in-from-top-2">
+//             {/* Concept, Explanation, Exam Tip, Common Mistake, Memory Trick Blocks */}
+//         </div>
+//     )}
+// </div>
+
+// --- NOTES SUPPORT CODE ---
+// The app supports rendering plain text, Markdown, HTML, images, and embedded PDFs for notes.
+// AI-generated notes require strict HTML structure with specific classes:
+// topic-card, definition, visual-facts, explanation, example, exam, mistake, memory, recap, quick-revision.
+
+// Markdown & Math Rendering (from LessonView.tsx/PdfView.tsx):
+// import ReactMarkdown from 'react-markdown';
+// import remarkMath from 'remark-math';
+// import rehypeKatex from 'rehype-katex';
+// import 'katex/dist/katex.min.css';
+
+// <ReactMarkdown remarkPlugins={[remarkMath]} rehypePlugins={[rehypeKatex]}>
+//     {content.content}
+// </ReactMarkdown>
+
+// HTML Notes (AI or Free Notes):
+// <div
+//     className="prose prose-slate max-w-none prose-p:leading-relaxed prose-p:text-slate-700 prose-headings:font-black font-sans"
+//     dangerouslySetInnerHTML={{ __html: decodedContent }}
+// />
+
+// Deep Dive / Topic-Based Notes Structure (from PdfView.tsx):
+// Active Tab logic ('QUICK', 'DEEP_DIVE', 'PREMIUM', 'RESOURCES') dictates view.
+// 'DEEP_DIVE' parses HTML into sections for accordion display:
+// const extractTopicsFromHtml = (html: string) => { ... splits by <h1> or <h2> ... }
+
+// PDF Embedding (Google Drive):
+// function formatDriveLink(link: string) {
+//     let formatted = link;
+//     if (link.includes('drive.google.com') && link.includes('/view')) {
+//         formatted = link.replace(/\/view.*/, '/preview');
+//     }
+//     if (formatted.includes('drive.google.com') && !formatted.includes('rm=minimal')) {
+//         formatted += formatted.includes('?') ? '&rm=minimal' : '?rm=minimal';
+//     }
+//     return formatted;
+// }
+// <iframe src={formattedLink} className="w-full h-full border-none" allow="autoplay" sandbox="..." />
+
+// --- MARKSHEET ANALYSIS SUPPORT CODE ---
+// The app calculates scores, identifies weak topics, and renders an OMR sheet and detailed explanations.
+
+// Calculation Logic (from McqView.tsx/MarksheetCard.tsx):
+// const attemptsCount = answeredIndices.length;
+// const scorePct = (score / attemptsCount) * 100;
+// const averageTime = attemptsCount > 0 ? timeTaken / attemptsCount : 0;
+// Performance Tags: EXCELLENT (>=90%), GOOD (>=75%), AVERAGE (>=50%), BAD (<50%)
+
+// Topic Analysis Map:
+// const topicAnalysis: Record<string, { correct: number, total: number, percentage: number }> = {};
+// submittedQuestions.forEach((q, idx) => {
+//     const t = (q.topic || 'General').trim();
+//     if (!topicAnalysis[t]) topicAnalysis[t] = { correct: 0, total: 0, percentage: 0 };
+//     topicAnalysis[t].total += 1;
+//     if (remappedAnswers[idx] === q.correctAnswer) topicAnalysis[t].correct += 1;
+// });
+
+// Marksheet Result Interface:
+// export interface MCQResult {
+//   ...
+//   totalQuestions: number;
+//   correctCount: number;
+//   wrongCount: number;
+//   score: number;
+//   totalTimeSeconds: number;
+//   averageTimePerQuestion: number;
+//   performanceTag: PerformanceTag;
+//   omrData: { qIndex: number; selected: number; correct: number; timeSpent?: number; }[];
+//   topicAnalysis?: Record<string, { correct: number, total: number, percentage: number }>;
+// }
+
+// Recommendation Logic:
+// Any topic in `topicAnalysis` with a score < 60% (or < 50% depending on strictness) is flagged "WEAK".
+// The app searches for notes (Universal or Chapter-specific) that match the Weak Topic name to suggest them.
+
+// Teacher Remarks Logic (from MarksheetCard.tsx):
+// Examines the previous attempts (`historyArr`) to generate context-aware feedback (e.g., "Strong Growth", "Sudden Drop", "Plateau").
+
+// OMR Rendering (Snippet):
+// <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+//   {result.omrData?.map((data) => (
+//      <div key={data.qIndex} className="flex items-center gap-2 mb-3 bg-slate-50 p-2 rounded-xl border">
+//         <span className="w-8 text-center">{data.qIndex + 1}</span>
+//         <div className="flex gap-2 w-full justify-around">
+//             {/* options mapping ... style green if correct, red if selected & wrong */}
+//         </div>
+//      </div>
+//   ))}
+// </div>
+
+// --- SYLLABUS CODE STRUCTURE ---
+// The app relies on a static syllabus data structure (usually in `utils/full_syllabus_data.ts`).
+// It maps the syllabus dynamically using string keys in the format "{BOARD}-{CLASS}-{SUBJECT}".
+
+// Example Syllabus Structure (from full_syllabus_data.ts):
+export const FULL_SYLLABUS: Record<string, string[]> = {
+  "BSEB-10-Mathematics": [
+    "वास्तविक संख्याएँ",
+    "बहुपद",
+    "दो चर वाले रैखिक समीकरण युग्म",
+    "द्विघात समीकरण",
+    "समांतर श्रेढियाँ",
+    "त्रिभुज",
+    "निर्देशांक ज्यामिति",
+    "त्रिकोणमिति का परिचय",
+    "त्रिकोणमिति के कुछ अनुप्रयोग",
+    "वृत्त",
+    "रचनाएँ",
+    "वृत्तों से संबंधित क्षेत्रफल",
+    "पृष्ठीय क्षेत्रफल और आयतन",
+    "सांख्यिकी",
+    "प्रायिकता"
+  ],
+  "BSEB-10-Science": [
+    "रासायनिक अभिक्रियाएँ एवं समीकरण",
+    "अम्ल, क्षारक एवं लवण",
+    "धातु एवं अधातु",
+    "कार्बन एवं उसके यौगिक",
+    "तत्वों का आवर्त वर्गीकरण",
+    // ...
+  ],
+  "CBSE-10-Mathematics": [
+    "Real Numbers",
+    "Polynomials",
+    "Pair of Linear Equations in Two Variables",
+    "Quadratic Equations",
+    "Arithmetic Progressions",
+    // ...
+  ],
+  // Streams are added similarly (e.g., BSEB-11-Mathematics, BSEB-11-Physics)
+  // COMPETITION mode is handled via COMPETITION-COMPETITION-History, etc.
+};
+
+// --- REVISION HUB DATA FLOW ---
+// How MCQs and Notes send data to the Revision Hub:
+
+// 1. Data Source: The `user.mcqHistory` array in the User object.
+// Every time an MCQ test is completed (in `McqView.tsx`) or a Notes Revision session is finished (in `TodayRevisionView.tsx`),
+// an entry is pushed to the user's `mcqHistory`.
+
+// 2. MCQ Data Submission (from McqView.tsx):
+// When a test is finished, the `handleMCQComplete` function generates a result object of type `MCQResult`.
+// It includes:
+// - `score`, `totalQuestions`, `correctCount`
+// - `topicAnalysis`: A granular breakdown of performance by topic (extracted from the `topic` field of each question).
+// - `performanceTag` (EXCELLENT, GOOD, AVERAGE, BAD)
+// This result is appended to `updatedUser.mcqHistory` and saved to `localStorage` and Firebase.
+
+// 3. Notes Revision Data Submission (from TodayRevisionView.tsx / RevisionHub.tsx):
+// When a student completes reading pending notes in the "Today's Tasks" section of the Revision Hub,
+// it fires an `onComplete` callback. This creates a mock `MCQResult` entry with `type: 'REVISION_NOTES'`.
+// This mock entry updates the `lastRevDate` for that specific topic.
+
+// 4. Revision Hub Processing (in RevisionHub.tsx):
+// The `processedTopics` useMemo hook iterates over the `user.mcqHistory` (filtered for the last 7 days).
+// - It looks at both test results and note revision logs.
+// - It maps each result to a specific subtopic (using the `topicAnalysis` or `ultraAnalysisReport` fields).
+// - It calculates the current `score` (percentage) for that topic.
+// - It determines the `status` (WEAK, AVERAGE, STRONG, EXCELLENT) based on the score against thresholds (e.g., <50% is WEAK).
+// - Spaced Repetition Logic: It calculates `nextRevision` (for Notes) and `mcqDueDate` (for MCQs) based on the `status`.
+//   - Example (from `settings.revisionConfig.intervals`):
+//     - Weak: Revise in 1 day, MCQ in 3 days.
+//     - Strong: Revise in 7 days, MCQ in 10 days.
+
+// 5. Global Topic Strength Override:
+// If `scoreViewMode` is set to 'ALL_TIME', the Revision Hub ignores the specific test percentage and
+// uses `user.topicStrength[topicName]` (which aggregates all correct/total counts across all tests) to determine the status.
+
+
+// --- NEW SYLLABUS FORMAT (History, Geography, Economics, Political Science for 9/10) ---
+// The app splits Social Science into its constituent subjects for better granularity in class 9 and 10.
+
+  "BSEB-9-History": [
+    "भौगोलिक खोजें",
+    "अमेरिकी स्वतंत्रता संग्राम",
+    "फ्रांस की क्रांति",
+    "विश्व युद्धों का इतिहास",
+    "नाजीवाद",
+    "वन्य समाज और उपनिवेशवाद",
+    "शान्ति के प्रयास",
+    "कृषि और खेतिहर समाज"
+  ],
+  "BSEB-9-Geography": [
+    "स्थिति एवं विस्तार",
+    "भौतिक स्वरूप : संरचना एवं उच्चावच",
+    "अपवाह स्वरूप",
+    "जलवायु",
+    "प्राकृतिक वनस्पति एवं वन्य प्राणी",
+    "जनसंख्या",
+    "भारत के पड़ोसी देश",
+    "मानचित्र अध्ययन",
+    "क्षेत्रीय अध्ययन",
+    "आपदा प्रबंधन : एक परिचय",
+    "मानवीय गलतियों के कारण घटित आपदाएँ : नाभिकीय, जैविक और रासायनिक",
+    "सामान्य आपदाएँ : निवारण एवं नियंत्रण",
+    "समुदाय आधारित आपदा प्रबंधन"
+  ],
+  "BSEB-9-Political Science": [
+    "लोकतंत्र का क्रमिक विकास",
+    "लोकतंत्र क्या और क्यों?",
+    "संविधान निर्माण",
+    "चुनावी राजनीति",
+    "संसदीय लोकतंत्र की संस्थाएँ",
+    "लोकतांत्रिक अधिकार"
+  ],
+  "BSEB-9-Economics": [
+    "बिहार के एक गाँव की आर्थिक कहानी",
+    "मानव संसाधन",
+    "गरीबी",
+    "बेरोजगारी",
+    "कृषि एवं खाद्यान्न सुरक्षा",
+    "कृषि मजदूरों की समस्याएँ"
+  ],
+  "BSEB-10-History": [
+    "यूरोप में राष्ट्रवाद",
+    "समाजवाद एवं साम्यवाद",
+    "हिन्द-चीन में राष्ट्रवादी आन्दोलन",
+    "भारत में राष्ट्रवाद",
+    "अर्थव्यवस्था और आजीविका",
+    "शहरीकरण एवं शहरी जीवन",
+    "व्यापार और भूमंडलीकरण",
+    "प्रेस-संस्कृति एवं राष्ट्रवाद"
+  ],
+  "BSEB-10-Geography": [
+    "संसाधन, विकास और उपयोग",
+    "भूमि और मृदा संसाधन",
+    "जल संसाधन",
+    "वन और वन्य प्राणी संसाधन",
+    "खनिज संसाधन",
+    "ऊर्जा या शक्ति संसाधन",
+    "कृषि संसाधन",
+    "निर्माण उद्योग",
+    "परिवहन, संचार और व्यापार",
+    "बिहार - संसाधन एवं उपयोग",
+    "मानचित्र-अध्ययन (उच्चावच प्रदर्शन)",
+    "प्राकृतिक संकट और आपदा",
+    "आपदा प्रबंधन"
+  ],
+  "BSEB-10-Political Science": [
+    "लोकतंत्र में सत्ता की साझेदारी",
+    "सत्ता में साझेदारी की कार्यप्रणाली",
+    "लोकतंत्र में प्रतिस्पर्धा एवं संघर्ष",
+    "लोकतंत्र की उपलब्धियाँ",
+    "लोकतंत्र की चुनौतियों"
+  ],
+  "BSEB-10-Economics": [
+    "अर्थव्यवस्था एवं इसके विकास का इतिहास",
+    "राज्य एवं राष्ट्र की आय",
+    "मुद्रा, बचत एवं साख",
+    "हमारी वित्तीय संस्थाएँ",
+    "रोजगार एवं सेवाएँ",
+    "वैश्वीकरण",
+    "उपभोक्ता जागरण एवं संरक्षण"
+  ]
+
+// --- ACTUAL CODE SNIPPETS FOR REVISION HUB DATA TRANSMISSION ---
+
+// 1. From McqView.tsx (Submitting a regular MCQ Test):
+/*
+const handleMCQComplete = (score: number, answers: Record<number, number>, usedData: any[], timeTaken: number) => {
+    // ... calculate analytics ...
+    const topicAnalysis: Record<string, { correct: number, total: number, percentage: number }> = {};
+    submittedQuestions.forEach((q, idx) => {
+        const t = (q.topic || 'General').trim();
+        if (!topicAnalysis[t]) topicAnalysis[t] = { correct: 0, total: 0, percentage: 0 };
+        topicAnalysis[t].total += 1;
+        if (remappedAnswers[idx] === q.correctAnswer) topicAnalysis[t].correct += 1;
+    });
+
+    const result: MCQResult = {
+        id: `res-${Date.now()}`,
+        userId: user.id,
+        chapterId: chapter.id,
+        subjectId: subject.id,
+        subjectName: subject.name,
+        chapterTitle: chapter.title,
+        date: new Date().toISOString(),
+        score: score,
+        totalQuestions: submittedQuestions.length,
+        // ... other fields ...
+        topicAnalysis: topicAnalysis // Crucial for Revision Hub granular sub-topic tracking
+    };
+
+    const newHistory = [result, ...(updatedUser.mcqHistory || [])];
+    updatedUser.mcqHistory = newHistory;
+
+    // Save to App State and Firebase
+    onUpdateUser(updatedUser);
+    saveUserToLive(updatedUser);
+};
+*/
+
+// 2. From TodayRevisionView.tsx (Submitting a Notes Revision Session):
+/*
+const handleFinish = () => {
+    // Determine which topics were actually read/viewed
+    const completedTopics = topics.filter(t => !skippedTopics.includes(t.id));
+
+    // Construct mock results to feed the Revision Hub logic
+    const newHistoryEntries = completedTopics.map(t => ({
+        id: `rev-note-${Date.now()}-${t.id}`,
+        userId: user.id,
+        chapterId: t.chapterId,
+        subjectId: t.subjectId || 'REV_ID',
+        subjectName: t.subjectName || 'Revision',
+        chapterTitle: t.chapterName,
+        date: new Date().toISOString(),
+        type: 'REVISION_NOTES', // Identifies it as a notes revision, not a test
+        score: t.score, // Pass existing score to maintain history
+        totalQuestions: 0,
+        correctCount: 0,
+        wrongCount: 0,
+        // The Revision Hub parses 'ultraAnalysisReport' or direct topic names to map it back to the specific sub-topic
+        ultraAnalysisReport: JSON.stringify({
+            topics: [{ name: t.name, status: t.status }]
+        })
+    }));
+
+    // These entries are appended to user.mcqHistory
+    onComplete(completedTopics); // Parent (RevisionHub) appends to user.mcqHistory
+};
+*/
+
+// --- MAIN APP UI SKELETON (App.tsx & Dashboard) ---
+
+// 1. Root App Layout (from App.tsx):
+// The app uses a simple wrapper that handles background colors and safe areas.
+// <div className="min-h-screen bg-slate-50 font-sans text-slate-900 selection:bg-blue-200">
+//     <div className="max-w-md mx-auto min-h-screen bg-white shadow-2xl relative overflow-hidden flex flex-col">
+//         {/* Content Rendered Here (Auth, Onboarding, Dashboard, etc.) */}
+//     </div>
+// </div>
+
+// 2. Student Dashboard Layout (from StudentDashboard.tsx):
+// It features a top header, a scrollable main content area, and a bottom navigation bar.
+
+/*
+<div className="flex flex-col h-screen bg-slate-50 relative overflow-hidden">
+
+    {/* TOP HEADER */}
+    <div className="bg-white px-5 py-4 flex items-center justify-between shadow-sm z-30 sticky top-0">
+        <div className="flex items-center gap-3">
+            <button className="p-2 bg-slate-100 rounded-full">
+                <Menu size={20} className="text-slate-700" />
+            </button>
+            <div>
+                <h1 className="text-lg font-black text-slate-800 leading-tight">App Name</h1>
+                <p className="text-xs font-bold text-slate-500">Welcome back!</p>
+            </div>
+        </div>
+        <div className="flex gap-2">
+            <button className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center text-slate-600 relative">
+                <Bell size={20} />
+                <span className="absolute top-0 right-0 w-3 h-3 bg-red-500 rounded-full border-2 border-white"></span>
+            </button>
+            <button className="w-10 h-10 bg-indigo-100 text-indigo-700 rounded-full flex items-center justify-center font-bold">
+                {user.name.charAt(0).toUpperCase()}
+            </button>
+        </div>
+    </div>
+
+    {/* MAIN CONTENT AREA */}
+    <div className="flex-1 overflow-y-auto pb-24 scroll-smooth">
+        {/* Inner padding for standard views, or w-full/p-0 for edge-to-edge cards */}
+        <div className="p-5 space-y-6">
+
+            {/* Example: Daily Goal Card */}
+            <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-3xl p-6 text-white shadow-lg relative overflow-hidden">
+                <div className="relative z-10">
+                    <h2 className="text-xl font-black mb-1">Today's Goal</h2>
+                    <p className="text-blue-100 text-sm mb-4">Complete 50 MCQs to maintain streak.</p>
+                    <div className="bg-white/20 h-2 rounded-full overflow-hidden">
+                        <div className="bg-white h-full w-1/2 rounded-full"></div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Subjects Grid */}
+            <div className="grid grid-cols-2 gap-4">
+                {['Math', 'Science', 'History', 'English'].map(sub => (
+                    <button key={sub} className="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex flex-col items-center justify-center gap-2 hover:border-blue-300 transition-colors">
+                        <div className="w-12 h-12 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center">
+                            <BookOpen size={24} />
+                        </div>
+                        <span className="font-bold text-slate-700">{sub}</span>
+                    </button>
+                ))}
+            </div>
+
+        </div>
+    </div>
+
+    {/* BOTTOM NAVIGATION BAR */}
+    <div className="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border-t border-slate-100 px-6 py-3 flex justify-between items-center pb-safe shadow-[0_-4px_20px_rgba(0,0,0,0.05)] z-40">
+        {[
+            { id: 'HOME', icon: Home, label: 'Home' },
+            { id: 'REVISION', icon: BrainCircuit, label: 'Revision' },
+            { id: 'EXPLORE', icon: Compass, label: 'Explore' },
+            { id: 'PROFILE', icon: UserIcon, label: 'Profile' }
+        ].map(tab => (
+            <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex flex-col items-center gap-1 transition-colors ${
+                    activeTab === tab.id ? 'text-blue-600' : 'text-slate-400 hover:text-slate-600'
+                }`}
+            >
+                <div className={`p-1.5 rounded-xl ${activeTab === tab.id ? 'bg-blue-50' : 'bg-transparent'}`}>
+                    <tab.icon size={22} className={activeTab === tab.id ? 'fill-blue-100' : ''} />
+                </div>
+                <span className="text-[10px] font-bold">{tab.label}</span>
+            </button>
+        ))}
+    </div>
+</div>
+*/

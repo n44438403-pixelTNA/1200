@@ -89,12 +89,13 @@ export const MarksheetCard: React.FC<Props> = ({ result, user, settings, onClose
   const generateLocalAnalysis = () => {
       // Calculate weak/strong based on topicStats
 
-      let analysisSource: any = Object.keys(topicStats).length > 0 ? { ...topicStats } : {};
-      if (Object.keys(analysisSource).length === 0 && result.topicAnalysis) {
-          // Convert topicAnalysis to topicStats format
+      let analysisSource: any = {};
+      if (result.topicAnalysis && Object.keys(result.topicAnalysis).length > 0) {
           Object.keys(result.topicAnalysis).forEach(t => {
               analysisSource[t] = { correct: result.topicAnalysis![t].correct, total: result.topicAnalysis![t].total, percent: result.topicAnalysis![t].percentage };
           });
+      } else if (Object.keys(topicStats).length > 0) {
+          analysisSource = { ...topicStats };
       }
       const topics = Object.keys(analysisSource).map(t => {
           const s = analysisSource[t];
@@ -572,11 +573,12 @@ export const MarksheetCard: React.FC<Props> = ({ result, user, settings, onClose
   };
 
   const renderWeakAreasSummary = () => {
+      // Prioritize result.topicAnalysis if it exists, otherwise fall back to locally calculated topicStats
+      const analysisSource = result.topicAnalysis && Object.keys(result.topicAnalysis).length > 0
+          ? Object.keys(result.topicAnalysis).map(t => ({ name: t, percent: result.topicAnalysis![t].percentage }))
+          : Object.keys(topicStats).map(t => ({ name: t, percent: topicStats[t].percent }));
 
-      let weakTopics = Object.keys(topicStats).filter(t => topicStats[t].percent < 50);
-      if (weakTopics.length === 0 && result.topicAnalysis) {
-          weakTopics = Object.keys(result.topicAnalysis).filter(t => result.topicAnalysis![t].percentage < 50);
-      }
+      const weakTopics = analysisSource.filter(t => t.percent < 50);
 
       if (weakTopics.length === 0) return null;
 
@@ -586,14 +588,11 @@ export const MarksheetCard: React.FC<Props> = ({ result, user, settings, onClose
                   <AlertCircle size={16} /> Weak Areas (Needs Focus)
               </h3>
               <div className="flex flex-wrap gap-2">
-                  {weakTopics.map(t => {
-                      const percent = topicStats[t]?.percent ?? result.topicAnalysis![t].percentage;
-                      return (
-                          <span key={t} className="px-3 py-1 bg-white border border-red-200 rounded-full text-xs font-bold text-red-600 shadow-sm">
-                              {t} ({percent}%)
-                          </span>
-                      );
-                  })}
+                  {weakTopics.map(t => (
+                      <span key={t.name} className="px-3 py-1 bg-white border border-red-200 rounded-full text-xs font-bold text-red-600 shadow-sm">
+                          {t.name} ({t.percent}%)
+                      </span>
+                  ))}
               </div>
               <p className="text-[10px] text-red-500 font-bold mt-3">
                   Please review these topics carefully before the next test.
@@ -819,11 +818,13 @@ export const MarksheetCard: React.FC<Props> = ({ result, user, settings, onClose
       }
 
       // Prepare Topic Lists for Top 5
-      let analysisSource: any = Object.keys(topicStats).length > 0 ? { ...topicStats } : {};
-      if (Object.keys(analysisSource).length === 0 && result.topicAnalysis) {
+      let analysisSource: any = {};
+      if (result.topicAnalysis && Object.keys(result.topicAnalysis).length > 0) {
           Object.keys(result.topicAnalysis).forEach(t => {
               analysisSource[t] = { correct: result.topicAnalysis![t].correct, total: result.topicAnalysis![t].total, percent: result.topicAnalysis![t].percentage };
           });
+      } else if (Object.keys(topicStats).length > 0) {
+          analysisSource = { ...topicStats };
       }
       const topicsList = Object.keys(analysisSource).map(t => ({
           name: t,
@@ -1071,11 +1072,63 @@ export const MarksheetCard: React.FC<Props> = ({ result, user, settings, onClose
       </div>
   );
 
-  const renderDetailedSolutions = () => (
+  const renderDetailedSolutions = () => {
+      // Build TTS Playlist
+      const handlePlayAll = () => {
+          if (!questions) return;
+          const newPlaylist = questions.map((q, idx) => {
+              const cleanQuestion = stripHtml(q.question);
+              const cleanExplanation = q.explanation ? stripHtml(q.explanation) : '';
+              const cleanConcept = q.concept ? stripHtml(q.concept) : '';
+              const cleanExamTip = q.examTip ? stripHtml(q.examTip) : '';
+              const cleanCommonMistake = q.commonMistake ? stripHtml(q.commonMistake) : '';
+              const cleanMemoryTrick = q.mnemonic ? stripHtml(q.mnemonic) : '';
+              const correctAnswerText = q.options ? stripHtml(q.options[q.correctAnswer]) : '';
+
+              let text = `Question ${idx + 1}. ${cleanQuestion}. The correct answer is option ${String.fromCharCode(65 + q.correctAnswer)}, which is ${correctAnswerText}. `;
+              if (cleanConcept) text += `Concept: ${cleanConcept}. `;
+              if (cleanExplanation) text += `Explanation: ${cleanExplanation}. `;
+              if (cleanExamTip) text += `Exam Tip: ${cleanExamTip}. `;
+              if (cleanCommonMistake) text += `Common Mistake: ${cleanCommonMistake}. `;
+              if (cleanMemoryTrick) text += `Memory Trick: ${cleanMemoryTrick}. `;
+              return text;
+          });
+          setPlaylist(newPlaylist);
+          setCurrentTrack(0);
+          setIsPlayingAll(true);
+      };
+
+      return (
       <div className="mt-8">
-          <h3 className="font-black text-slate-800 text-xl mb-6 flex items-center gap-2 border-b-2 border-slate-100 pb-3">
-              <BookOpen size={24} className="text-blue-600" /> Full Solution & Analysis
-          </h3>
+          <div className="flex justify-between items-center border-b-2 border-slate-100 pb-3 mb-6">
+              <h3 className="font-black text-slate-800 text-xl flex items-center gap-2">
+                  <BookOpen size={24} className="text-blue-600" /> Full Solution & Analysis
+              </h3>
+              <div className="flex gap-2">
+                  {isPlayingAll ? (
+                      <button onClick={stopPlaylist} className="px-3 py-1.5 bg-red-100 text-red-700 rounded-lg text-xs font-bold hover:bg-red-200 flex items-center gap-1 shadow-sm transition-all active:scale-95">
+                          <StopCircle size={14} /> Stop
+                      </button>
+                  ) : (
+                      <button onClick={handlePlayAll} className="px-3 py-1.5 bg-indigo-100 text-indigo-700 rounded-lg text-xs font-bold hover:bg-indigo-200 flex items-center gap-1 shadow-sm transition-all active:scale-95">
+                          <Play size={14} /> Play All
+                      </button>
+                  )}
+              </div>
+          </div>
+
+          {isPlayingAll && (
+              <div className="mb-6 p-3 bg-indigo-50 border border-indigo-200 rounded-xl flex items-center gap-3 animate-pulse shadow-inner">
+                  <Volume2 size={16} className="text-indigo-600 animate-bounce" />
+                  <span className="text-xs font-bold text-indigo-800">
+                      Playing Question {currentTrack + 1} of {playlist.length}
+                  </span>
+                  <button onClick={stopPlaylist} className="ml-auto p-1 bg-indigo-200 text-indigo-800 rounded-full hover:bg-indigo-300">
+                      <X size={14} />
+                  </button>
+              </div>
+          )}
+
           <div className="space-y-6">
               {questions?.map((q, idx) => {
                   const omrEntry = result.omrData?.find(d => d.qIndex === idx);
@@ -1086,18 +1139,28 @@ export const MarksheetCard: React.FC<Props> = ({ result, user, settings, onClose
                   // Prepare TTS Text
                   const cleanQuestion = stripHtml(q.question);
                   const cleanExplanation = q.explanation ? stripHtml(q.explanation) : '';
+                  const cleanConcept = q.concept ? stripHtml(q.concept) : '';
+                  const cleanExamTip = q.examTip ? stripHtml(q.examTip) : '';
+                  const cleanCommonMistake = q.commonMistake ? stripHtml(q.commonMistake) : '';
+                  const cleanMemoryTrick = q.mnemonic ? stripHtml(q.mnemonic) : '';
                   const correctAnswerText = q.options ? stripHtml(q.options[q.correctAnswer]) : '';
-                  const ttsText = `Question ${idx + 1}. ${cleanQuestion}. The correct answer is option ${String.fromCharCode(65 + q.correctAnswer)}, which is ${correctAnswerText}. Explanation: ${cleanExplanation}`;
+
+                  let ttsText = `Question ${idx + 1}. ${cleanQuestion}. The correct answer is option ${String.fromCharCode(65 + q.correctAnswer)}, which is ${correctAnswerText}. `;
+                  if (cleanConcept) ttsText += `Concept: ${cleanConcept}. `;
+                  if (cleanExplanation) ttsText += `Explanation: ${cleanExplanation}. `;
+                  if (cleanExamTip) ttsText += `Exam Tip: ${cleanExamTip}. `;
+                  if (cleanCommonMistake) ttsText += `Common Mistake: ${cleanCommonMistake}. `;
+                  if (cleanMemoryTrick) ttsText += `Memory Trick: ${cleanMemoryTrick}. `;
 
                   return (
                       <div key={idx} className={`bg-white rounded-2xl border-2 p-5 shadow-sm break-inside-avoid relative group transition-all ${isCorrect ? 'border-green-100 hover:border-green-200' : isSkipped ? 'border-slate-200 hover:border-slate-300' : 'border-red-100 hover:border-red-200'}`}>
                           <div className="absolute top-4 right-4 flex gap-2">
-                              <span className={`px-2 py-1 rounded text-[10px] font-black uppercase tracking-wider ${isCorrect ? 'bg-green-100 text-green-700' : isSkipped ? 'bg-slate-100 text-slate-600' : 'bg-red-100 text-red-700'}`}>
-                                  {isCorrect ? 'Correct' : isSkipped ? 'Skipped' : 'Incorrect'}
-                              </span>
                               <div className="opacity-0 group-hover:opacity-100 transition-opacity">
                                   <SpeakButton text={ttsText} className="bg-slate-100 hover:bg-slate-200 text-slate-600" iconSize={14} />
                               </div>
+                              <span className={`px-2 py-1 rounded text-[10px] font-black uppercase tracking-wider ${isCorrect ? 'bg-green-100 text-green-700' : isSkipped ? 'bg-slate-100 text-slate-600' : 'bg-red-100 text-red-700'}`}>
+                                  {isCorrect ? 'Correct' : isSkipped ? 'Skipped' : 'Incorrect'}
+                              </span>
                           </div>
 
                           <div className="flex gap-3 mb-4 pr-24">
@@ -1173,13 +1236,23 @@ export const MarksheetCard: React.FC<Props> = ({ result, user, settings, onClose
                                       <div className="text-sm text-purple-900 leading-relaxed font-medium whitespace-pre-line" dangerouslySetInnerHTML={{ __html: renderMathInHtml(q.mnemonic) }} />
                                   </div>
                               )}
+                              {q.difficultyLevel && (
+                                  <div className="p-4 bg-slate-50 border border-slate-200 rounded-[20px] shadow-sm flex items-center gap-3">
+                                      <div className="flex items-center gap-1 text-[12px] font-bold text-slate-700">
+                                          <BarChart3 size={14} /> Difficulty:
+                                      </div>
+                                      <div className="text-sm text-slate-900 font-black">
+                                          {q.difficultyLevel}
+                                      </div>
+                                  </div>
+                              )}
                           </div>
                       </div>
                   );
               })}
           </div>
       </div>
-  );
+  )};
 
   const renderFullReport = () => (
       <div className="p-8 bg-white max-w-4xl mx-auto space-y-8">

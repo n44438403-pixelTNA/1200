@@ -1116,7 +1116,7 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
                         <div className={`w-24 h-24 bg-white rounded-full flex items-center justify-center mx-auto mb-4 text-4xl font-black shadow-2xl relative z-10 group overflow-hidden ${
                             user.subscriptionLevel === 'ULTRA' && user.isPremium ? 'text-blue-700 ring-4 ring-blue-400 animate-bounce-slow' :
                             user.subscriptionLevel === 'BASIC' && user.isPremium ? 'text-blue-600 ring-4 ring-cyan-300' :
-                            'text-slate-800'
+                            'text-black ring-4 ring-slate-800 bg-slate-900 text-white'
                         }`}>
                             {user.photoURL ? (
                                 <img src={user.photoURL} alt="Profile" className="w-full h-full object-cover" />

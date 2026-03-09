@@ -905,7 +905,7 @@ export const MarksheetCard: React.FC<Props> = ({ result, user, settings, onClose
               <div className="bg-white border border-slate-200 rounded-2xl p-4 text-center shadow-sm flex flex-col items-center justify-center">
                   <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Grade</p>
                   <span className={`px-3 py-1 rounded-full text-xs font-black ${tagColor}`}>
-                      {result.performanceTag.replace('_', ' ')}
+                      {(result.performanceTag || '').replace('_', ' ')}
                   </span>
               </div>
           </div>

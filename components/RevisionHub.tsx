@@ -454,7 +454,7 @@ const RevisionHubComponent: React.FC<Props> = ({ user, onTabChange, settings, on
     };
 
     const completedToday = useMemo(() => {
-        const rawList = (user.mcqHistory || [])
+        const rawList: any[] = (user.mcqHistory || [])
             .filter(h => new Date(h.date).toDateString() === todayStr && (h as any).type === 'REVISION_NOTES')
             .map(h => {
                 let name = h.chapterTitle || 'Topic';
@@ -487,7 +487,7 @@ const RevisionHubComponent: React.FC<Props> = ({ user, onTabChange, settings, on
     }, [user.mcqHistory, todayStr]);
 
     const completedYesterday = useMemo(() => {
-        const rawList = (user.mcqHistory || [])
+        const rawList: any[] = (user.mcqHistory || [])
             .filter(h => new Date(h.date).toDateString() === yesterdayStr && (h as any).type === 'REVISION_NOTES')
             .map(h => {
                 let name = h.chapterTitle || 'Topic';

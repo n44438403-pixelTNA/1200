@@ -216,7 +216,7 @@ export const AnalyticsPage: React.FC<Props> = ({ user, onBack, settings, onNavig
                                     <p className="text-xs text-slate-500">{item.subjectName} • {new Date(item.date).toLocaleDateString()}</p>
                                 </div>
                                 <div className={`px-2 py-1 rounded text-[10px] font-black border ${getTagColor(item.performanceTag)}`}>
-                                    {item.performanceTag.replace('_', ' ')}
+                                    {(item.performanceTag || '').replace('_', ' ')}
                                 </div>
                             </div>
                             

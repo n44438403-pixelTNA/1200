@@ -660,6 +660,12 @@ const App: React.FC = () => {
       if (state.user && !state.originalAdmin) {
           getUserData(state.user.id).then(cloudUser => {
              if (cloudUser) {
+                 // SAFE MERGE: Ensure we don't wipe out local bulky data if cloud fetch failed partially
+                 if (!cloudUser.mcqHistory && state.user!.mcqHistory) cloudUser.mcqHistory = state.user!.mcqHistory;
+                 if (!cloudUser.progress && state.user!.progress) cloudUser.progress = state.user!.progress;
+                 if (!cloudUser.inbox && state.user!.inbox) cloudUser.inbox = state.user!.inbox;
+                 if (!cloudUser.usageHistory && state.user!.usageHistory) cloudUser.usageHistory = state.user!.usageHistory;
+
                  // Ignore if identical
                  const currentStr = JSON.stringify(state.user);
                  const cloudStr = JSON.stringify(cloudUser);

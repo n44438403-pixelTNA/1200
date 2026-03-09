@@ -163,8 +163,16 @@ export const saveUserToLive = async (user: any) => {
     // 2. Save Bulky Data to Subcollections or Document Extensions to avoid 1MB document limit
     // Note: To keep things intact for the current frontend without massive refactoring,
     // we save the bulky data in a parallel collection `user_data/{uid}`
-    const bulkyData = { mcqHistory, usageHistory, progress, testResults, inbox };
-    promises.push(setDoc(doc(db, "user_data", user.id), bulkyData).catch(e => console.error("Firestore Bulky Data Save Error:", e)));
+    const bulkyData: any = {};
+    if (mcqHistory !== undefined) bulkyData.mcqHistory = mcqHistory;
+    if (usageHistory !== undefined) bulkyData.usageHistory = usageHistory;
+    if (progress !== undefined) bulkyData.progress = progress;
+    if (testResults !== undefined) bulkyData.testResults = testResults;
+    if (inbox !== undefined) bulkyData.inbox = inbox;
+
+    if (Object.keys(bulkyData).length > 0) {
+        promises.push(setDoc(doc(db, "user_data", user.id), bulkyData).catch(e => console.error("Firestore Bulky Data Save Error:", e)));
+    }
 
     await Promise.all(promises);
   } catch (error) {

@@ -1431,8 +1431,17 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
       // are rendered OUTSIDE of renderMainContent().
       // If we return the fallback here, it will block rendering of those tabs.
 
-      const externallyHandledTabs = ['REVISION', 'AI_CHAT', 'HISTORY', 'PROFILE', 'STORE', 'PRIZES', 'REDEEM', 'GAME', 'LEADERBOARD', 'SUB_HISTORY', 'ANALYTICS', 'UPDATES', 'DEEP_ANALYSIS', 'CUSTOM_PAGE'];
-      if (!externallyHandledTabs.includes(activeTab)) {
+      // 🚨 CATCH-ALL FALLBACK (Prevents Blank Screen of Death)
+      // Any tab rendered in renderMainContent MUST return a component. If it doesn't, this fallback catches it.
+      // However, tabs that are intentionally rendered OUTSIDE renderMainContent (like REVISION, PROFILE, etc)
+      // must be explicitly listed here to bypass the fallback, otherwise they overlap or get blocked.
+      const externallyHandledTabs = [
+          'REVISION', 'AI_CHAT', 'HISTORY', 'PROFILE', 'STORE', 'PRIZES',
+          'REDEEM', 'GAME', 'LEADERBOARD', 'SUB_HISTORY', 'ANALYTICS',
+          'UPDATES', 'DEEP_ANALYSIS', 'CUSTOM_PAGE', 'MCQ_REVIEW', 'AI_HUB',
+          'AI_STUDIO', 'UNIVERSAL_VIDEO'
+      ];
+      if (!externallyHandledTabs.includes(activeTab as any)) {
           return (
               <div className="flex flex-col items-center justify-center h-[60vh] text-center p-6 animate-in fade-in">
                   <div className="bg-blue-50 p-6 rounded-full mb-4">

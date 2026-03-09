@@ -2218,38 +2218,6 @@ const App: React.FC = () => {
       {/* BOTTOM SAFE AREA BACKGROUND */}
       <div className="fixed bottom-0 left-0 right-0 h-[env(safe-area-inset-bottom,32px)] bg-slate-900 z-[100]"></div>
 
-      {/* WATERMARK LAYER */}
-      {state.settings.isWatermarkEnabled !== false && (
-      <div className="fixed inset-0 z-[-1] pointer-events-none overflow-hidden select-none">
-          {state.settings.appLogo && (
-              <img
-                  src={state.settings.appLogo}
-                  alt=""
-                  style={{
-                      width: `${state.settings.watermarkSize || 150}px`,
-                      height: 'auto',
-                      opacity: state.settings.watermarkOpacity || 0.05,
-                      position: 'absolute',
-                      top: state.settings.watermarkPosition?.top || '50%',
-                      left: state.settings.watermarkPosition?.left || '50%',
-                      transform: `translate(-50%, -50%) rotate(${state.settings.watermarkAngle || -10}deg)`,
-                      filter: 'grayscale(100%)'
-                  }}
-              />
-          )}
-
-          {(state.user && state.settings.showUserWatermark !== false) && (
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <div
-                    className="text-4xl font-black -rotate-45 whitespace-nowrap pointer-events-none"
-                    style={{ color: state.settings.footerColor ? `${state.settings.footerColor}10` : 'rgba(15, 23, 42, 0.05)' }}
-                  >
-                      {state.user.name} • {state.user.displayId || state.user.id}
-                  </div>
-              </div>
-          )}
-      </div>
-      )}
       
       {/* GLOBAL LIVE DASHBOARD 1 (TOP) */}
         {state.settings.bannerConfig?.top?.enabled && showTopBanner && state.view === 'ADMIN_DASHBOARD' && (

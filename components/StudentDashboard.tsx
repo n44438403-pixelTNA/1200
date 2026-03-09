@@ -604,11 +604,19 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
 
   useEffect(() => {
     if (!user.id) return;
-    const unsub = onSnapshot(doc(db, "users", user.id), (doc) => {
-        if (doc.exists()) {
-            const cloudData = doc.data() as User;
+    const unsub = onSnapshot(doc(db, "users", user.id), (docSnap) => {
+        if (docSnap.exists()) {
+            const cloudData = docSnap.data() as User;
             const currentUser = userRef.current;
-            const needsUpdate = cloudData.credits !== currentUser.credits || cloudData.subscriptionTier !== currentUser.subscriptionTier || cloudData.isPremium !== currentUser.isPremium || cloudData.isGameBanned !== currentUser.isGameBanned || (cloudData.mcqHistory?.length || 0) > (currentUser.mcqHistory?.length || 0);
+
+            // Only update if Admin/Cloud has truly pushed a newer state for credits, subs, or game bans
+            // Do NOT use cloudData's mcqHistory length as a trigger here because saveUserToLive explicitly strips it!
+            const needsUpdate =
+                cloudData.credits !== currentUser.credits ||
+                cloudData.subscriptionTier !== currentUser.subscriptionTier ||
+                cloudData.isPremium !== currentUser.isPremium ||
+                cloudData.isGameBanned !== currentUser.isGameBanned;
+
             if (needsUpdate) {
                   // Handle expired subscriptions dynamically
                   if (cloudData.isPremium && cloudData.subscriptionEndDate && cloudData.subscriptionTier !== 'LIFETIME') {
@@ -631,9 +639,21 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
                          saveUserToLive({ ...cloudData, ...protectedSub });
                      }
                 }
-                const updated: User = { ...currentUser, ...cloudData, ...protectedSub };
-                if ((!cloudData.mcqHistory || cloudData.mcqHistory.length === 0) && (currentUser.mcqHistory && currentUser.mcqHistory.length > 0)) { updated.mcqHistory = currentUser.mcqHistory; }
-                onRedeemSuccess(updated); 
+
+                // CRITICAL MERGE: Ensure we never overwrite local bulky data (mcqHistory, testResults)
+                // because `docSnap` from "users" collection lacks them by design.
+                const updated: User = {
+                    ...currentUser,
+                    ...cloudData,
+                    ...protectedSub,
+                    mcqHistory: currentUser.mcqHistory || [],
+                    testResults: currentUser.testResults || []
+                };
+
+                // Do not update local storage if it's identical to prevent cyclic loop
+                if (JSON.stringify(currentUser) !== JSON.stringify(updated)) {
+                    onRedeemSuccess(updated);
+                }
             }
         }
     });

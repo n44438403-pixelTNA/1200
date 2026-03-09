@@ -397,7 +397,7 @@ export const ALL_FEATURES: Feature[] = [
     // --- NOTIFICATION & REQUESTS GROUP ---
     {
         id: 'ADMIN_ACTIVITY',
-        label: 'Activity Log',
+        label: 'Revision Logs',
         group: 'ADVANCED',
         surfaceLevel: 3,
         adminVisible: true,

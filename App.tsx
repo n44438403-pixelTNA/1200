@@ -435,7 +435,8 @@ const App: React.FC = () => {
 
       // 1. Daily Login Bonus (Configurable)
       const lastRewardDate = state.user.lastLoginRewardDate ? new Date(state.user.lastLoginRewardDate).toDateString() : '';
-      if (lastRewardDate !== today && !activeReward) {
+      if (lastRewardDate !== today && !activeReward && !sessionStorage.getItem('login_bonus_shown_' + today)) {
+          sessionStorage.setItem('login_bonus_shown_' + today, 'true');
           // Check Streak for Strict Mode
           let streakBroken = false;
           if (state.user.lastLoginDate && lastLoginDateString !== yesterday.toDateString() && lastLoginDateString !== today) {
@@ -457,9 +458,7 @@ const App: React.FC = () => {
                   if (state.user.subscriptionLevel === 'ULTRA') bonusAmount = state.settings.loginBonusConfig?.ultraBonus ?? 10;
               }
 
-              updatedUser.credits = (updatedUser.credits || 0) + bonusAmount;
               updatedUser.lastLoginRewardDate = new Date().toISOString();
-
               hasUpdates = true;
 
               newReward = {

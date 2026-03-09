@@ -770,7 +770,7 @@ export const ALL_FEATURES: Feature[] = [
     },
     {
         id: 'ADMIN_NSTA_CONTROL',
-        label: 'NSTA Control',
+        label: 'Subscription Control',
         group: 'NSTA_CONTROL',
         surfaceLevel: 3,
         adminVisible: true,

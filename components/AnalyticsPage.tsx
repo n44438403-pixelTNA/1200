@@ -227,7 +227,7 @@ export const AnalyticsPage: React.FC<Props> = ({ user, onBack, settings, onNavig
                                 </div>
                                 <div className="text-center flex-1 border-r border-slate-200">
                                     <p className="text-slate-400 font-bold uppercase text-[9px]">Avg Time</p>
-                                    <p className="font-black text-slate-700">{item.averageTimePerQuestion.toFixed(1)}s</p>
+                                    <p className="font-black text-slate-700">{(item.averageTimePerQuestion || 0).toFixed(1)}s</p>
                                 </div>
                                 <div className="text-center flex-1">
                                     <p className="text-slate-400 font-bold uppercase text-[9px]">Total Time</p>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { safeSetLocalStorage } from '../utils/safeStorage';
+import { safeSetLocalStorage, saveUserLocal } from '../utils/safeStorage';
 import { User, Board, ClassLevel, Stream, SystemSettings, RecoveryRequest } from '../types';
 // Import the list of authorized admin emails
 import { ADMIN_EMAILS } from '../constants';

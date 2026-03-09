@@ -1,4 +1,4 @@
-import { safeSetLocalStorage } from '../utils/safeStorage';
+import { safeSetLocalStorage, saveUserLocal } from '../utils/safeStorage';
 import React, { useState } from 'react';
 import { Gift, ArrowRight, AlertCircle, CheckCircle } from 'lucide-react';
 import { User, SystemSettings, SubscriptionHistoryEntry } from '../types';
@@ -217,7 +217,7 @@ export const RedeemSection: React.FC<Props> = ({ user, onSuccess }) => {
                 safeSetLocalStorage('nst_users', JSON.stringify(allUsers));
             }
         }
-        safeSetLocalStorage('nst_current_user', JSON.stringify(updatedUser));
+        saveUserLocal(updatedUser);
         await saveUserToLive(updatedUser); 
 
         setStatus('SUCCESS');

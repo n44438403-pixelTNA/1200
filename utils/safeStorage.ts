@@ -1,3 +1,35 @@
+import { storage } from './storage';
+
+export const saveUserLocal = async (user: any) => {
+    try {
+        const {
+            mcqHistory,
+            testResults,
+            progress,
+            usageHistory,
+            inbox,
+            ...lightUser
+        } = user;
+
+        // lightweight user -> localStorage
+        localStorage.setItem(
+            "nst_current_user",
+            JSON.stringify(lightUser)
+        );
+
+        // heavy user -> IndexedDB
+        await storage.setItem("nst_user_bulky", {
+            mcqHistory,
+            testResults,
+            progress,
+            usageHistory,
+            inbox
+        });
+    } catch (err) {
+        console.error("saveUserLocal error:", err);
+    }
+};
+
 export const safeSetLocalStorage = (key: string, value: string) => {
     try {
         localStorage.setItem(key, value);

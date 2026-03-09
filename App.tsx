@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { safeSetLocalStorage } from './utils/safeStorage';
+import { safeSetLocalStorage, saveUserLocal } from './utils/safeStorage';
 import { 
   ClassLevel, Subject, Chapter, AppState, Board, Stream, User, ContentType, SystemSettings, ActivityLogEntry, WeeklyTest, LessonContent, ActiveSubscription, InboxMessage
 } from './types';
@@ -396,7 +396,7 @@ const App: React.FC = () => {
     if (state.user.email && ADMIN_EMAILS.includes(state.user.email.toLowerCase()) && state.user.role !== 'ADMIN') {
         const updatedUser = { ...state.user, role: 'ADMIN' as const };
         setState(prev => ({ ...prev, user: updatedUser }));
-        safeSetLocalStorage('nst_current_user', JSON.stringify(updatedUser));
+        saveUserLocal(updatedUser);
         saveUserToLive(updatedUser);
         return;
     }
@@ -488,7 +488,7 @@ const App: React.FC = () => {
           if (hasUpdates) {
               // SAFE IMPERSONATION: Only save if NOT impersonating
               if (!state.originalAdmin) {
-                  safeSetLocalStorage('nst_current_user', JSON.stringify(updatedUser));
+                  saveUserLocal(updatedUser);
                   saveUserToLive(updatedUser);
               }
               setState(prev => ({...prev, user: updatedUser}));
@@ -671,7 +671,7 @@ const App: React.FC = () => {
                  const cloudStr = JSON.stringify(cloudUser);
                  if (currentStr !== cloudStr) {
                      // console.log("Syncing User Profile from Cloud...");
-                     safeSetLocalStorage('nst_current_user', cloudStr);
+                     saveUserLocal(cloudUser);
                      setState(prev => ({...prev, user: cloudUser}));
                  }
              }
@@ -694,7 +694,7 @@ const App: React.FC = () => {
 
           if (JSON.stringify(updatedUser) !== JSON.stringify(state.user)) {
                // console.log("Subscription Status Updated (Real-time).");
-               safeSetLocalStorage('nst_current_user', JSON.stringify(updatedUser));
+               saveUserLocal(updatedUser);
                saveUserToLive(updatedUser);
 
                // Handle Expiry Event (Access Lock)
@@ -794,67 +794,75 @@ const App: React.FC = () => {
 
       setPopupQueue(queue);
 
-    if (loggedInUserStr) {
-      try {
-        let user: User = JSON.parse(loggedInUserStr);
+    const hydrateUser = async () => {
+      if (loggedInUserStr) {
+        try {
+          let lightUser: User = JSON.parse(loggedInUserStr);
 
-        // STRICT VALIDATION: Ensure critical fields exist
-        if (!user || !user.id || !user.role) {
-            console.error("Invalid user object found in storage. Clearing session.");
-            localStorage.removeItem('nst_current_user');
-            return;
+          // STRICT VALIDATION: Ensure critical fields exist
+          if (!lightUser || !lightUser.id || !lightUser.role) {
+              console.error("Invalid user object found in storage. Clearing session.");
+              localStorage.removeItem('nst_current_user');
+              return;
+          }
+
+          // Fetch heavy data from IndexedDB
+          const bulkyData = await storage.getItem("nst_user_bulky") as Partial<User>;
+          let user: User = { ...lightUser, ...(bulkyData || {}) };
+
+          // console.log("Parsed user:", user);
+
+          // MIGRATION & RECALCULATION ON LOAD
+          if (user.role !== 'ADMIN') {
+               user = recalculateSubscriptionStatus(user, loadedSettings);
+               // Save back any migration changes immediately
+               if (JSON.stringify(lightUser) !== loggedInUserStr) { // changed slightly to be cleaner
+                   saveUserLocal(user);
+                   // NOTE: We do not call saveUserToLive here to avoid overwriting backend role changes (e.g. if Admin promoted them in DB but local cache is old)
+               }
+          }
+
+          if (!user.progress) user.progress = {};
+          if (user.isLocked) {
+              localStorage.removeItem('nst_current_user');
+              setAlertConfig({isOpen: true, message: "Account Locked. Please contact Admin."});
+              return;
+          }
+
+          let initialView = (user.role === 'ADMIN' || user.role === 'SUB_ADMIN') ? 'ADMIN_DASHBOARD' : 'STUDENT_DASHBOARD';
+
+          if (user.role === 'STUDENT' && !user.profileCompleted) {
+               initialView = 'ONBOARDING';
+          }
+
+          // RESET CLASS IF LOCKED (e.g. Competition Mode)
+          let safeClass = user.classLevel || null;
+          const freeModes = loadedSettings.appMode?.allowedModesForFree || ['SCHOOL'];
+          if (!user.isPremium && safeClass === 'COMPETITION' && !freeModes.includes('COMPETITION')) {
+              safeClass = null; // Kick out of Competition
+              initialView = 'STUDENT_DASHBOARD'; // Default view
+          }
+
+          setState(prev => ({
+            ...prev,
+            user: user,
+            view: initialView as any,
+            selectedBoard: user.board || null,
+            selectedClass: safeClass,
+            selectedStream: user.stream || null,
+            language: user.board === 'BSEB' ? 'Hindi' : 'English',
+            showWelcome: !hasSeenWelcome && !!hasAcceptedTerms
+          }));
+        } catch(e) {
+          console.error("Error parsing user from localStorage:", e);
+          localStorage.removeItem('nst_current_user');
         }
-
-        // console.log("Parsed user:", user);
-
-        // MIGRATION & RECALCULATION ON LOAD
-        if (user.role !== 'ADMIN') {
-             user = recalculateSubscriptionStatus(user, loadedSettings);
-             // Save back any migration changes immediately
-             if (JSON.stringify(user) !== loggedInUserStr) {
-                 safeSetLocalStorage('nst_current_user', JSON.stringify(user));
-                 // NOTE: We do not call saveUserToLive here to avoid overwriting backend role changes (e.g. if Admin promoted them in DB but local cache is old)
-             }
-        }
-
-        if (!user.progress) user.progress = {};
-        if (user.isLocked) { 
-            localStorage.removeItem('nst_current_user'); 
-            setAlertConfig({isOpen: true, message: "Account Locked. Please contact Admin."}); 
-            return; 
-        }
-
-        let initialView = (user.role === 'ADMIN' || user.role === 'SUB_ADMIN') ? 'ADMIN_DASHBOARD' : 'STUDENT_DASHBOARD';
-        
-        if (user.role === 'STUDENT' && !user.profileCompleted) {
-             initialView = 'ONBOARDING';
-        }
-
-        // RESET CLASS IF LOCKED (e.g. Competition Mode)
-        let safeClass = user.classLevel || null;
-        const freeModes = loadedSettings.appMode?.allowedModesForFree || ['SCHOOL'];
-        if (!user.isPremium && safeClass === 'COMPETITION' && !freeModes.includes('COMPETITION')) {
-            safeClass = null; // Kick out of Competition
-            initialView = 'STUDENT_DASHBOARD'; // Default view
-        }
-
-        setState(prev => ({ 
-          ...prev, 
-          user: user, 
-          view: initialView as any, 
-          selectedBoard: user.board || null, 
-          selectedClass: safeClass, 
-          selectedStream: user.stream || null, 
-          language: user.board === 'BSEB' ? 'Hindi' : 'English', 
-          showWelcome: !hasSeenWelcome && !!hasAcceptedTerms
-        }));
-      } catch(e) {
-        console.error("Error parsing user from localStorage:", e);
-        localStorage.removeItem('nst_current_user');
+      } else {
+        // console.log("No user found in localStorage.");
       }
-    } else {
-      // console.log("No user found in localStorage.");
-    }
+    };
+
+    hydrateUser();
   }, []);
 
   // --- TIMER LOGIC (UPDATED) ---
@@ -900,7 +908,7 @@ const App: React.FC = () => {
                     });
                 }
 
-                if (next % 10 === 0) updateUserStatus(state.user!.id, next); 
+                if (next % 60 === 0) updateUserStatus(state.user!.id, next);
                 return next;
             });
         }, 1000);
@@ -1041,7 +1049,7 @@ const App: React.FC = () => {
 
     const handleLogin = (user: User) => {
     if (!state.originalAdmin) {
-        safeSetLocalStorage('nst_current_user', JSON.stringify(user));
+        saveUserLocal(user);
     }
     saveUserToLive(user);
     safeSetLocalStorage('nst_has_seen_welcome', 'true');
@@ -1069,9 +1077,10 @@ const App: React.FC = () => {
     }));
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     logActivity("LOGOUT", "User Logged Out");
     localStorage.removeItem('nst_current_user');
+    await storage.removeItem('nst_user_bulky');
     setState(prev => ({ ...prev, user: null, originalAdmin: null, view: 'CLASSES', selectedBoard: 'CBSE', selectedClass: null, selectedStream: null, selectedSubject: null, lessonContent: null, language: 'English' }));
     setDailyStudySeconds(0);
   };
@@ -1151,7 +1160,7 @@ const App: React.FC = () => {
     
     if (!state.originalAdmin) {
         saveUserToLive(updatedUser);
-        safeSetLocalStorage('nst_current_user', JSON.stringify(updatedUser));
+        saveUserLocal(updatedUser);
     }
     setState(prev => ({ ...prev, user: updatedUser }));
   };
@@ -1177,7 +1186,7 @@ const App: React.FC = () => {
 
       // Persist (Only if not impersonating)
       if (!state.originalAdmin) {
-          safeSetLocalStorage('nst_current_user', JSON.stringify(updatedUser));
+          saveUserLocal(updatedUser);
           saveUserToLive(updatedUser);
       }
   };
@@ -1326,7 +1335,7 @@ const App: React.FC = () => {
              }
              const updatedUser = { ...state.user, credits: state.user.credits - cost };
              if (!state.originalAdmin) {
-                 safeSetLocalStorage('nst_current_user', JSON.stringify(updatedUser));
+                 saveUserLocal(updatedUser);
                  saveUserToLive(updatedUser);
              }
              setState(prev => ({...prev, user: updatedUser}));
@@ -1427,7 +1436,7 @@ const App: React.FC = () => {
 
              const updatedUser = { ...state.user, credits: state.user.credits - cost };
              if (!state.originalAdmin) {
-                 safeSetLocalStorage('nst_current_user', JSON.stringify(updatedUser));
+                 saveUserLocal(updatedUser);
                  saveUserToLive(updatedUser);
              }
              setState(prev => ({...prev, user: updatedUser}));
@@ -1645,7 +1654,7 @@ const App: React.FC = () => {
             const updatedUser = { ...state.user, credits: state.user.credits - cost };
 
             if (!state.originalAdmin) {
-                safeSetLocalStorage('nst_current_user', JSON.stringify(updatedUser));
+                saveUserLocal(updatedUser);
 
                 // Sync to LocalStorage list
                 const storedUsers = localStorage.getItem('nst_users');
@@ -1813,7 +1822,7 @@ const App: React.FC = () => {
       }
 
       if (!state.originalAdmin) {
-          safeSetLocalStorage('nst_current_user', JSON.stringify(updatedUser));
+          saveUserLocal(updatedUser);
           saveUserToLive(updatedUser);
       }
       setState(prev => ({...prev, user: updatedUser}));
@@ -1830,7 +1839,7 @@ const App: React.FC = () => {
       };
 
       if (!state.originalAdmin) {
-          safeSetLocalStorage('nst_current_user', JSON.stringify(updatedUser));
+          saveUserLocal(updatedUser);
           saveUserToLive(updatedUser);
       }
       setState(prev => ({...prev, user: updatedUser}));
@@ -1922,7 +1931,7 @@ const App: React.FC = () => {
     }
 
     if (!state.originalAdmin) {
-        safeSetLocalStorage('nst_current_user', JSON.stringify(updatedUser));
+        saveUserLocal(updatedUser);
         await saveUserToLive(updatedUser);
     }
     setState(prev => ({...prev, user: updatedUser}));
@@ -1974,7 +1983,7 @@ const App: React.FC = () => {
 
     // Save updated history
     if (!state.originalAdmin) {
-        safeSetLocalStorage('nst_current_user', JSON.stringify(updatedUser));
+        saveUserLocal(updatedUser);
         saveUserToLive(updatedUser);
     }
     setState(prev => ({...prev, user: updatedUser}));
@@ -2315,7 +2324,7 @@ const App: React.FC = () => {
                                     if(state.user) {
                                        const updated = { ...state.user, board: newBoard };
                                        if (!state.originalAdmin) {
-                                           safeSetLocalStorage('nst_current_user', JSON.stringify(updated));
+                                           saveUserLocal(updated);
                                            saveUserToLive(updated);
                                        }
                                        setState(prev => ({...prev, user: updated}));

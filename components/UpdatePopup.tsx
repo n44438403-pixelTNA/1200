@@ -1,4 +1,4 @@
-import { safeSetLocalStorage } from '../utils/safeStorage';
+import { safeSetLocalStorage, saveUserLocal } from '../utils/safeStorage';
 import React, { useEffect, useState } from 'react';
 import { X, Rocket, Download } from 'lucide-react';
 import { TimeConfig } from '../types';

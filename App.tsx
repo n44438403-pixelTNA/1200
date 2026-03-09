@@ -265,7 +265,14 @@ const App: React.FC = () => {
 
   useEffect(() => {
     storage.getItem<StudentTab>('nst_active_student_tab').then(saved => {
-        if (saved) setStudentTab(saved);
+        if (saved) {
+            const transientTabs = ['VIDEO', 'PDF', 'MCQ', 'AUDIO', 'WEEKLY_TEST', 'CHALLENGE_20'];
+            if (transientTabs.includes(saved)) {
+                setStudentTab('HOME');
+            } else {
+                setStudentTab(saved);
+            }
+        }
     });
   }, []);
 

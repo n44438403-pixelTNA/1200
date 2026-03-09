@@ -1481,7 +1481,7 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
       return null;
   };
 
-  const isStudyMode = activeTab === 'VIDEO' || activeTab === 'PDF' || activeTab === 'MCQ' || activeTab === 'AUDIO' || (contentViewStep === 'PLAYER' && activeTab !== 'HOME') || activeTab === 'WEEKLY_TEST' || activeTab === 'CHALLENGE_20';
+  const isStudyMode = activeTab === 'VIDEO' || activeTab === 'PDF' || activeTab === 'MCQ' || activeTab === 'AUDIO' || (contentViewStep === 'PLAYER' && !['HOME', 'AI_HUB', 'REVISION', 'HISTORY', 'PROFILE', 'MCQ_REVIEW', 'STORE', 'PRIZES', 'REDEEM', 'GAME', 'LEADERBOARD', 'SUB_HISTORY', 'ANALYTICS', 'UPDATES', 'DEEP_ANALYSIS', 'CUSTOM_PAGE', 'UNIVERSAL_VIDEO'].includes(activeTab as string)) || activeTab === 'WEEKLY_TEST' || activeTab === 'CHALLENGE_20';
 
   return (
 
@@ -1952,7 +1952,7 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
 
         {/* FIXED BOTTOM NAVIGATION */}
 
-        {!(activeTab === 'VIDEO' || activeTab === 'PDF' || activeTab === 'MCQ' || activeTab === 'AUDIO' || (contentViewStep === 'PLAYER' && (activeTab as any) !== 'HOME') || activeTab === 'WEEKLY_TEST' || activeTab === 'CHALLENGE_20') && (
+        {!(activeTab === 'VIDEO' || activeTab === 'PDF' || activeTab === 'MCQ' || activeTab === 'AUDIO' || (contentViewStep === 'PLAYER' && !['HOME', 'AI_HUB', 'REVISION', 'HISTORY', 'PROFILE', 'MCQ_REVIEW', 'STORE', 'PRIZES', 'REDEEM', 'GAME', 'LEADERBOARD', 'SUB_HISTORY', 'ANALYTICS', 'UPDATES', 'DEEP_ANALYSIS', 'CUSTOM_PAGE', 'UNIVERSAL_VIDEO'].includes(activeTab as string)) || activeTab === 'WEEKLY_TEST' || activeTab === 'CHALLENGE_20') && (
         <div className="fixed bottom-0 left-0 right-0 max-w-[1080px] mx-auto bg-white border-t border-slate-200 shadow-[0_-4px_10px_rgba(0,0,0,0.05)] z-[9999] pb-[env(safe-area-inset-bottom,0px)]">
             <div className="flex justify-around items-center h-[65px] py-[6px]">
                 <button onClick={() => { onTabChange('HOME'); setContentViewStep('SUBJECTS'); }} className={`flex flex-col items-center justify-center w-full h-full gap-1.5 ${activeTab === 'HOME' ? 'text-blue-600' : 'text-slate-400'}`}>

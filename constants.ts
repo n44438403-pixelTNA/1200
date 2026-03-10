@@ -453,6 +453,7 @@ export const LEVEL_UP_CONFIG = [
 export const NSTA_DEFAULT_FEATURES = [
     { category: '🎬 VIDEO', id: 'UNIVERSAL_VIDEO', label: 'Universal Video', visible: true, allowedTiers: ['FREE', 'BASIC', 'ULTRA'], limits: { free: 2, basic: 5, ultra: undefined }, creditCost: 0 },
     { category: '🎬 VIDEO', id: 'FREE_VIDEO', label: 'Free Video', visible: true, allowedTiers: ['FREE', 'BASIC', 'ULTRA'], limits: { free: 5, basic: 10, ultra: 20 }, creditCost: 0 },
+
     { category: '🎧 AUDIO', id: 'AUDIO_LIBRARY', label: 'Audio Only', visible: true, allowedTiers: ['ULTRA'], limits: {}, creditCost: 0 },
     { category: '📑 NOTES', id: 'HISTORY_SAVE_NOTES', label: 'History Save Notes', visible: true, allowedTiers: ['BASIC', 'ULTRA'], limits: { basic: undefined, ultra: undefined }, creditCost: 0 },
     { category: '📝 LOGS', id: 'HISTORY_ACTIVITY_LOG', label: 'History Activity Log', visible: true, allowedTiers: ['FREE', 'BASIC', 'ULTRA'], limits: { free: undefined, basic: undefined, ultra: undefined }, creditCost: 0 },
@@ -466,6 +467,54 @@ export const NSTA_DEFAULT_FEATURES = [
     { category: '📊 ANALYSIS', id: 'TOPIC_ANALYSIS', label: 'Topic Analysis', visible: true, allowedTiers: ['FREE', 'BASIC', 'ULTRA'], limits: { free: 10, basic: 30, ultra: undefined }, creditCost: 0 },
     { category: '📊 ANALYSIS', id: 'DETAILED_SOLUTION', label: 'Detailed Solution', visible: true, allowedTiers: ['FREE', 'BASIC', 'ULTRA'], limits: { free: undefined, basic: undefined, ultra: undefined }, creditCost: 0 },
     { category: '🎁 REWARDS', id: 'REDEEM_CODE', label: 'Redeem Code', visible: true, allowedTiers: ['FREE', 'BASIC', 'ULTRA'], limits: { free: 2, basic: 5, ultra: 10 }, creditCost: 0 }
+
+
+
+    { category: '📑 NOTES', id: 'NOTES', label: 'Notes', visible: true, allowedTiers: ['BASIC', 'ULTRA'], limits: { basic: undefined, ultra: undefined }, creditCost: 0 },
+    { category: '📑 NOTES', id: 'QUICK_NOTES', label: 'Quick Notes', visible: true, allowedTiers: ['FREE', 'BASIC', 'ULTRA'], limits: { free: undefined, basic: undefined, ultra: undefined }, creditCost: 0 },
+    { category: '📑 NOTES', id: 'DETAILED_NOTES', label: 'Detailed Notes', visible: true, allowedTiers: ['FREE', 'BASIC', 'ULTRA'], limits: {}, creditCost: 5 },
+    { category: '📑 NOTES', id: 'HISTORY_SAVE', label: 'History Save Notes', visible: true, allowedTiers: ['BASIC', 'ULTRA'], limits: { basic: undefined, ultra: undefined }, creditCost: 0 },
+
+    { category: '📊 TRACKING', id: 'ACTIVITY_LOG', label: 'Activity Log', visible: true, allowedTiers: ['FREE', 'BASIC', 'ULTRA'], limits: { free: undefined, basic: undefined, ultra: undefined }, creditCost: 0 },
+
+    { category: '🤖 AI', id: 'AI_TUTOR', label: 'AI Tutor', visible: true, allowedTiers: ['FREE', 'BASIC', 'ULTRA'], limits: { free: 1, basic: 2, ultra: 5 }, creditCost: 0 },
+
+    { category: '🔄 REVISION', id: 'REVISION_HUB_FREE', label: 'Revision Hub (Free)', visible: true, allowedTiers: ['FREE', 'BASIC', 'ULTRA'], limits: { free: undefined, basic: undefined, ultra: undefined }, creditCost: 0 },
+    { category: '🔄 REVISION', id: 'REVISION_HUB_PREMIUM', label: 'Revision Hub (Premium)', visible: true, allowedTiers: ['BASIC', 'ULTRA'], limits: { basic: 2, ultra: undefined }, creditCost: 0 },
+    { category: '🔄 REVISION', id: 'MEMORY_MODE', label: 'Memory Mode / Extra Free', visible: true, allowedTiers: ['ULTRA'], limits: { ultra: undefined }, creditCost: 0 },
+
+    { category: '📝 PRACTICE', id: 'EXTRA_FREE_PRACTICE', label: 'Extra Free Practice', visible: true, allowedTiers: ['FREE', 'BASIC', 'ULTRA'], limits: { free: 30, basic: 50, ultra: 100 }, creditCost: 0 },
+    { category: '📝 PRACTICE', id: 'PREMIUM_TEST', label: 'Premium Test', visible: true, allowedTiers: ['BASIC', 'ULTRA'], limits: { basic: 30, ultra: 50 }, creditCost: 0 },
+
+    { category: '🎧 AUDIO', id: 'AUDIO_ONLY', label: 'Audio Only', visible: true, allowedTiers: ['ULTRA'], limits: { ultra: undefined }, creditCost: 0 },
+
+    { category: '📈 ANALYSIS', id: 'TOPIC_ANALYSIS', label: 'Topic Analysis', visible: true, allowedTiers: ['FREE', 'BASIC', 'ULTRA'], limits: { free: 10, basic: 30, ultra: undefined }, creditCost: 0 },
+    { category: '📈 ANALYSIS', id: 'DETAILED_SOLUTION', label: 'Detailed Solution', visible: true, allowedTiers: ['FREE', 'BASIC', 'ULTRA'], limits: { free: undefined, basic: undefined, ultra: undefined }, creditCost: 0 },
+
+    { category: '💳 BILLING', id: 'REDEEM_CODE', label: 'Redeem Code', visible: true, allowedTiers: ['FREE', 'BASIC', 'ULTRA'], limits: { free: 2, basic: 5, ultra: 10 }, creditCost: 0 },
+
+    { category: '🎧 AUDIO', id: 'AUDIO_LIBRARY', label: 'Audio Library', visible: true, allowedTiers: ['ULTRA'], limits: {}, creditCost: 0 },
+
+    { category: '📑 NOTES', id: 'QUICK_REVISION', label: 'Quick Notes', visible: true, allowedTiers: ['FREE', 'BASIC', 'ULTRA'], limits: {}, creditCost: 0 },
+    { category: '📑 NOTES', id: 'DEEP_DIVE', label: 'Detailed Notes', visible: true, allowedTiers: ['FREE', 'BASIC', 'ULTRA'], limits: {}, creditCost: 5 },
+    { category: '📑 NOTES', id: 'MEMORY_MODE', label: 'Memory Mode', visible: true, allowedTiers: ['ULTRA'], limits: {}, creditCost: 0 },
+    { category: '📑 NOTES', id: 'EXTRA_NOTES', label: 'Extra Notes', visible: true, allowedTiers: ['ULTRA'], limits: {}, creditCost: 0 },
+
+    { category: '📝 MCQ', id: 'MCQ_FREE', label: 'Practice', visible: true, allowedTiers: ['FREE', 'BASIC', 'ULTRA'], limits: { free: 30, basic: 50, ultra: 100 }, creditCost: 0 },
+    { category: '📝 MCQ', id: 'MCQ_PREMIUM', label: 'Premium Tests', visible: true, allowedTiers: ['BASIC', 'ULTRA'], limits: { basic: 30, ultra: 50 }, creditCost: 0 },
+    { category: '📝 MCQ', id: 'TOPIC_ANALYSIS', label: 'Topic Analysis', visible: true, allowedTiers: ['FREE', 'BASIC', 'ULTRA'], limits: { free: 10, basic: 30, ultra: undefined }, creditCost: 0 },
+    { category: '📝 MCQ', id: 'DETAILED_SOLUTION', label: 'Detailed Solution', visible: true, allowedTiers: ['FREE', 'BASIC', 'ULTRA'], limits: {}, creditCost: 0 },
+
+    { category: '🔄 REVISION', id: 'REVISION_HUB_FREE', label: 'Revision Hub (Free)', visible: true, allowedTiers: ['FREE', 'BASIC', 'ULTRA'], limits: {}, creditCost: 0 },
+    { category: '🔄 REVISION', id: 'REVISION_HUB_PREMIUM', label: 'Revision Hub (Premium)', visible: true, allowedTiers: ['BASIC', 'ULTRA'], limits: { basic: 2, ultra: undefined }, creditCost: 0 },
+
+    { category: '🤖 AI HUB', id: 'AI_CHAT', label: 'AI Tour/Chat', visible: true, allowedTiers: ['FREE', 'BASIC', 'ULTRA'], limits: { free: 1, basic: 2, ultra: 5 }, creditCost: 0 },
+
+    { category: '⚙️ SYSTEM', id: 'HISTORY_SAVE', label: 'History / Save Notes', visible: true, allowedTiers: ['BASIC', 'ULTRA'], limits: {}, creditCost: 0 },
+    { category: '⚙️ SYSTEM', id: 'ACTIVITY_LOG', label: 'Activity Log', visible: true, allowedTiers: ['FREE', 'BASIC', 'ULTRA'], limits: {}, creditCost: 0 },
+    { category: '⚙️ SYSTEM', id: 'REDEEM_CODE', label: 'Redeem Code', visible: true, allowedTiers: ['FREE', 'BASIC', 'ULTRA'], limits: { free: 2, basic: 5, ultra: 10 }, creditCost: 0 },
+
+
 ];
 
 export const DEFAULT_PLAN_COMPARISON = [

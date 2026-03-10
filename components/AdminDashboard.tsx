@@ -8222,9 +8222,175 @@ Capital of India?       Mumbai  Delhi   Kolkata Chennai 2       Delhi is the cap
                   <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-200 animate-in slide-in-from-right">
                       <div className="flex items-center gap-4 mb-6 border-b pb-4">
                           <button onClick={() => setActiveTab('DASHBOARD')} className="bg-slate-100 p-2 rounded-full hover:bg-slate-200"><ArrowLeft size={20} /></button>
-                          <h3 className="text-xl font-black text-slate-800">System Activity Log</h3>
+                          <h3 className="text-xl font-black text-slate-800">Revision & Activity Logs</h3>
                       </div>
 
+            {/* --- REVISION LOGIC CONFIGURATION --- */}
+            <div className="bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-slate-200 mb-8">
+                <h3 className="text-sm font-bold text-slate-800 mb-4 flex items-center gap-2"><BrainCircuit size={18} className="text-purple-500" /> Revision Engine Config</h3>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                <div>
+                    <label className="text-xs font-bold text-slate-500 uppercase">Strong Topic (Min %)</label>
+                    <input
+                        type="number"
+                        value={localSettings.revisionConfig?.thresholds.strong ?? 80}
+                        onChange={(e) => {
+                            const updated = {
+                                ...localSettings,
+                                revisionConfig: {
+                                    ...localSettings.revisionConfig!,
+                                    thresholds: {
+                                        ...localSettings.revisionConfig?.thresholds!,
+                                        strong: parseInt(e.target.value) || 0
+                                    }
+                                } as any
+                            };
+                            setLocalSettings(updated);
+                            handleSaveSettings(updated);
+                        }}
+                        className="w-full p-2 border rounded-lg font-bold"
+                    />
+                    <p className="text-[10px] text-slate-400 mt-1">Scores above this are "Strong"</p>
+                </div>
+                <div>
+                    <label className="text-xs font-bold text-slate-500 uppercase">Average Topic (Min %)</label>
+                    <input
+                        type="number"
+                        value={localSettings.revisionConfig?.thresholds.average ?? 50}
+                        onChange={(e) => {
+                            const updated = {
+                                ...localSettings,
+                                revisionConfig: {
+                                    ...localSettings.revisionConfig!,
+                                    thresholds: {
+                                        ...localSettings.revisionConfig?.thresholds!,
+                                        average: parseInt(e.target.value) || 0
+                                    }
+                                } as any
+                            };
+                            setLocalSettings(updated);
+                            handleSaveSettings(updated);
+                        }}
+                        className="w-full p-2 border rounded-lg font-bold"
+                    />
+                    <p className="text-[10px] text-slate-400 mt-1">Scores between this and Strong are "Average"</p>
+                </div>
+                <div>
+                    <label className="text-xs font-bold text-slate-500 uppercase">Mastery Score (Min %)</label>
+                    <input
+                        type="number"
+                        value={localSettings.revisionConfig?.thresholds.mastery ?? 80}
+                        onChange={(e) => {
+                            const updated = {
+                                ...localSettings,
+                                revisionConfig: {
+                                    ...localSettings.revisionConfig!,
+                                    thresholds: {
+                                        ...localSettings.revisionConfig?.thresholds!,
+                                        mastery: parseInt(e.target.value) || 0
+                                    }
+                                } as any
+                            };
+                            setLocalSettings(updated);
+                            handleSaveSettings(updated);
+                        }}
+                        className="w-full p-2 border rounded-lg font-bold"
+                    />
+                    <p className="text-[10px] text-slate-400 mt-1">Score needed to count towards Mastery</p>
+                </div>
+                <div>
+                    <label className="text-xs font-bold text-slate-500 uppercase">Mastery Count</label>
+                    <input
+                        type="number"
+                        value={localSettings.revisionConfig?.mastery.requiredCount ?? 2}
+                        onChange={(e) => {
+                            const updated = {
+                                ...localSettings,
+                                revisionConfig: {
+                                    ...localSettings.revisionConfig!,
+                                    mastery: {
+                                        requiredCount: parseInt(e.target.value) || 1
+                                    }
+                                } as any
+                            };
+                            setLocalSettings(updated);
+                            handleSaveSettings(updated);
+                        }}
+                        className="w-full p-2 border rounded-lg font-bold"
+                    />
+                    <p className="text-[10px] text-slate-400 mt-1">How many times user must score high to Master a topic</p>
+                </div>
+            </div>
+
+            {/* TIME INTERVALS */}
+            <div className="space-y-6">
+                {['weak', 'average', 'strong', 'mastered'].map(status => {
+                    // Helper to get seconds safely
+                    const getSeconds = (type: 'revision' | 'mcq') => {
+                        // @ts-ignore
+                        return localSettings.revisionConfig?.intervals?.[status]?.[type] || 0;
+                    };
+
+                    // Helper to update seconds
+                    const updateSeconds = (type: 'revision' | 'mcq', totalSeconds: number) => {
+                            const newIntervals = {
+                                weak: { revision: 86400, mcq: 259200 },
+                                average: { revision: 259200, mcq: 432000 },
+                                strong: { revision: 604800, mcq: 864000 },
+                                mastered: { revision: 2592000, mcq: 864000 },
+                                ...(localSettings.revisionConfig?.intervals || {})
+                            };
+                            // @ts-ignore
+                            newIntervals[status] = {
+                                // @ts-ignore
+                                ...newIntervals[status],
+                                [type]: totalSeconds
+                            };
+
+                            const updated = {
+                                ...localSettings,
+                                revisionConfig: {
+                                    thresholds: localSettings.revisionConfig?.thresholds || { strong: 80, average: 50, mastery: 80 },
+                                    mastery: localSettings.revisionConfig?.mastery || { requiredCount: 2 },
+                                    intervals: newIntervals
+                                }
+                            };
+                            setLocalSettings(updated);
+                            handleSaveSettings(updated);
+                    };
+
+                    const renderTimeInput = (label: string, type: 'revision' | 'mcq', color: string) => {
+                        const totalSeconds = getSeconds(type);
+                        const d = Math.floor(totalSeconds / (24 * 3600));
+                        const h = Math.floor((totalSeconds % (24 * 3600)) / 3600);
+                        const m = Math.floor((totalSeconds % 3600) / 60);
+
+                        return (
+                            <div className={`p-3 rounded-xl border ${color} bg-white flex flex-col gap-2`}>
+                                <span className="text-[10px] font-bold uppercase">{label}</span>
+                                <div className="flex items-center gap-2">
+                                    <input type="number" value={d} onChange={e => updateSeconds(type, (parseInt(e.target.value||'0')*86400) + h*3600 + m*60)} className="w-12 p-1 border rounded text-xs font-bold text-center" /> d
+                                    <input type="number" value={h} onChange={e => updateSeconds(type, d*86400 + (parseInt(e.target.value||'0')*3600) + m*60)} className="w-12 p-1 border rounded text-xs font-bold text-center" /> h
+                                </div>
+                            </div>
+                        );
+                    };
+
+                    return (
+                        <div key={status} className="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                            <h4 className="font-bold text-slate-700 capitalize mb-3">{status} Status Topic</h4>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                {renderTimeInput('Next Revision Note Date', 'revision', 'border-blue-200 text-blue-700')}
+                                {renderTimeInput('Next MCQ Practice Date', 'mcq', 'border-purple-200 text-purple-700')}
+                            </div>
+                        </div>
+                    );
+                })}
+            </div>
+            </div>
+
+                      <h3 className="text-lg font-black text-slate-800 mb-4 mt-8">System Activity Logs</h3>
                       <div className="space-y-3 max-h-[600px] overflow-y-auto pr-2">
                           {logs.length === 0 ? (
                               <div className="text-center py-10 text-slate-400">No activity recorded yet.</div>
@@ -8426,11 +8592,164 @@ Capital of India?       Mumbai  Delhi   Kolkata Chennai 2       Delhi is the cap
 
             {activeTab === 'ACTIVITY_LOG' && (
           <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-200 animate-in slide-in-from-bottom-4">
+
               <div className="flex items-center gap-4 mb-6"><button onClick={() => setActiveTab('DASHBOARD')} className="bg-slate-100 p-2 rounded-full hover:bg-slate-200"><ArrowLeft size={20} /></button><h3 className="text-xl font-black text-slate-800 flex-1">Activity Log</h3>
                   <button onClick={() => setActiveTab('REVISION_LOGIC')} className="bg-purple-100 text-purple-700 font-bold px-4 py-2 rounded-lg text-sm hover:bg-purple-200 transition-colors flex items-center gap-2">
                       <BrainCircuit size={16} /> Revision Config
                   </button>
               </div>
+
+              <div className="flex items-center gap-4 mb-6"><button onClick={() => setActiveTab('DASHBOARD')} className="bg-slate-100 p-2 rounded-full hover:bg-slate-200"><ArrowLeft size={20} /></button><h3 className="text-xl font-black text-slate-800">Revision & Activity Logs</h3></div>
+
+            {/* --- REVISION LOGIC CONFIGURATION --- */}
+            <div className="bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-slate-200 mb-8">
+                <h3 className="text-sm font-bold text-slate-800 mb-4 flex items-center gap-2"><BrainCircuit size={18} className="text-purple-500" /> Revision Engine Config</h3>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                <div>
+                    <label className="text-xs font-bold text-slate-500 uppercase">Strong Topic (Min %)</label>
+                    <input
+                        type="number"
+                        value={localSettings.revisionConfig?.thresholds.strong ?? 80}
+                        onChange={(e) => setLocalSettings({
+                            ...localSettings,
+                            revisionConfig: {
+                                ...localSettings.revisionConfig!,
+                                thresholds: {
+                                    ...localSettings.revisionConfig?.thresholds!,
+                                    strong: parseInt(e.target.value) || 0
+                                }
+                            } as any
+                        })}
+                        className="w-full p-2 border rounded-lg font-bold"
+                    />
+                    <p className="text-[10px] text-slate-400 mt-1">Scores above this are "Strong"</p>
+                </div>
+                <div>
+                    <label className="text-xs font-bold text-slate-500 uppercase">Average Topic (Min %)</label>
+                    <input
+                        type="number"
+                        value={localSettings.revisionConfig?.thresholds.average ?? 50}
+                        onChange={(e) => setLocalSettings({
+                            ...localSettings,
+                            revisionConfig: {
+                                ...localSettings.revisionConfig!,
+                                thresholds: {
+                                    ...localSettings.revisionConfig?.thresholds!,
+                                    average: parseInt(e.target.value) || 0
+                                }
+                            } as any
+                        })}
+                        className="w-full p-2 border rounded-lg font-bold"
+                    />
+                    <p className="text-[10px] text-slate-400 mt-1">Scores between this and Strong are "Average"</p>
+                </div>
+                <div>
+                    <label className="text-xs font-bold text-slate-500 uppercase">Mastery Score (Min %)</label>
+                    <input
+                        type="number"
+                        value={localSettings.revisionConfig?.thresholds.mastery ?? 80}
+                        onChange={(e) => setLocalSettings({
+                            ...localSettings,
+                            revisionConfig: {
+                                ...localSettings.revisionConfig!,
+                                thresholds: {
+                                    ...localSettings.revisionConfig?.thresholds!,
+                                    mastery: parseInt(e.target.value) || 0
+                                }
+                            } as any
+                        })}
+                        className="w-full p-2 border rounded-lg font-bold"
+                    />
+                    <p className="text-[10px] text-slate-400 mt-1">Score needed to count towards Mastery</p>
+                </div>
+                <div>
+                    <label className="text-xs font-bold text-slate-500 uppercase">Mastery Count</label>
+                    <input
+                        type="number"
+                        value={localSettings.revisionConfig?.mastery.requiredCount ?? 2}
+                        onChange={(e) => setLocalSettings({
+                            ...localSettings,
+                            revisionConfig: {
+                                ...localSettings.revisionConfig!,
+                                mastery: {
+                                    requiredCount: parseInt(e.target.value) || 1
+                                }
+                            } as any
+                        })}
+                        className="w-full p-2 border rounded-lg font-bold"
+                    />
+                    <p className="text-[10px] text-slate-400 mt-1">How many times user must score high to Master a topic</p>
+                </div>
+            </div>
+
+            {/* TIME INTERVALS */}
+            <div className="space-y-6">
+                {['weak', 'average', 'strong', 'mastered'].map(status => {
+                    // Helper to get seconds safely
+                    const getSeconds = (type: 'revision' | 'mcq') => {
+                        // @ts-ignore
+                        return localSettings.revisionConfig?.intervals?.[status]?.[type] || 0;
+                    };
+
+                    // Helper to update seconds
+                    const updateSeconds = (type: 'revision' | 'mcq', totalSeconds: number) => {
+                            const newIntervals = {
+                                weak: { revision: 86400, mcq: 259200 },
+                                average: { revision: 259200, mcq: 432000 },
+                                strong: { revision: 604800, mcq: 864000 },
+                                mastered: { revision: 2592000, mcq: 864000 },
+                                ...(localSettings.revisionConfig?.intervals || {})
+                            };
+                            // @ts-ignore
+                            newIntervals[status] = {
+                                // @ts-ignore
+                                ...newIntervals[status],
+                                [type]: totalSeconds
+                            };
+
+                            setLocalSettings({
+                                ...localSettings,
+                                revisionConfig: {
+                                    thresholds: localSettings.revisionConfig?.thresholds || { strong: 80, average: 50, mastery: 80 },
+                                    mastery: localSettings.revisionConfig?.mastery || { requiredCount: 2 },
+                                    intervals: newIntervals
+                                }
+                            });
+                    };
+
+                    const renderTimeInput = (label: string, type: 'revision' | 'mcq', color: string) => {
+                        const totalSeconds = getSeconds(type);
+                        const d = Math.floor(totalSeconds / (24 * 3600));
+                        const h = Math.floor((totalSeconds % (24 * 3600)) / 3600);
+                        const m = Math.floor((totalSeconds % 3600) / 60);
+
+                        return (
+                            <div className={`p-3 rounded-xl border ${color} bg-white flex flex-col gap-2`}>
+                                <span className="text-[10px] font-bold uppercase">{label}</span>
+                                <div className="flex items-center gap-2">
+                                    <input type="number" value={d} onChange={e => updateSeconds(type, (parseInt(e.target.value||'0')*86400) + h*3600 + m*60)} className="w-12 p-1 border rounded text-xs font-bold text-center" /> d
+                                    <input type="number" value={h} onChange={e => updateSeconds(type, d*86400 + (parseInt(e.target.value||'0')*3600) + m*60)} className="w-12 p-1 border rounded text-xs font-bold text-center" /> h
+                                </div>
+                            </div>
+                        );
+                    };
+
+                    return (
+                        <div key={status} className="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                            <h4 className="font-bold text-slate-700 capitalize mb-3">{status} Status Topic</h4>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                {renderTimeInput('Next Revision Note Date', 'revision', 'border-blue-200 text-blue-700')}
+                                {renderTimeInput('Next MCQ Practice Date', 'mcq', 'border-purple-200 text-purple-700')}
+                            </div>
+                        </div>
+                    );
+                })}
+            </div>
+            </div>
+
+              <h3 className="text-lg font-black text-slate-800 mb-4 mt-8">Activity Logs</h3>
+
               <div className="space-y-4">
                   {logs.map((log, idx) => (
                       <div key={idx} className="p-4 border rounded-xl hover:bg-slate-50 transition-colors">

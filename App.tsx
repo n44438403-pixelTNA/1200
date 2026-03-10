@@ -2217,6 +2217,8 @@ const App: React.FC = () => {
       {/* BOTTOM SAFE AREA BACKGROUND */}
       <div className="fixed bottom-0 left-0 right-0 h-[env(safe-area-inset-bottom,32px)] bg-slate-900 z-[100]"></div>
 
+
+
       {/* WATERMARK LAYER */}
       {state.settings.isWatermarkEnabled === true && (
       <div className="fixed inset-0 z-[-1] pointer-events-none overflow-hidden select-none">
@@ -2249,6 +2251,7 @@ const App: React.FC = () => {
           )}
       </div>
       )}
+
       
       {/* GLOBAL LIVE DASHBOARD 1 (TOP) */}
         {state.settings.bannerConfig?.top?.enabled && showTopBanner && state.view === 'ADMIN_DASHBOARD' && (

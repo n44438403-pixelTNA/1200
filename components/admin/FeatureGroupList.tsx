@@ -21,7 +21,7 @@ const GROUPS: { key: FeatureGroup; label: string; icon: keyof typeof LucideIcons
     { key: 'CONTENT', label: 'Content & Analysis', icon: 'BarChart3', color: 'purple' },
     { key: 'AI', label: 'AI Center', icon: 'Bot', color: 'teal' },
     { key: 'GAME', label: 'Gamification', icon: 'Gamepad2', color: 'orange' },
-    { key: 'NSTA_CONTROL', label: 'NSTA Control', icon: 'Sliders', color: 'violet' },
+    { key: 'NSTA_CONTROL', label: 'Subscription Control', icon: 'Sliders', color: 'violet' },
     { key: 'ADVANCED', label: 'Advanced Settings', icon: 'Settings', color: 'slate' },
 ];
 

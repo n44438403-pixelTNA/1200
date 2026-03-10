@@ -17,34 +17,41 @@ test('verify nsta control changes', async ({ page }) => {
 
   await page.goto('http://localhost:5000/');
 
-  // Wait for Admin dashboard tab (assuming role=ADMIN shows it)
-  // Let's just navigate to admin dashboard directly if possible or click the admin tab
-  // Depending on how routing is done, maybe there is an admin button on the bottom nav or top nav
+  // wait a bit for popups to clear
   await page.waitForTimeout(2000);
 
-  // Try to click Admin Dashboard or Settings
-  // The AdminDashboard is rendered when activeTab is 'ADMIN'
+  // click "Collect" or "Close" if any popup is there
+  const collectBtn = await page.locator('button:has-text("Awesome!")').first();
+  if (await collectBtn.isVisible()) {
+      await collectBtn.click();
+      await page.waitForTimeout(1000);
+  }
+  const claimBtn = await page.locator('button:has-text("Claim Bonus")').first();
+  if (await claimBtn.isVisible()) {
+      await claimBtn.click();
+      await page.waitForTimeout(1000);
+  }
+
+  // Try to click Admin Dashboard
   const adminBtn = await page.locator('button:has-text("Admin")').first();
   if (await adminBtn.isVisible()) {
       await adminBtn.click();
-  } else {
-      console.log("Could not find Admin button directly.");
   }
 
   await page.waitForTimeout(1000);
 
-  // Take screenshot of the dashboard
-  await page.screenshot({ path: 'dashboard.png', fullPage: true });
-
-  // Now, try to click the "Feature Control Panel" or "NSTA Control" tab in the admin dashboard
-  // "NSTA Control" tab in admin dashboard was changed to point to NstaFeatureManager which we renamed to Feature Control Panel
-  // The tab label in FeatureGroupList might still be "NSTA Control" if we didn't change it there.
-  // Wait, I only changed NstaFeatureManager.tsx, let's check what it renders
+  // Try to open NSTA Control tab
   const nstaTab = await page.locator('button:has-text("NSTA Control")').first();
   if (await nstaTab.isVisible()) {
       await nstaTab.click();
       await page.waitForTimeout(1000);
       await page.screenshot({ path: 'feature_control.png', fullPage: true });
+  }
+
+  // Go back to dashboard if possible
+  const backBtn = await page.locator('button:has-text("Dashboard")').first();
+  if (await backBtn.isVisible()) {
+      await backBtn.click();
   }
 
   // Click Revision Logic

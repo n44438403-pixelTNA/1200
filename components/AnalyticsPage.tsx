@@ -78,9 +78,9 @@ export const AnalyticsPage: React.FC<Props> = ({ user, onBack, settings, onNavig
         .slice(0, 10)
         .reverse() // Oldest to newest
         .map(h => ({
-            date: new Date(h.date).toLocaleDateString(undefined, {day: 'numeric', month: 'short'}),
+            date: h.date ? new Date(h.date).toLocaleDateString(undefined, {day: 'numeric', month: 'short'}) : 'N/A',
             score: h.totalQuestions > 0 ? Math.round((h.correctCount / h.totalQuestions) * 100) : 0,
-            fullDate: new Date(h.date).toLocaleDateString(),
+            fullDate: h.date ? new Date(h.date).toLocaleDateString() : 'N/A',
             topic: h.chapterTitle || 'General Test'
         }));
 
@@ -208,9 +208,9 @@ export const AnalyticsPage: React.FC<Props> = ({ user, onBack, settings, onNavig
                             <div className="flex justify-between items-start">
                                 <div>
                                     <h4 className="font-bold text-slate-800 text-sm group-hover:text-blue-600 transition-colors">{item.chapterTitle}</h4>
-                                    <p className="text-xs text-slate-500">{item.subjectName} • {new Date(item.date).toLocaleDateString()}</p>
+                                    <p className="text-xs text-slate-500">{item.subjectName} • {item.date ? new Date(item.date).toLocaleDateString() : 'N/A'}</p>
                                 </div>
-                                <div className={`px-2 py-1 rounded text-[10px] font-black border ${getTagColor(item.performanceTag)}`}>
+                                <div className={`px-2 py-1 rounded text-[10px] font-black border ${getTagColor(item.performanceTag || 'GOOD')}`}>
                                     {(item.performanceTag || '').replace('_', ' ')}
                                 </div>
                             </div>
@@ -218,7 +218,7 @@ export const AnalyticsPage: React.FC<Props> = ({ user, onBack, settings, onNavig
                             <div className="flex items-center justify-between text-xs bg-slate-50 p-2 rounded-lg">
                                 <div className="text-center flex-1 border-r border-slate-200">
                                     <p className="text-slate-400 font-bold uppercase text-[9px]">Score</p>
-                                    <p className="font-black text-slate-700">{item.score}/{item.totalQuestions}</p>
+                                    <p className="font-black text-slate-700">{item.score || 0}/{item.totalQuestions || 0}</p>
                                 </div>
                                 <div className="text-center flex-1 border-r border-slate-200">
                                     <p className="text-slate-400 font-bold uppercase text-[9px]">Avg Time</p>
@@ -226,7 +226,7 @@ export const AnalyticsPage: React.FC<Props> = ({ user, onBack, settings, onNavig
                                 </div>
                                 <div className="text-center flex-1">
                                     <p className="text-slate-400 font-bold uppercase text-[9px]">Total Time</p>
-                                    <p className="font-black text-slate-700">{Math.floor(item.totalTimeSeconds/60)}m {item.totalTimeSeconds%60}s</p>
+                                    <p className="font-black text-slate-700">{Math.floor((item.totalTimeSeconds || 0)/60)}m {(item.totalTimeSeconds || 0)%60}s</p>
                                 </div>
                             </div>
                             

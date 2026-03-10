@@ -22,12 +22,18 @@ export const MonthlyMarksheet: React.FC<Props> = ({ user, settings, onClose, rep
 
       const history = user.mcqHistory || [];
       return history.filter(h => {
+          if (!h.date) return false;
           const d = new Date(h.date);
+          if (isNaN(d.getTime())) return false;
           if (reportType === 'ANNUAL') {
               return d.getFullYear() === currentYear;
           }
           return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
-      }).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+      }).sort((a, b) => {
+          const d1 = b.date ? new Date(b.date).getTime() : 0;
+          const d2 = a.date ? new Date(a.date).getTime() : 0;
+          return d1 - d2;
+      });
   }, [user.mcqHistory, reportType]);
 
   const stats = useMemo(() => {
@@ -185,7 +191,7 @@ export const MonthlyMarksheet: React.FC<Props> = ({ user, settings, onClose, rep
                                     {reportData.map((test, i) => (
                                         <tr key={i} className="border-b border-slate-50 last:border-0">
                                             <td className="py-3 font-bold text-slate-500 w-24">
-                                                {new Date(test.date).toLocaleDateString(undefined, {day: '2-digit', month: 'short'})}
+                                                {test.date ? new Date(test.date).toLocaleDateString(undefined, {day: '2-digit', month: 'short'}) : 'N/A'}
                                             </td>
                                             <td className="py-3 font-bold text-slate-800">
                                                 {test.chapterTitle}

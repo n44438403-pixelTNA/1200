@@ -326,7 +326,7 @@ export const HistoryPage: React.FC<Props> = ({ user, onUpdateUser, settings }) =
                                                                 )}
                                                             </div>
                                                             <p className="text-xs text-slate-500">
-                                                                {log.type === 'PURCHASE' ? 'Transaction' : log.type === 'GAME' ? 'Play Zone' : log.subject} • {new Date(log.timestamp).toLocaleDateString()}
+                                                                {log.type === 'PURCHASE' ? 'Transaction' : log.type === 'GAME' ? 'Play Zone' : log.subject} • {log.timestamp ? new Date(log.timestamp).toLocaleDateString() : 'N/A'}
                                                             </p>
                                                             <div className="flex items-center gap-2 mt-1">
                                                                 {log.type !== 'PURCHASE' && log.type !== 'GAME' && (
@@ -434,7 +434,7 @@ export const HistoryPage: React.FC<Props> = ({ user, onUpdateUser, settings }) =
                                             </h4>
                                         </div>
                                         <div className="flex items-center gap-4 text-xs text-slate-400 mt-1">
-                                            <div className="flex items-center gap-1"><Calendar size={12} /> {new Date(item.dateCreated).toLocaleDateString()}</div>
+                                            <div className="flex items-center gap-1"><Calendar size={12} /> {item.dateCreated ? new Date(item.dateCreated).toLocaleDateString() : 'N/A'}</div>
                                             <div className="font-bold text-blue-600">{item.score}% Score</div>
                                             <div className={`font-bold ${item.score >= 60 ? 'text-green-600' : 'text-red-600'}`}>
                                                 {item.score >= 60 ? 'Passed' : 'Needs Review'}

@@ -14,8 +14,10 @@ interface Props {
 export const FeatureMatrixModal: React.FC<Props> = ({ isOpen, onClose, settings, discountActive }) => {
   if (!isOpen) return null;
 
-  // Use the comprehensive DEFAULT_PLAN_COMPARISON for the matrix
-  const groupedFeatures = settings?.planComparison || DEFAULT_PLAN_COMPARISON;
+  // Only use NSTA_DEFAULT_FEATURES directly to reflect exact configuration as per requirements
+  const featuresList = settings?.featureConfig && Object.keys(settings.featureConfig).length > 0
+      ? Object.values(settings.featureConfig).filter((f: any) => f.visible !== false)
+      : NSTA_DEFAULT_FEATURES.filter((f: any) => f.visible !== false);
 
   const getLimitDisplay = (feature: any, tier: 'free' | 'basic' | 'ultra') => {
       // 1. Check if Tier is Allowed
@@ -33,6 +35,14 @@ export const FeatureMatrixModal: React.FC<Props> = ({ isOpen, onClose, settings,
       // 3. Unlimited (if allowed but no limit)
       return <span className="text-green-600 font-black flex items-center justify-center gap-1"><Check size={14}/> Unlimited</span>;
   };
+
+  // Group by category to maintain structure
+  const groupedFeatures = featuresList.reduce((acc: any, feature: any) => {
+      const cat = feature.category || 'GENERAL';
+      if (!acc[cat]) acc[cat] = [];
+      acc[cat].push(feature);
+      return acc;
+  }, {});
 
   return (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-sm animate-in fade-in">
@@ -73,36 +83,33 @@ export const FeatureMatrixModal: React.FC<Props> = ({ isOpen, onClose, settings,
 
         {/* CONTENT (SCROLLABLE) */}
         <div className="overflow-y-auto custom-scrollbar bg-white flex-1">
-            {groupedFeatures.map((categoryGroup: any, catIndex: number) => (
+            {Object.keys(groupedFeatures).map((catName: string, catIndex: number) => (
                 <div key={catIndex}>
                     {/* CATEGORY HEADER */}
                     <div className="bg-slate-50 p-3 px-6 border-y border-slate-100 flex items-center gap-2 sticky top-0 z-10 shadow-sm">
-                        <span className="font-black text-slate-800 text-xs uppercase tracking-widest">{categoryGroup.name}</span>
+                        <span className="font-black text-slate-800 text-xs uppercase tracking-widest">{catName}</span>
                     </div>
 
                     {/* FEATURE ROWS */}
-                    {categoryGroup.features.map((feature: any, featIndex: number) => {
-                        const renderCell = (text: string) => {
-                            if (text.includes('✅')) return <span className="text-green-600 font-bold">{text}</span>;
-                            if (text.includes('❌')) return <span className="text-red-500 font-bold">{text}</span>;
-                            if (text.includes('🔒')) return <span className="text-slate-500 font-bold">{text}</span>;
-                            if (text.includes('⚠️')) return <span className="text-yellow-600 font-bold">{text}</span>;
-                            return <span className="text-slate-700 font-bold">{text}</span>;
-                        };
-
+                    {groupedFeatures[catName].map((feature: any, featIndex: number) => {
                         return (
                             <div key={featIndex} className="grid grid-cols-4 border-b border-slate-50 hover:bg-slate-50/50 transition-colors relative group">
                                 <div className="p-4 pl-6 flex items-center gap-3 text-sm font-bold text-slate-700 border-r border-slate-50">
-                                    {feature.name}
+                                    {feature.label}
+                                    {feature.creditCost > 0 && (
+                                        <span className="text-[10px] bg-orange-100 text-orange-700 px-2 py-0.5 rounded-full whitespace-nowrap ml-2">
+                                            {feature.creditCost} CR
+                                        </span>
+                                    )}
                                 </div>
                                 <div className="p-4 flex items-center justify-center text-xs text-center border-r border-slate-50">
-                                    {renderCell(feature.free)}
+                                    {getLimitDisplay(feature, 'free')}
                                 </div>
                                 <div className="p-4 flex items-center justify-center text-xs bg-blue-50/10 border-r border-slate-50 text-center">
-                                    {renderCell(feature.basic)}
+                                    {getLimitDisplay(feature, 'basic')}
                                 </div>
                                 <div className="p-4 flex items-center justify-center text-xs bg-purple-50/10 text-center">
-                                    {renderCell(feature.ultra)}
+                                    {getLimitDisplay(feature, 'ultra')}
                                 </div>
                             </div>
                         );

@@ -60,7 +60,15 @@ export class ErrorBoundary extends Component<Props, State> {
 
                 <button
                   onClick={() => {
-                      localStorage.clear(); 
+                      const keysToKeep = ['nst_current_user', 'nst_users'];
+                      const keysToRemove = [];
+                      for (let i = 0; i < localStorage.length; i++) {
+                          const key = localStorage.key(i);
+                          if (key && !keysToKeep.includes(key)) {
+                              keysToRemove.push(key);
+                          }
+                      }
+                      keysToRemove.forEach(k => localStorage.removeItem(k));
                       window.location.reload();
                   }}
                   className="w-full bg-slate-100 text-slate-600 font-bold py-3.5 rounded-xl flex items-center justify-center gap-2 hover:bg-slate-200 transition-colors"

@@ -2006,17 +2006,18 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
                           if (type === 'PDF' || type === 'VIDEO' || type === 'MCQ') {
                               setLoadingChapters(true);
                               const lang = user.board === 'BSEB' ? 'Hindi' : 'English';
-                                  fetchChapters(user.board as any || 'CBSE', user.classLevel as any || '10', user.stream as any || 'Science', null as any, lang).then(allChapters => {
+
+                              // Resolve Subject FIRST
+                              const subjects = getSubjectsList(user.classLevel || '10', user.stream || 'Science', user.board);
+                              let targetSubject = selectedSubject;
+                              if (subjectName) { targetSubject = subjects.find(s => s.name === subjectName) || subjects[0]; }
+                              else if (!targetSubject) { targetSubject = subjects[0]; }
+
+                              fetchChapters(user.board as any || 'CBSE', user.classLevel as any || '10', user.stream as any || 'Science', targetSubject as any, lang).then(allChapters => {
                                   const ch = allChapters.find(c => c.id === chapterId);
                                   if (ch) {
                                       // Switch Tab
                                       onTabChange(type as any); // Type cast as StudentTab
-
-                                      // Resolve Subject
-                                      const subjects = getSubjectsList(user.classLevel || '10', user.stream || 'Science', user.board);
-                                      let targetSubject = selectedSubject;
-                                      if (subjectName) { targetSubject = subjects.find(s => s.name === subjectName) || subjects[0]; }
-                                      else if (!targetSubject) { targetSubject = subjects[0]; }
 
                                       // Set Context
                                       setSelectedSubject(targetSubject);

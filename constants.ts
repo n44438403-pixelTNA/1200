@@ -451,6 +451,7 @@ export const LEVEL_UP_CONFIG = [
 ];
 
 export const NSTA_DEFAULT_FEATURES = [
+    { category: '🚀 BOOST SCORE', id: 'BOOST_SCORE', label: 'Boost Your Score Hub', visible: true, allowedTiers: ['FREE', 'BASIC', 'ULTRA'], limits: { free: undefined, basic: undefined, ultra: undefined }, creditCost: 0 },
     { category: '🎬 VIDEO', id: 'UNIVERSAL_VIDEO', label: 'Universal Video', visible: true, allowedTiers: ['FREE', 'BASIC', 'ULTRA'], limits: { free: 2, basic: 5, ultra: undefined }, creditCost: 0 },
     { category: '🎬 VIDEO', id: 'FREE_VIDEO', label: 'Free Video', visible: true, allowedTiers: ['FREE', 'BASIC', 'ULTRA'], limits: { free: 5, basic: 10, ultra: 20 }, creditCost: 0 },
     { category: '🎧 AUDIO', id: 'AUDIO_LIBRARY', label: 'Audio Only', visible: true, allowedTiers: ['ULTRA'], limits: {}, creditCost: 0 },

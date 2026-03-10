@@ -1,2 +1,2 @@
-1. Update `StudentDashboard.tsx` to conditionally hide the bottom navigation bar on more full-screen views, including `WEEKLY_TEST`, `CUSTOM_PAGE`, `CHALLENGE_20`, and `AI_STUDIO`.
-2. Ensure that any screen that requires full viewport (like an MCQ test or custom full-screen flow) completely hides the `fixed bottom-0` element.
+1. Fix the RevisionHub `onNavigateContent` missing `targetSubject` issue in `components/StudentDashboard.tsx`
+2. Wrap App initialization logic in `App.tsx` or similar file in try/catch or ensure crash resilience to "keep user data safe". Wait, let's check `App.tsx` for crash safety.

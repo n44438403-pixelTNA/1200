@@ -26,7 +26,7 @@ import { chromium } from 'playwright';
   });
 
   try {
-    await page.goto('http://localhost:5004');
+    await page.goto('http://localhost:5000');
     await page.waitForTimeout(3000);
 
     // Click on Revision tab
@@ -40,7 +40,7 @@ import { chromium } from 'playwright';
 
     await page.screenshot({ path: 'revision_hub_test.png' });
   } catch (e) {
-    console.log("Could not load localhost:5004", e);
+    console.log("Could not load localhost:5000", e);
   }
 
   await browser.close();

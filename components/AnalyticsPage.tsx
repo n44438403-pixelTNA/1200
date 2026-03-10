@@ -78,9 +78,9 @@ export const AnalyticsPage: React.FC<Props> = ({ user, onBack, settings, onNavig
         .slice(0, 10)
         .reverse() // Oldest to newest
         .map(h => ({
-            date: new Date(h.date).toLocaleDateString(undefined, {day: 'numeric', month: 'short'}),
+            date: h.date ? new Date(h.date).toLocaleDateString(undefined, {day: 'numeric', month: 'short'}) : 'Unknown',
             score: h.totalQuestions > 0 ? Math.round((h.correctCount / h.totalQuestions) * 100) : 0,
-            fullDate: new Date(h.date).toLocaleDateString(),
+            fullDate: h.date ? new Date(h.date).toLocaleDateString() : 'Unknown',
             topic: h.chapterTitle || 'General Test'
         }));
 
@@ -208,7 +208,7 @@ export const AnalyticsPage: React.FC<Props> = ({ user, onBack, settings, onNavig
                             <div className="flex justify-between items-start">
                                 <div>
                                     <h4 className="font-bold text-slate-800 text-sm group-hover:text-blue-600 transition-colors">{item.chapterTitle}</h4>
-                                    <p className="text-xs text-slate-500">{item.subjectName} • {new Date(item.date).toLocaleDateString()}</p>
+                                    <p className="text-xs text-slate-500">{item.subjectName} • {item.date ? new Date(item.date).toLocaleDateString() : 'Unknown Date'}</p>
                                 </div>
                                 <div className={`px-2 py-1 rounded text-[10px] font-black border ${getTagColor(item.performanceTag)}`}>
                                     {(item.performanceTag || '').replace('_', ' ')}

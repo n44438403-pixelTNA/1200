@@ -122,7 +122,8 @@ const RevisionHubComponent: React.FC<Props> = ({ user, onTabChange, settings, on
                 // Helper to process a subtopic
                 const processSubTopic = (name: string, reportedStatus?: TopicStatus, scorePct?: number, qCount?: number, correct?: number) => {
                     // Normalize ID
-                    const uniqueId = `${result.chapterId}_${name.trim()}`;
+                    if (!name) name = result.chapterTitle || 'Unknown Topic';
+                    const uniqueId = `${result.chapterId || 'unknown'}_${name.trim()}`;
 
                     let current = trackingMap.get(uniqueId) || {
                         status: 'AVERAGE',
@@ -266,6 +267,21 @@ const RevisionHubComponent: React.FC<Props> = ({ user, onTabChange, settings, on
                 }
 
                 // 2. Fallback (Chapter Level)
+                // 1.5. Try Parse topicAnalysis
+                if (result.topicAnalysis) {
+                    try {
+                        Object.keys(result.topicAnalysis).forEach(topicName => {
+                            const t = result.topicAnalysis[topicName];
+                            let s: TopicStatus = 'AVERAGE';
+                            if (t.percentage >= thresholds.mastery) s = 'EXCELLENT';
+                            else if (t.percentage >= thresholds.strong) s = 'STRONG';
+                            else if (t.percentage < thresholds.average) s = 'WEAK';
+                            processSubTopic(topicName || 'Unknown', s, t.percentage, t.total, t.correct);
+                        });
+                        return; // Successfully parsed topics, skip chapter fallback
+                    } catch(e) {}
+                }
+
                 const percentage = result.totalQuestions > 0 ? (result.score / result.totalQuestions) * 100 : 0;
                 let status: TopicStatus | undefined = undefined;
 

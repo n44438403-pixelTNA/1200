@@ -2,7 +2,7 @@ import React from 'react';
 import { User, SystemSettings, Subject } from '../../../types';
 import { getSubjectsList } from '../../../constants';
 import { checkFeatureAccess } from '../../../utils/permissionUtils';
-import { BookOpen, BarChart3, Video, Lock } from 'lucide-react';
+import { BookOpen, BarChart3, Video, Lock, Zap } from 'lucide-react';
 import { PerformanceGraph } from '../../PerformanceGraph';
 import { StudyGoalTimer } from '../../StudyGoalTimer';
 import { safeSetLocalStorage } from '../../../utils/safeStorage';
@@ -146,6 +146,19 @@ export const HomeTab: React.FC<Props> = ({ user, settings, dailyStudySeconds, da
                   );
               })()}
 
+              <button
+                  onClick={() => {
+                      onTabChange('BOOST_SCORE');
+                  }}
+                  className={`bg-gradient-to-br from-indigo-50 to-purple-50 border-2 border-indigo-100 p-4 rounded-3xl shadow-sm flex flex-col items-center justify-center gap-2 group active:scale-95 transition-all hover:border-indigo-300 h-32 relative overflow-hidden`}
+              >
+                  <div className="relative">
+                      <Zap size={28} className="text-indigo-600 mb-1" />
+                      <div className="absolute -top-1 -right-1 w-2 h-2 bg-yellow-400 rounded-full animate-pulse border border-white"></div>
+                  </div>
+                  <span className="font-black text-indigo-900 text-sm tracking-wide uppercase text-center">Boost Score</span>
+              </button>
+
               {(() => {
                   const access = checkFeatureAccess('VIDEO_ACCESS', user, settings || {});
                   const isLocked = !access.hasAccess;
@@ -155,7 +168,7 @@ export const HomeTab: React.FC<Props> = ({ user, settings, dailyStudySeconds, da
                               if (isLocked) { showAlert("🔒 Video content is locked by Admin.", "ERROR"); return; }
                               onTabChange('UNIVERSAL_VIDEO');
                           }}
-                          className={`bg-white border-2 border-slate-100 p-4 rounded-3xl shadow-sm flex flex-col items-center justify-center gap-2 group active:scale-95 transition-all hover:border-rose-200 h-32 relative overflow-hidden ${isLocked ? 'opacity-50 grayscale cursor-not-allowed' : ''}`}
+                          className={`bg-white border-2 border-slate-100 p-4 rounded-3xl shadow-sm flex flex-col items-center justify-center gap-2 group active:scale-95 transition-all hover:border-rose-200 h-32 relative overflow-hidden col-span-2 ${isLocked ? 'opacity-50 grayscale cursor-not-allowed' : ''}`}
                       >
                           <div className="relative">
                               <Video size={28} className="text-rose-600 mb-1" />

@@ -101,7 +101,11 @@ const RevisionHubComponent: React.FC<Props> = ({ user, onTabChange, settings, on
             const topicMap = new Map<string, TopicItem>();
 
             // Sort history chronologically (oldest first)
-            const sortedHistory = [...history].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+            const sortedHistory = [...history].sort((a, b) => {
+                const dA = a.date ? new Date(a.date).getTime() : 0;
+                const dB = b.date ? new Date(b.date).getTime() : 0;
+                return dA - dB;
+            });
 
             // Tracking Map: UniqueID -> { status, score, lastMcqDate, lastRevDate, excellentCount, totalQs, totalCorrect }
             const trackingMap = new Map<string, {
@@ -282,9 +286,10 @@ const RevisionHubComponent: React.FC<Props> = ({ user, onTabChange, settings, on
             return Array.from(topicMap.values()).sort((a, b) => {
                 // Smart AI Sorting Logic (Weighted Priority)
                 const getPriority = (item: TopicItem) => {
-                    const date = new Date(item.nextRevision || item.mcqDueDate || item.lastAttempt).getTime();
+                    const dateVal = item.nextRevision || item.mcqDueDate || item.lastAttempt;
+                    const date = dateVal ? new Date(dateVal).getTime() : 0;
                     const now = Date.now();
-                    const daysOverdue = Math.max(0, (now - date) / (1000 * 60 * 60 * 24));
+                    const daysOverdue = date ? Math.max(0, (now - date) / (1000 * 60 * 60 * 24)) : 0;
 
                     // Weight 1: Score (Lower score = Higher Priority)
                     const scoreWeight = (100 - (item.score || 0)) * 2;
@@ -1325,7 +1330,11 @@ const RevisionHubComponent: React.FC<Props> = ({ user, onTabChange, settings, on
                         // Filter for mistakes
                         const mistakesHistory = (user.mcqHistory || [])
                             .filter(h => h.wrongQuestions && h.wrongQuestions.length > 0)
-                            .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+                            .sort((a, b) => {
+                                const dA = a.date ? new Date(a.date).getTime() : 0;
+                                const dB = b.date ? new Date(b.date).getTime() : 0;
+                                return dB - dA;
+                            });
 
                         if (mistakesHistory.length === 0) {
                             return (

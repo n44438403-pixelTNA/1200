@@ -16,6 +16,7 @@ export const FeatureMatrixModal: React.FC<Props> = ({ isOpen, onClose, settings,
 
   // Only use NSTA_DEFAULT_FEATURES directly to reflect exact configuration as per requirements
   const featuresList = settings?.featureConfig && Object.keys(settings.featureConfig).length > 0
+
       ? Object.values(settings.featureConfig).filter((f: any) => f.visible !== false)
       : NSTA_DEFAULT_FEATURES.filter((f: any) => f.visible !== false);
 

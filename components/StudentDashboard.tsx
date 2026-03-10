@@ -2007,11 +2007,13 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
                               setLoadingChapters(true);
                               const lang = user.board === 'BSEB' ? 'Hindi' : 'English';
 
+
                               // Resolve Subject FIRST
                               const subjects = getSubjectsList(user.classLevel || '10', user.stream || 'Science', user.board);
                               let targetSubject = selectedSubject;
                               if (subjectName) { targetSubject = subjects.find(s => s.name === subjectName) || subjects[0]; }
                               else if (!targetSubject) { targetSubject = subjects[0]; }
+
 
                               fetchChapters(user.board as any || 'CBSE', user.classLevel as any || '10', user.stream as any || 'Science', targetSubject as any, lang).then(allChapters => {
                                   const ch = allChapters.find(c => c.id === chapterId);

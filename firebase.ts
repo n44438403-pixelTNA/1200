@@ -164,11 +164,12 @@ export const saveUserToLive = async (user: any) => {
     // Note: To keep things intact for the current frontend without massive refactoring,
     // we save the bulky data in a parallel collection `user_data/{uid}`
     const bulkyData: any = {};
-    if (mcqHistory !== undefined) bulkyData.mcqHistory = mcqHistory;
-    if (usageHistory !== undefined) bulkyData.usageHistory = usageHistory;
+    // NEVER overwrite with empty array if it might be a sync mismatch. Empty arrays are dangerous for bulky data.
+    if (mcqHistory !== undefined && (Array.isArray(mcqHistory) && mcqHistory.length > 0 || !Array.isArray(mcqHistory))) bulkyData.mcqHistory = mcqHistory;
+    if (usageHistory !== undefined && (Array.isArray(usageHistory) && usageHistory.length > 0 || !Array.isArray(usageHistory))) bulkyData.usageHistory = usageHistory;
     if (progress !== undefined) bulkyData.progress = progress;
-    if (testResults !== undefined) bulkyData.testResults = testResults;
-    if (inbox !== undefined) bulkyData.inbox = inbox;
+    if (testResults !== undefined && (Array.isArray(testResults) && testResults.length > 0 || !Array.isArray(testResults))) bulkyData.testResults = testResults;
+    if (inbox !== undefined && (Array.isArray(inbox) && inbox.length > 0 || !Array.isArray(inbox))) bulkyData.inbox = inbox;
 
     if (Object.keys(bulkyData).length > 0) {
         promises.push(setDoc(doc(db, "user_data", user.id), bulkyData, { merge: true }).catch(e => console.error("Firestore Bulky Data Save Error:", e)));

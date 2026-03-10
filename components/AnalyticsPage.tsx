@@ -81,6 +81,9 @@ export const AnalyticsPage: React.FC<Props> = ({ user, onBack, settings, onNavig
             date: h.date ? new Date(h.date).toLocaleDateString(undefined, {day: 'numeric', month: 'short'}) : 'N/A',
             score: h.totalQuestions > 0 ? Math.round((h.correctCount / h.totalQuestions) * 100) : 0,
             fullDate: h.date ? new Date(h.date).toLocaleDateString() : 'N/A',
+
+
+
             topic: h.chapterTitle || 'General Test'
         }));
 
@@ -209,6 +212,7 @@ export const AnalyticsPage: React.FC<Props> = ({ user, onBack, settings, onNavig
                                 <div>
                                     <h4 className="font-bold text-slate-800 text-sm group-hover:text-blue-600 transition-colors">{item.chapterTitle}</h4>
                                     <p className="text-xs text-slate-500">{item.subjectName} • {item.date ? new Date(item.date).toLocaleDateString() : 'N/A'}</p>
+
                                 </div>
                                 <div className={`px-2 py-1 rounded text-[10px] font-black border ${getTagColor(item.performanceTag || 'GOOD')}`}>
                                     {(item.performanceTag || '').replace('_', ' ')}

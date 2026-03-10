@@ -49,6 +49,7 @@ export const FloatingActionMenu: React.FC<Props> = ({ settings, user, isFlashSal
         // Fallback to NSTA_DEFAULT_FEATURES if config missing
         const configSource = settings.featureConfig && Object.keys(settings.featureConfig).length > 0
             ? Object.values(settings.featureConfig)
+
             : require('../constants').NSTA_DEFAULT_FEATURES;
 
         return configSource.filter((f: any) => f.visible !== false);

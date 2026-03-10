@@ -36,7 +36,7 @@ export const StudentHistoryModal: React.FC<Props> = ({ user, onClose }) => {
                                     <div>
                                         <h4 className="font-bold text-slate-800 text-sm line-clamp-1">{item.chapterTitle}</h4>
                                         <p className="text-[10px] text-slate-500 flex items-center gap-1">
-                                            <Calendar size={10} /> {new Date(item.date).toLocaleString()}
+                                            <Calendar size={10} /> {item.date ? new Date(item.date).toLocaleString() : 'Unknown Date'}
                                         </p>
                                     </div>
                                     <div className={`px-2 py-1 rounded text-xs font-bold ${

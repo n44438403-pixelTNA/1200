@@ -25,6 +25,7 @@ const SOUL_FEATURES = [
     'MY_ANALYSIS',
     'TOPIC_CONTENT',
     'REQUEST_CONTENT',
+    'BOOST_SCORE',
     // Removed Marksheet features as requested
 ];
 

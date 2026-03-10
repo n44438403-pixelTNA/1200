@@ -146,18 +146,25 @@ export const HomeTab: React.FC<Props> = ({ user, settings, dailyStudySeconds, da
                   );
               })()}
 
-              <button
-                  onClick={() => {
-                      onTabChange('BOOST_SCORE');
-                  }}
-                  className={`bg-gradient-to-br from-indigo-50 to-purple-50 border-2 border-indigo-100 p-4 rounded-3xl shadow-sm flex flex-col items-center justify-center gap-2 group active:scale-95 transition-all hover:border-indigo-300 h-32 relative overflow-hidden`}
-              >
-                  <div className="relative">
-                      <Zap size={28} className="text-indigo-600 mb-1" />
-                      <div className="absolute -top-1 -right-1 w-2 h-2 bg-yellow-400 rounded-full animate-pulse border border-white"></div>
-                  </div>
-                  <span className="font-black text-indigo-900 text-sm tracking-wide uppercase text-center">Boost Score</span>
-              </button>
+              {(() => {
+                  const isVisible = settings?.featureConfig?.['BOOST_SCORE']?.visible !== false;
+                  if (!isVisible) return null;
+
+                  return (
+                      <button
+                          onClick={() => {
+                              onTabChange('BOOST_SCORE');
+                          }}
+                          className={`bg-gradient-to-br from-indigo-50 to-purple-50 border-2 border-indigo-100 p-4 rounded-3xl shadow-sm flex flex-col items-center justify-center gap-2 group active:scale-95 transition-all hover:border-indigo-300 h-32 relative overflow-hidden`}
+                      >
+                          <div className="relative">
+                              <Zap size={28} className="text-indigo-600 mb-1" />
+                              <div className="absolute -top-1 -right-1 w-2 h-2 bg-yellow-400 rounded-full animate-pulse border border-white"></div>
+                          </div>
+                          <span className="font-black text-indigo-900 text-sm tracking-wide uppercase text-center">Boost Score</span>
+                      </button>
+                  );
+              })()}
 
               {(() => {
                   const access = checkFeatureAccess('VIDEO_ACCESS', user, settings || {});

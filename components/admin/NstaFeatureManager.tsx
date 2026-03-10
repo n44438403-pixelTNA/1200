@@ -126,11 +126,7 @@ export const NstaFeatureManager: React.FC<Props> = ({ settings, onUpdateSettings
                     </button>
                     <div>
                         <h1 className="text-2xl font-black text-slate-800 flex items-center gap-2">
-
                             <Settings className="text-violet-600" /> Feature Control Panel
-
-                            <Settings className="text-violet-600" /> Subscription Control
-
                         </h1>
                         <p className="text-slate-500 text-xs font-bold uppercase tracking-widest">Master Feature Management</p>
                     </div>

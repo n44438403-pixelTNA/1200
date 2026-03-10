@@ -46,24 +46,12 @@ export const FloatingActionMenu: React.FC<Props> = ({ settings, user, isFlashSal
 
     // Dynamic Menu Items from NSTA Control
     const dynamicMenuItems = useMemo(() => {
-        // STRICT NSTA CONTROL: Only show items that are explicitly configured in NSTA Control
-        if (!settings.featureConfig) return [];
+        // Fallback to NSTA_DEFAULT_FEATURES if config missing
+        const configSource = settings.featureConfig && Object.keys(settings.featureConfig).length > 0
+            ? Object.values(settings.featureConfig)
+            : require('../constants').NSTA_DEFAULT_FEATURES;
 
-        return ALL_FEATURES.filter(f => {
-            const config = settings.featureConfig?.[f.id];
-
-            // 1. Must exist in NSTA Config AND be visible
-            if (!config || config.visible === false) return false;
-
-            // 2. Filter by relevant groups to ensure ALL visible features show in the menu
-            const isRelevant = true; // Show all features that are visible in NSTA config
-
-            return isRelevant;
-        }).map(f => {
-            // Merge config into feature object for easy access
-            const config = settings.featureConfig?.[f.id];
-            return { ...f, ...config };
-        });
+        return configSource.filter((f: any) => f.visible !== false);
     }, [settings.featureConfig]);
 
     // Drag Refs

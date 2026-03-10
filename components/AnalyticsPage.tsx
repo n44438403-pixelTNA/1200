@@ -82,8 +82,6 @@ export const AnalyticsPage: React.FC<Props> = ({ user, onBack, settings, onNavig
             score: h.totalQuestions > 0 ? Math.round((h.correctCount / h.totalQuestions) * 100) : 0,
             fullDate: h.date ? new Date(h.date).toLocaleDateString() : 'N/A',
 
-
-
             topic: h.chapterTitle || 'General Test'
         }));
 

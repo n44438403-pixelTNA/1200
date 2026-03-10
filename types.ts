@@ -1064,7 +1064,19 @@ export interface StudentTestAttempt {
   answers: Record<number, number>; // question index -> selected answer index
 }
 
-export type StudentTab = 'HOME' | 'EXPLORE' | 'COURSES' | 'ROUTINE' | 'HISTORY' | 'REDEEM' | 'PREMIUM' | 'GAME' | 'WEEKLY_TEST' | 'PROFILE' | 'LEADERBOARD' | 'STORE' | 'VIDEO' | 'PDF' | 'MCQ' | 'ANALYTICS' | 'PRIZES' | 'REWARDS' | 'UPDATES' | 'IIC_GALLERY' | 'SUPPORT' | 'CUSTOM_PAGE' | 'AI_CHAT' | 'REVISION' | 'MCQ_REVIEW' | 'AI_HUB' | 'AI_STUDIO' | 'UNIVERSAL_VIDEO';
+export type StudentTab = 'HOME' | 'EXPLORE' | 'COURSES' | 'ROUTINE' | 'HISTORY' | 'REDEEM' | 'PREMIUM' | 'GAME' | 'WEEKLY_TEST' | 'PROFILE' | 'LEADERBOARD' | 'STORE' | 'VIDEO' | 'PDF' | 'MCQ' | 'ANALYTICS' | 'PRIZES' | 'REWARDS' | 'UPDATES' | 'IIC_GALLERY' | 'SUPPORT' | 'CUSTOM_PAGE' | 'AI_CHAT' | 'REVISION' | 'MCQ_REVIEW' | 'AI_HUB' | 'AI_STUDIO' | 'UNIVERSAL_VIDEO' | 'BOOST_SCORE';
+
+export type BoostTopicStatus = 'WEAK' | 'AVERAGE' | 'STRONG' | 'MASTERY' | 'MISTAKE' | 'PENDING';
+
+export interface BoostTopic {
+    topic: string;
+    originalScore: number;
+    status: BoostTopicStatus;
+    lastPracticed: number;
+    dueDate: number; // The timestamp when it appears in 'Today Task'
+    historyDates: number[]; // Track when it was practiced for Mastery
+    mcqData?: any; // To hold MCQ questions for the final stage
+}
 
 export type Language = 'English' | 'Hindi';
 

@@ -397,7 +397,7 @@ export const ALL_FEATURES: Feature[] = [
     // --- NOTIFICATION & REQUESTS GROUP ---
     {
         id: 'ADMIN_ACTIVITY',
-        label: 'Revision Logs',
+        label: 'Activity Log',
         group: 'ADVANCED',
         surfaceLevel: 3,
         adminVisible: true,
@@ -770,7 +770,7 @@ export const ALL_FEATURES: Feature[] = [
     },
     {
         id: 'ADMIN_NSTA_CONTROL',
-        label: 'Subscription Control',
+        label: 'NSTA Control',
         group: 'NSTA_CONTROL',
         surfaceLevel: 3,
         adminVisible: true,

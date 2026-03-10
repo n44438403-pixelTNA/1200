@@ -439,7 +439,6 @@ const RevisionHubComponent: React.FC<Props> = ({ user, onTabChange, settings, on
 
         // Helper to strip prefix case-insensitively
         const stripPrefix = (str: string, prefix: string) => {
-            if (!str || !prefix) return str || "";
             if (str.toLowerCase().startsWith(prefix.toLowerCase())) {
                 let rest = str.substring(prefix.length);
                 // Remove common separators

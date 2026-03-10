@@ -158,7 +158,7 @@ export const saveUserToLive = async (user: any) => {
 
     // 1. Save Core Profile to RTDB & Firestore (users/{uid})
     promises.push(set(ref(rtdb, `users/${user.id}`), coreProfile).catch(e => console.error("RTDB Core Save Error:", e)));
-    promises.push(setDoc(doc(db, "users", user.id), coreProfile).catch(e => console.error("Firestore Core Save Error:", e)));
+    promises.push(setDoc(doc(db, "users", user.id), coreProfile, { merge: true }).catch(e => console.error("Firestore Core Save Error:", e)));
 
     // 2. Save Bulky Data to Subcollections or Document Extensions to avoid 1MB document limit
     // Note: To keep things intact for the current frontend without massive refactoring,
@@ -171,7 +171,7 @@ export const saveUserToLive = async (user: any) => {
     if (inbox !== undefined) bulkyData.inbox = inbox;
 
     if (Object.keys(bulkyData).length > 0) {
-        promises.push(setDoc(doc(db, "user_data", user.id), bulkyData).catch(e => console.error("Firestore Bulky Data Save Error:", e)));
+        promises.push(setDoc(doc(db, "user_data", user.id), bulkyData, { merge: true }).catch(e => console.error("Firestore Bulky Data Save Error:", e)));
     }
 
     await Promise.all(promises);

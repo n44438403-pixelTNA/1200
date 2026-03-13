@@ -1334,16 +1334,6 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
                                 <span className={`text-[10px] font-bold ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}`}>{isDarkMode ? 'Light Mode' : 'Dark Mode'}</span>
                             </button>
 
-                            <button
-                                onClick={() => {
-                                    handleUserUpdate(user); // Force sync before logout
-                                    localStorage.removeItem('nst_current_user');
-                                    window.location.reload();
-                                }}
-                                className="col-span-2 bg-red-50 p-3 rounded-xl border border-red-100 flex items-center justify-center gap-2 hover:bg-red-100 transition-colors text-red-600 font-bold text-sm"
-                            >
-                                <LogOut size={16} /> Logout
-                            </button>
                         </div>
                     </div>
                 </div>

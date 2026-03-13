@@ -331,7 +331,7 @@ export const PdfView: React.FC<Props> = ({
         // PROCESS NEW CONTENT STRUCTURE (SAFE)
         if (data) {
             // Determine Entries based on Mode
-            let entries: {title: string, url: string, type: 'PDF' | 'HTML', content?: string}[] = [];
+            let entries: any[] = [];
             if (syllabusMode === 'SCHOOL') {
                 entries = data.schoolDeepDiveEntries || data.deepDiveEntries || [];
             } else {
@@ -343,9 +343,9 @@ export const PdfView: React.FC<Props> = ({
 
             try {
                 entries.forEach((entry, index) => {
-                    if (entry.htmlContent) {
+                    if (entry.content || entry.htmlContent) {
                         const tempDiv = document.createElement('div');
-                        tempDiv.innerHTML = entry.htmlContent;
+                        tempDiv.innerHTML = entry.content || entry.htmlContent;
 
                         // Look for a fallback title if entry.title is undefined.
                         // Many NCERT-style HTML files start with an <h2> or <h3>
@@ -484,8 +484,8 @@ export const PdfView: React.FC<Props> = ({
                 }
 
                 entries.forEach(entry => {
-                    if (entry.htmlContent) {
-                        allTopics = [...allTopics, ...extractTopicsFromHtml(entry.htmlContent)];
+                    if (entry.content || entry.htmlContent) {
+                        allTopics = [...allTopics, ...extractTopicsFromHtml(entry.content || entry.htmlContent)];
                     }
                 });
             } catch(e) {
@@ -1148,7 +1148,7 @@ export const PdfView: React.FC<Props> = ({
                            <>
                                {/* ENTRY SELECTOR IF MULTIPLE */}
                                {(() => {
-                                   let entries: {title: string, url: string, type: 'PDF' | 'HTML', content?: string}[] = [];
+                                   let entries: any[] = [];
                                    if (syllabusMode === 'SCHOOL') entries = contentData?.schoolPremiumNotesList || [];
                                    else entries = contentData?.competitionPremiumNotesList || [];
 
@@ -1179,7 +1179,7 @@ export const PdfView: React.FC<Props> = ({
                                        let ttsHtml = '';
                                        let entryTitle = '';
 
-                                       let entries: {title: string, url: string, type: 'PDF' | 'HTML', content?: string}[] = [];
+                                       let entries: any[] = [];
                                        if (syllabusMode === 'SCHOOL') entries = contentData?.schoolPremiumNotesList || [];
                                        else entries = contentData?.competitionPremiumNotesList || [];
 

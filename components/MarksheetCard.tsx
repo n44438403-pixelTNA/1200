@@ -16,6 +16,7 @@ import { renderMathInHtml } from '../utils/mathUtils';
 import { downloadAsMHTML } from '../utils/downloadUtils';
 import { downloadManager } from '../utils/downloadManager';
 import { DownloadOptionsModal } from './DownloadOptionsModal';
+import { HardDriveDownload } from 'lucide-react';
 
 interface Props {
   result: MCQResult;
@@ -45,8 +46,6 @@ export const MarksheetCard: React.FC<Props> = ({ result, user, settings, onClose
   const [isLoadingUltra, setIsLoadingUltra] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isDownloadingAll, setIsDownloadingAll] = useState(false);
-  const [marksheetDlOpen, setMarksheetDlOpen] = useState(false);
-  const [fullDlOpen, setFullDlOpen] = useState(false);
   const [viewingNote, setViewingNote] = useState<any>(null); // New state for HTML Note Modal
   const [comparisonMessage, setComparisonMessage] = useState<string | null>(null);
 
@@ -1490,20 +1489,40 @@ export const MarksheetCard: React.FC<Props> = ({ result, user, settings, onClose
                 </button>
                 {activeTab === 'OFFICIAL_MARKSHEET' && (
                 <button
-                    onClick={() => setMarksheetDlOpen(true)}
+                    onClick={async () => {
+                        const success = await downloadManager.saveDownload({
+                            id: `marksheet_${result.chapterId || Date.now()}`,
+                            type: 'ANALYSIS',
+                            title: `Marksheet: ${result.chapterTitle || 'Quiz'}`,
+                            subject: result.subjectName || 'General',
+                            timestamp: Date.now(),
+                            data: { result }
+                        });
+                        if(success) alert('Marksheet saved for offline viewing in the Downloads tab.');
+                    }}
                     className="flex items-center gap-2 justify-center px-4 py-3 bg-emerald-100 text-emerald-700 rounded-xl font-bold hover:bg-emerald-200 transition-colors shadow-sm active:scale-95"
-                    title="Download Marksheet"
+                    title="Save Offline"
                 >
-                    <Download size={20} /> Save Offline
+                    <HardDriveDownload size={20} /> Save Offline
                 </button>
             )}
                 {activeTab !== 'OFFICIAL_MARKSHEET' && (
                 <button
-                    onClick={() => setFullDlOpen(true)}
+                    onClick={async () => {
+                        const success = await downloadManager.saveDownload({
+                            id: `analysis_${result.chapterId || Date.now()}`,
+                            type: 'ANALYSIS',
+                            title: `Analysis: ${result.chapterTitle || 'Quiz'}`,
+                            subject: result.subjectName || 'General',
+                            timestamp: Date.now(),
+                            data: { result }
+                        });
+                        if(success) alert('Analysis report saved for offline viewing in the Downloads tab.');
+                    }}
                     className="flex items-center gap-2 justify-center px-4 py-3 bg-emerald-600 text-white rounded-xl font-bold hover:bg-emerald-700 transition-colors shadow-lg shadow-emerald-200 active:scale-95"
-                    title="Download Full Analysis"
+                    title="Save Offline"
                 >
-                    {isDownloadingAll ? <span className="animate-spin">⏳</span> : <><Download size={20} /> Save Offline</>}
+                    {isDownloadingAll ? <span className="animate-spin">⏳</span> : <><HardDriveDownload size={20} /> Save Offline</>}
                 </button>
             )}
             </div>

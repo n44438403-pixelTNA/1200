@@ -20,20 +20,20 @@ export const BoostScoreHub: React.FC<BoostScoreHubProps> = ({ onBack, user }) =>
     const topicMap: Record<string, { scores: number[], dates: number[], totalQuestions: number, mistakes: number, lastDate: number }> = {};
 
     history.forEach(session => {
-        if (!session.topic || session.mode !== 'NORMAL') return; // Only count initial practices, not revisions
+        const topic = session.chapterTitle || 'Unknown Topic';
         const date = session.date ? new Date(session.date).getTime() : 0;
-        if (!topicMap[session.topic]) {
-            topicMap[session.topic] = { scores: [], dates: [], totalQuestions: 0, mistakes: 0, lastDate: 0 };
+        if (!topicMap[topic]) {
+            topicMap[topic] = { scores: [], dates: [], totalQuestions: 0, mistakes: 0, lastDate: 0 };
         }
-        topicMap[session.topic].scores.push(session.score);
-        topicMap[session.topic].dates.push(date);
-        topicMap[session.topic].totalQuestions += session.totalQuestions || 0;
+        topicMap[topic].scores.push(session.score);
+        topicMap[topic].dates.push(date);
+        topicMap[topic].totalQuestions += session.totalQuestions || 0;
         // Approximation of mistakes if detailed data isn't easily mapped
         const correct = Math.round((session.score / 100) * (session.totalQuestions || 10));
-        topicMap[session.topic].mistakes += ((session.totalQuestions || 10) - correct);
+        topicMap[topic].mistakes += ((session.totalQuestions || 10) - correct);
 
-        if (date > topicMap[session.topic].lastDate) {
-            topicMap[session.topic].lastDate = date;
+        if (date > topicMap[topic].lastDate) {
+            topicMap[topic].lastDate = date;
         }
     });
 

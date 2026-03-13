@@ -36,8 +36,7 @@ import { CustomAlert, CustomConfirm } from './components/CustomDialogs';
 import { MarksheetCard } from './components/MarksheetCard';
 // import { DailyChallengePopup } from './components/DailyChallengePopup';
 import { UpdatePopup } from './components/UpdatePopup'; // NEW
-import { ErrorBoundary } from './components/ErrorBoundary';
-import { DownloadsPage } from './components/DownloadsPage'; // NEW
+import { ErrorBoundary } from './components/ErrorBoundary'; // NEW
 import { generateDailyChallengeQuestions } from './utils/challengeGenerator';
 import { BrainCircuit, Globe, LogOut, LayoutDashboard, BookOpen, Headphones, HelpCircle, Newspaper, KeyRound, Lock, X, ShieldCheck, FileText, UserPlus, EyeOff, WifiOff, Crown, Zap } from 'lucide-react';
 import { SUPPORT_EMAIL, APP_VERSION, ADMIN_EMAILS } from './constants';

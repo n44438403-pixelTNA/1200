@@ -1,18 +1,16 @@
 
 import React from 'react';
-import { Download, FileText, Globe, X, HardDriveDownload } from 'lucide-react';
+import { Download, FileText, Globe, X } from 'lucide-react';
 
 interface Props {
     isOpen: boolean;
     onClose: () => void;
     onDownloadPdf?: () => void;
     onDownloadMhtml?: () => void;
-    onDownloadOffline?: () => void;
-    offlineLabel?: string;
     title?: string;
 }
 
-export const DownloadOptionsModal: React.FC<Props> = ({ isOpen, onClose, onDownloadPdf, onDownloadMhtml, onDownloadOffline, offlineLabel = "Save for Offline", title = "Download Options" }) => {
+export const DownloadOptionsModal: React.FC<Props> = ({ isOpen, onClose, onDownloadPdf, onDownloadMhtml, title = "Download Options" }) => {
     if (!isOpen) return null;
 
     return (
@@ -63,24 +61,6 @@ export const DownloadOptionsModal: React.FC<Props> = ({ isOpen, onClose, onDownl
                                 </div>
                             </div>
                             <div className="bg-white px-2 py-1 rounded text-[10px] font-bold text-slate-400 border border-slate-100">.html</div>
-                        </button>
-                    )}
-
-                    {onDownloadOffline && (
-                        <button
-                            onClick={() => { onDownloadOffline(); onClose(); }}
-                            className="w-full flex items-center justify-between p-4 bg-emerald-50 border border-emerald-100 rounded-xl hover:bg-emerald-100 hover:border-emerald-200 transition-all group"
-                        >
-                            <div className="flex items-center gap-3">
-                                <div className="bg-white p-2 rounded-lg shadow-sm text-emerald-600 group-hover:scale-110 transition-transform">
-                                    <HardDriveDownload size={20} />
-                                </div>
-                                <div className="text-left">
-                                    <p className="font-bold text-slate-800 text-sm">{offlineLabel}</p>
-                                    <p className="text-[10px] text-slate-500">Access anytime in app</p>
-                                </div>
-                            </div>
-                            <div className="bg-white px-2 py-1 rounded text-[10px] font-bold text-slate-400 border border-slate-100">.app</div>
                         </button>
                     )}
                 </div>

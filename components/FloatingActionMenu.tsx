@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { SystemSettings, User } from '../types';
 import { ALL_FEATURES, Feature } from '../utils/featureRegistry';
 import { checkFeatureAccess } from '../utils/permissionUtils';
+import { NSTA_DEFAULT_FEATURES } from "../constants";
 import { Crown, User as UserIcon, ShoppingBag, X, Zap, Menu, ChevronUp, Book, CheckSquare, BrainCircuit, BarChart3, AlertCircle, PlayCircle, Sparkles, Wrench, Gamepad2, Trophy, Shield, Gift, Terminal, MessageSquare, FileText, Video, Headphones, Lock, Bot, Youtube, History, Settings } from 'lucide-react';
 
 interface Props {
@@ -50,7 +51,7 @@ export const FloatingActionMenu: React.FC<Props> = ({ settings, user, isFlashSal
         const configSource = settings.featureConfig && Object.keys(settings.featureConfig).length > 0
             ? Object.values(settings.featureConfig)
 
-            : require('../constants').NSTA_DEFAULT_FEATURES;
+            : NSTA_DEFAULT_FEATURES;
 
         return configSource.filter((f: any) => f.visible !== false);
     }, [settings.featureConfig]);

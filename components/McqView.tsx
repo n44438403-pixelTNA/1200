@@ -778,7 +778,7 @@ export const McqView: React.FC<Props> = ({
                           title: `${chapter.title} MCQs`,
                           subject: subject.name,
                           timestamp: Date.now(),
-                          data: { content: { questions: questions }, chapter, subject }
+                          data: { content: { questions: completedMcqData }, chapter, subject }
                       });
                       if (success) alert('MCQ practice set saved offline in Downloads hub.');
                   }}

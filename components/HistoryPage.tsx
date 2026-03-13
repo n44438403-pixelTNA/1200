@@ -1,7 +1,7 @@
 import { safeSetLocalStorage, saveUserLocal } from '../utils/safeStorage';
 import React, { useState, useEffect, useMemo } from 'react';
 import { LessonContent, User, SystemSettings, UsageHistoryEntry, MCQResult } from '../types';
-import { BookOpen, Calendar, ChevronDown, ChevronUp, Trash2, Search, FileText, CheckCircle2, Lock, AlertCircle, Folder , HardDriveDownload} from 'lucide-react';
+import { BookOpen, Calendar, ChevronDown, ChevronUp, Trash2, Search, FileText, CheckCircle2, Lock, AlertCircle, Folder, HardDriveDownload, ChevronRight } from 'lucide-react';
 import { LessonView } from './LessonView';
 import { saveUserToLive, getChapterData } from '../firebase';
 import { CustomAlert, CustomConfirm } from './CustomDialogs';

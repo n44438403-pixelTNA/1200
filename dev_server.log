@@ -8,6 +8,7 @@
   ➜  Local:   http://localhost:5000/
   ➜  Network: http://192.168.0.2:5000/
 [BABEL] Note: The code generator has deoptimised the styling of /app/components/AdminDashboard.tsx as it exceeds the max of 500KB.
+
 2:36:50 PM [vite] (client) hmr update /components/FloatingActionMenu.tsx
 2:39:57 PM [vite] (client) hmr update /components/FloatingActionMenu.tsx
 2:40:23 PM [vite] (client) hmr update /components/FloatingActionMenu.tsx
@@ -20,3 +21,102 @@
 3:22:56 PM [vite] (client) hmr update /App.tsx, /components/SubjectSelection.tsx, /components/Auth.tsx, /components/StudentDashboard.tsx, /components/AdminDashboard.tsx, /components/StudentAiAssistant.tsx, /components/SyllabusManager.tsx, /components/admin/ChallengeCreator20.tsx, /components/RevisionHub.tsx, /components/student/dashboard/HomeTab.tsx, /components/admin/NstaFeatureManager.tsx, /components/FloatingActionMenu.tsx
 3:23:52 PM [vite] (client) hmr update /App.tsx, /components/SubjectSelection.tsx, /components/Auth.tsx, /components/StudentDashboard.tsx, /components/AdminDashboard.tsx, /components/StudentAiAssistant.tsx, /components/SyllabusManager.tsx, /components/admin/ChallengeCreator20.tsx, /components/RevisionHub.tsx, /components/student/dashboard/HomeTab.tsx, /components/admin/NstaFeatureManager.tsx, /components/FloatingActionMenu.tsx
 3:26:05 PM [vite] (client) hmr update /App.tsx, /components/SubjectSelection.tsx, /components/Auth.tsx, /components/StudentDashboard.tsx, /components/AdminDashboard.tsx, /components/StudentAiAssistant.tsx, /components/SyllabusManager.tsx, /components/admin/ChallengeCreator20.tsx, /components/RevisionHub.tsx, /components/student/dashboard/HomeTab.tsx, /components/admin/NstaFeatureManager.tsx, /components/FloatingActionMenu.tsx
+
+10:50:51 AM [vite] (client) hmr update /components/StudentDashboard.tsx
+10:54:53 AM [vite] (client) hmr update /components/AdminDashboard.tsx
+10:55:45 AM [vite] (client) hmr update /components/AdminDashboard.tsx
+10:56:39 AM [vite] (client) Pre-transform error: /app/components/AdminDashboard.tsx: Expected corresponding JSX closing tag for <>. (5058:26)
+
+  5056 |                           </div>
+  5057 |
+> 5058 |                           </div>
+       |                           ^
+  5059 |
+  5060 |                       {/* PDF & AI NOTES EDITOR */}
+  5061 |                       {activeTab === 'CONTENT_PDF' && (
+  Plugin: vite:react-babel
+  File: /app/components/AdminDashboard.tsx:5058:26
+  5056|                            </div>
+  5057|
+  5058|                            </div>
+     |                            ^
+  5059|
+  5060|                        {/* PDF & AI NOTES EDITOR */}
+10:56:40 AM [vite] Internal server error: /app/components/AdminDashboard.tsx: Expected corresponding JSX closing tag for <>. (5058:26)
+
+  5056 |                           </div>
+  5057 |
+> 5058 |                           </div>
+       |                           ^
+  5059 |
+  5060 |                       {/* PDF & AI NOTES EDITOR */}
+  5061 |                       {activeTab === 'CONTENT_PDF' && (
+  Plugin: vite:react-babel
+  File: /app/components/AdminDashboard.tsx:5058:26
+  5056|                            </div>
+  5057|
+  5058|                            </div>
+     |                            ^
+  5059|
+  5060|                        {/* PDF & AI NOTES EDITOR */}
+      at constructor (/app/node_modules/@babel/parser/lib/index.js:365:19)
+      at TypeScriptParserMixin.raise (/app/node_modules/@babel/parser/lib/index.js:6599:19)
+      at TypeScriptParserMixin.jsxParseElementAt (/app/node_modules/@babel/parser/lib/index.js:4720:14)
+      at TypeScriptParserMixin.jsxParseElement (/app/node_modules/@babel/parser/lib/index.js:4749:17)
+      at TypeScriptParserMixin.parseExprAtom (/app/node_modules/@babel/parser/lib/index.js:4759:19)
+      at TypeScriptParserMixin.parseExprSubscripts (/app/node_modules/@babel/parser/lib/index.js:11081:23)
+      at TypeScriptParserMixin.parseUpdate (/app/node_modules/@babel/parser/lib/index.js:11066:21)
+      at TypeScriptParserMixin.parseMaybeUnary (/app/node_modules/@babel/parser/lib/index.js:11046:23)
+      at TypeScriptParserMixin.parseMaybeUnary (/app/node_modules/@babel/parser/lib/index.js:9837:18)
+      at TypeScriptParserMixin.parseMaybeUnaryOrPrivate (/app/node_modules/@babel/parser/lib/index.js:10899:61)
+      at TypeScriptParserMixin.parseExprOps (/app/node_modules/@babel/parser/lib/index.js:10904:23)
+      at TypeScriptParserMixin.parseMaybeConditional (/app/node_modules/@babel/parser/lib/index.js:10881:23)
+      at TypeScriptParserMixin.parseMaybeAssign (/app/node_modules/@babel/parser/lib/index.js:10831:21)
+      at /app/node_modules/@babel/parser/lib/index.js:9775:39
+      at TypeScriptParserMixin.tryParse (/app/node_modules/@babel/parser/lib/index.js:6907:20)
+      at TypeScriptParserMixin.parseMaybeAssign (/app/node_modules/@babel/parser/lib/index.js:9775:18)
+      at /app/node_modules/@babel/parser/lib/index.js:10800:39
+      at TypeScriptParserMixin.allowInAnd (/app/node_modules/@babel/parser/lib/index.js:12426:12)
+      at TypeScriptParserMixin.parseMaybeAssignAllowIn (/app/node_modules/@babel/parser/lib/index.js:10800:17)
+      at TypeScriptParserMixin.parseMaybeAssignAllowInOrVoidPattern (/app/node_modules/@babel/parser/lib/index.js:12493:17)
+      at TypeScriptParserMixin.parseParenAndDistinguishExpression (/app/node_modules/@babel/parser/lib/index.js:11675:28)
+      at TypeScriptParserMixin.parseExprAtom (/app/node_modules/@babel/parser/lib/index.js:11331:23)
+      at TypeScriptParserMixin.parseExprAtom (/app/node_modules/@babel/parser/lib/index.js:4764:20)
+      at TypeScriptParserMixin.parseExprSubscripts (/app/node_modules/@babel/parser/lib/index.js:11081:23)
+      at TypeScriptParserMixin.parseUpdate (/app/node_modules/@babel/parser/lib/index.js:11066:21)
+      at TypeScriptParserMixin.parseMaybeUnary (/app/node_modules/@babel/parser/lib/index.js:11046:23)
+      at TypeScriptParserMixin.parseMaybeUnary (/app/node_modules/@babel/parser/lib/index.js:9837:18)
+      at TypeScriptParserMixin.parseMaybeUnaryOrPrivate (/app/node_modules/@babel/parser/lib/index.js:10899:61)
+      at TypeScriptParserMixin.parseExprOps (/app/node_modules/@babel/parser/lib/index.js:10904:23)
+      at TypeScriptParserMixin.parseMaybeConditional (/app/node_modules/@babel/parser/lib/index.js:10881:23)
+      at TypeScriptParserMixin.parseMaybeAssign (/app/node_modules/@babel/parser/lib/index.js:10831:21)
+      at TypeScriptParserMixin.parseMaybeAssign (/app/node_modules/@babel/parser/lib/index.js:9786:20)
+      at TypeScriptParserMixin.parseConditional (/app/node_modules/@babel/parser/lib/index.js:10893:29)
+      at TypeScriptParserMixin.parseConditional (/app/node_modules/@babel/parser/lib/index.js:9603:18)
+      at TypeScriptParserMixin.parseMaybeConditional (/app/node_modules/@babel/parser/lib/index.js:10885:17)
+      at TypeScriptParserMixin.parseMaybeAssign (/app/node_modules/@babel/parser/lib/index.js:10831:21)
+      at TypeScriptParserMixin.parseMaybeAssign (/app/node_modules/@babel/parser/lib/index.js:9786:20)
+      at TypeScriptParserMixin.parseExpressionBase (/app/node_modules/@babel/parser/lib/index.js:10784:23)
+      at /app/node_modules/@babel/parser/lib/index.js:10780:39
+      at TypeScriptParserMixin.allowInAnd (/app/node_modules/@babel/parser/lib/index.js:12426:12)
+      at TypeScriptParserMixin.parseExpression (/app/node_modules/@babel/parser/lib/index.js:10780:17)
+      at TypeScriptParserMixin.jsxParseExpressionContainer (/app/node_modules/@babel/parser/lib/index.js:4632:31)
+      at TypeScriptParserMixin.jsxParseElementAt (/app/node_modules/@babel/parser/lib/index.js:4711:36)
+      at TypeScriptParserMixin.jsxParseElement (/app/node_modules/@babel/parser/lib/index.js:4749:17)
+      at TypeScriptParserMixin.parseExprAtom (/app/node_modules/@babel/parser/lib/index.js:4759:19)
+      at TypeScriptParserMixin.parseExprSubscripts (/app/node_modules/@babel/parser/lib/index.js:11081:23)
+      at TypeScriptParserMixin.parseUpdate (/app/node_modules/@babel/parser/lib/index.js:11066:21)
+      at TypeScriptParserMixin.parseMaybeUnary (/app/node_modules/@babel/parser/lib/index.js:11046:23)
+      at TypeScriptParserMixin.parseMaybeUnary (/app/node_modules/@babel/parser/lib/index.js:9837:18)
+      at TypeScriptParserMixin.parseMaybeUnaryOrPrivate (/app/node_modules/@babel/parser/lib/index.js:10899:61)
+10:58:00 AM [vite] (client) hmr update /components/AdminDashboard.tsx
+[BABEL] Note: The code generator has deoptimised the styling of /app/components/AdminDashboard.tsx as it exceeds the max of 500KB.
+11:09:27 AM [vite] (client) hmr update /components/PdfView.tsx
+11:10:47 AM [vite] (client) hmr update /components/PdfView.tsx
+11:11:26 AM [vite] (client) hmr update /components/PdfView.tsx
+11:12:10 AM [vite] (client) hmr update /components/PdfView.tsx
+11:13:07 AM [vite] (client) hmr update /components/PdfView.tsx
+2:01:44 PM [vite] (client) hmr update /components/DownloadsPage.tsx
+2:03:07 PM [vite] (client) hmr update /components/MarksheetCard.tsx
+2:14:22 PM [vite] (client) hmr update /components/DownloadsPage.tsx
+ 

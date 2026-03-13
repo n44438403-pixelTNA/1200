@@ -6,6 +6,7 @@ import { LessonView } from './LessonView';
 import { saveUserToLive, getChapterData } from '../firebase';
 import { CustomAlert, CustomConfirm } from './CustomDialogs';
 import { MarksheetCard } from './MarksheetCard';
+import { DownloadsPage } from './DownloadsPage';
 
 interface Props {
     user: User;

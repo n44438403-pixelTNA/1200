@@ -19,6 +19,7 @@ import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { DownloadOptionsModal } from './DownloadOptionsModal';
 import { downloadAsMHTML } from '../utils/downloadUtils';
+import { downloadManager } from '../utils/downloadManager';
 
 interface Props {
   content: LessonContent | null;
@@ -1691,6 +1692,7 @@ export const LessonView: React.FC<Props> = ({
                    title="Download Analysis Report"
                    onDownloadPdf={() => handleConfirmDownload('PDF')}
                    onDownloadMhtml={() => handleConfirmDownload('MHTML')}
+                   onDownloadOffline={() => handleConfirmDownload('OFFLINE')}
                />
 
                <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-slate-200 flex gap-3 z-[9999] shadow-[0_-4px_10px_rgba(0,0,0,0.05)]">

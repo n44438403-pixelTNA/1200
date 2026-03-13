@@ -15,7 +15,7 @@ interface Props {
 }
 
 export const HistoryPage: React.FC<Props> = ({ user, onUpdateUser, settings }) => {
-  const [activeTab, setActiveTab] = useState<'DOWNLOADS' | 'ACTIVITY'>('DOWNLOADS');
+  const [activeTab, setActiveTab] = useState<'DOWNLOADS' | 'MCQ_HISTORY'>('DOWNLOADS');
   
   // SAVED NOTES STATE
   const [history, setHistory] = useState<LessonContent[]>([]);
@@ -51,7 +51,6 @@ export const HistoryPage: React.FC<Props> = ({ user, onUpdateUser, settings }) =
   }, [selectedResult, user.board, user.classLevel, user.stream]);
   
   // USAGE HISTORY STATE (ACTIVITY LOG)
-  const [usageLog, setUsageLog] = useState<UsageHistoryEntry[]>([]);
 
   const [alertConfig, setAlertConfig] = useState<{isOpen: boolean, message: string}>({isOpen: false, message: ''});
   const [confirmConfig, setConfirmConfig] = useState<{isOpen: boolean, message: string, onConfirm: () => void}>({
@@ -257,17 +256,17 @@ export const HistoryPage: React.FC<Props> = ({ user, onUpdateUser, settings }) =
                 <HardDriveDownload size={18} /> Saved Offline
             </button>
             <button
-                onClick={() => setActiveTab('ACTIVITY')}
-                className={`flex-1 py-3 text-sm font-black rounded-lg transition-all flex justify-center items-center gap-2 ${activeTab === 'ACTIVITY' ? 'bg-white shadow text-blue-600' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-200/50'}`}
+                onClick={() => setActiveTab('MCQ_HISTORY')}
+                className={`flex-1 py-3 text-sm font-black rounded-lg transition-all flex justify-center items-center gap-2 ${activeTab === 'MCQ_HISTORY' ? 'bg-white shadow text-blue-600' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-200/50'}`}
             >
-                <FileText size={18} /> Activity Log
+                <BookOpen size={18} /> Past Tests
             </button>
         </div>
 
         {activeTab === 'DOWNLOADS' ? (
             <div className="-mx-4 -mt-2">
                 <DownloadsPage
-                    onBack={() => setActiveTab('ACTIVITY')}
+                    onBack={() => setActiveTab('MCQ_HISTORY')}
                     user={user}
                     settings={settings}
                     isEmbedded={true}
@@ -275,122 +274,38 @@ export const HistoryPage: React.FC<Props> = ({ user, onUpdateUser, settings }) =
             </div>
         ) : (
 
-            <div className="space-y-4">
-                {usageLog.length === 0 ? (
+            <div className="space-y-4 pb-20">
+                {(!user.mcqHistory || user.mcqHistory.length === 0) ? (
                     <div className="text-center py-12 text-slate-400 bg-slate-50 rounded-xl border border-slate-200">
-                        <p>No study activity recorded yet.</p>
+                        <BookOpen size={48} className="mx-auto mb-3 opacity-30" />
+                        <p>No past tests found. Complete some MCQs to see your history here.</p>
                     </div>
                 ) : (
-                    // GROUPED VIEW
-                    Object.entries(usageLog.reduce((acc: any, log) => {
-                        const d = new Date(log.timestamp);
-                        const year = d.getFullYear();
-                        const month = d.toLocaleString('default', { month: 'long' });
-                        if (!acc[year]) acc[year] = {};
-                        if (!acc[year][month]) acc[year][month] = [];
-                        acc[year][month].push(log);
-                        return acc;
-                    }, {})).sort((a,b) => Number(b[0]) - Number(a[0])).map(([year, months]: any) => (
-                        <div key={year} className="mb-4">
-                            <h4 className="text-sm font-black text-slate-400 uppercase mb-2 ml-1">{year} Files</h4>
-                            {Object.entries(months).map(([month, logs]: any) => (
-                                <div key={month} className="mb-3">
-                                    <details open className="group">
-                                        <summary className="flex items-center gap-2 cursor-pointer bg-slate-200 p-3 rounded-xl mb-2 list-none hover:bg-slate-300 transition-colors">
-                                            <Folder className="text-slate-600" size={18} />
-                                            <span className="font-bold text-slate-700 text-sm">{month}</span>
-                                            <span className="text-xs font-bold text-slate-500 bg-white px-2 py-0.5 rounded-full ml-auto">{logs.length}</span>
-                                            <ChevronDown size={16} className="text-slate-500 group-open:rotate-180 transition-transform" />
-                                        </summary>
-                                        <div className="pl-2 space-y-2">
-                                            {logs.map((log: any, i: number) => (
-                                                <div
-                                                    key={i}
-                                                    // onClick removed to disable interaction
-                                                    className="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between opacity-90 transition-all group"
-                                                >
-                                                    <div className="flex items-center gap-3">
-                                                        <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-white shadow-sm text-xs ${
-                                                            log.type === 'VIDEO' ? 'bg-red-500' :
-                                                            log.type === 'PDF' ? 'bg-blue-500' :
-                                                            log.type === 'AUDIO' ? 'bg-green-500' :
-                                                            log.type === 'GAME' ? 'bg-orange-500' :
-                                                            log.type === 'PURCHASE' ? 'bg-emerald-500' :
-                                                            log.type === 'MCQ' ? 'bg-purple-500' : 'bg-slate-500'
-                                                        }`}>
-                                                            {log.type === 'VIDEO' ? '▶' : log.type === 'PDF' ? '📄' : log.type === 'AUDIO' ? '🎵' : log.type === 'GAME' ? '🎰' : log.type === 'PURCHASE' ? '💰' : '👁️'}
-                                                        </div>
-                                                        <div className="flex-1">
-                                                            <div className="flex items-center gap-2">
-                                                                <p className="font-bold text-slate-800 text-sm line-clamp-1 group-hover:text-blue-700">{log.itemTitle}</p>
-                                                                {log.type === 'MCQ' && log.score !== undefined && (
-                                                                    <span className={`text-[9px] font-black px-1.5 py-0.5 rounded-full ${
-                                                                        (log.score / (log.totalQuestions || 1) * 100) >= 90 ? 'bg-green-100 text-green-700' :
-                                                                        (log.score / (log.totalQuestions || 1) * 100) >= 75 ? 'bg-blue-100 text-blue-700' :
-                                                                        (log.score / (log.totalQuestions || 1) * 100) >= 50 ? 'bg-yellow-100 text-yellow-700' :
-                                                                        'bg-red-100 text-red-700'
-                                                                    }`}>
-                                                                        {(log.score / (log.totalQuestions || 1) * 100) >= 90 ? 'Excellent' :
-                                                                        (log.score / (log.totalQuestions || 1) * 100) >= 75 ? 'Good' :
-                                                                        (log.score / (log.totalQuestions || 1) * 100) >= 50 ? 'Average' : 'Bad'}
-                                                                    </span>
-                                                                )}
-                                                            </div>
-                                                            <p className="text-xs text-slate-500">
-                                                                {log.type === 'PURCHASE' ? 'Transaction' : log.type === 'GAME' ? 'Play Zone' : log.subject} • {log.timestamp ? new Date(log.timestamp).toLocaleDateString() : 'N/A'}
-
-                                                            </p>
-                                                            <div className="flex items-center gap-2 mt-1">
-                                                                {log.type !== 'PURCHASE' && log.type !== 'GAME' && (
-                                                                    <>
-                                                                        {checkAvailability(log) ? (
-                                                                            <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded flex items-center gap-1 border border-emerald-100">
-                                                                                <CheckCircle2 size={10} /> Available
-                                                                            </span>
-                                                                        ) : (
-                                                                            <span className="text-[10px] font-bold text-rose-600 bg-rose-50 px-1.5 py-0.5 rounded flex items-center gap-1 border border-rose-100">
-                                                                                <AlertCircle size={10} /> Not Available
-                                                                            </span>
-                                                                        ) || null}
-                                                                    </>
-                                                                )}
-                                                                {log.type === 'MCQ' && log.score !== undefined && (
-                                                                    <p className="text-[10px] font-black text-indigo-600">Score: {Math.round((log.score / (log.totalQuestions || 1)) * 100)}% ({log.score}/{log.totalQuestions})</p>
-                                                                )}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div className="text-right">
-                                                        {log.type === 'MCQ' ? (
-                                                            <div className="flex flex-col items-end gap-1">
-                                                                {!user.isPremium && user.role !== 'ADMIN' && (
-                                                                    <span className="text-[9px] font-black text-slate-400 italic">Cost: {settings?.mcqHistoryCost ?? 1} CR</span>
-                                                                )}
-                                                            </div>
-                                                        ) : log.type === 'GAME' ? (
-                                                            <span className="text-xs font-bold text-orange-600 bg-orange-50 px-2 py-1 rounded-full border border-orange-100">Played</span>
-                                                        ) : log.type === 'PURCHASE' ? (
-                                                            <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full border border-emerald-100">Success</span>
-                                                        ) : (
-                                                            <div className="flex flex-col items-end">
-                                                                <p className="font-black text-slate-700 text-sm">{formatDuration(log.durationSeconds || 0)}</p>
-                                                                <p className="text-[10px] text-slate-400 font-bold uppercase mb-1">Time Spent</p>
-                                                                {!user.isPremium && user.role !== 'ADMIN' && (
-                                                                    <span className="text-[9px] font-black text-slate-400 italic">
-                                                                        Re-open: {log.type === 'VIDEO' ? (settings?.videoHistoryCost ?? 2) : (settings?.pdfHistoryCost ?? 1)} CR
-                                                                    </span>
-                                                                )}
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </details>
+                    <div className="grid gap-3">
+                        {[...(user.mcqHistory || [])].sort((a,b) => b.date - a.date).map((item, i) => (
+                            <div
+                                key={`${item.chapterId}-${i}`}
+                                onClick={() => setSelectedResult(item)}
+                                className="bg-white border border-slate-200 rounded-xl p-4 hover:shadow-md transition-all cursor-pointer flex items-center gap-4"
+                            >
+                                <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-bold text-lg shadow-sm border ${
+                                    (item.score / item.totalQuestions) >= 0.8 ? 'bg-emerald-50 border-emerald-100 text-emerald-600' :
+                                    (item.score / item.totalQuestions) >= 0.5 ? 'bg-blue-50 border-blue-100 text-blue-600' :
+                                    'bg-rose-50 border-rose-100 text-rose-600'
+                                }`}>
+                                    {Math.round((item.score / item.totalQuestions) * 100)}%
                                 </div>
-                            ))}
-                        </div>
-                    ))
+                                <div className="flex-1 min-w-0">
+                                    <h4 className="font-bold text-slate-800 text-sm line-clamp-1 mb-1">{item.chapterTitle}</h4>
+                                    <div className="flex items-center gap-3 text-[10px] font-bold text-slate-500">
+                                        <span className="bg-slate-100 px-2 py-0.5 rounded text-slate-600">{item.subjectName}</span>
+                                        <span className="flex items-center gap-1"><Calendar size={10} /> {new Date(item.date).toLocaleDateString()}</span>
+                                    </div>
+                                </div>
+                                <ChevronRight size={20} className="text-slate-300" />
+                            </div>
+                        ))}
+                    </div>
                 )}
             </div>
         )}

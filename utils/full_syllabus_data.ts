@@ -16,48 +16,29 @@ export const FULL_SYLLABUS: Record<string, string[]> = {
     "सांख्यिकी",
     "प्रायिकता"
   ],
-  "BSEB-10-Science": [
+    "BSEB-10-Chemistry": [
     "रासायनिक अभिक्रियाएँ एवं समीकरण",
     "अम्ल, क्षारक एवं लवण",
     "धातु एवं अधातु",
     "कार्बन एवं उसके यौगिक",
-    "तत्वों का आवर्त वर्गीकरण",
+    "तत्वों का आवर्त वर्गीकरण"
+  ],
+  "BSEB-10-Biology": [
     "जैव प्रक्रम",
     "नियंत्रण एवं समन्वय",
     "जीव जनन कैसे करते हैं",
     "आनुवंशिकता एवं जैव विकास",
+    "हमारा पर्यावरण",
+    "प्राकृतिक संसाधनों का प्रबंधन"
+  ],
+  "BSEB-10-Physics": [
     "प्रकाश-परावर्तन तथा अपवर्तन",
     "मानव नेत्र तथा रंगबिरंगा संसार",
     "विद्युत",
     "विद्युत धारा के चुंबकीय प्रभाव",
-    "ऊर्जा के स्रोत",
-    "हमारा पर्यावरण",
-    "प्राकृतिक संसाधनों का प्रबंधन"
+    "ऊर्जा के स्रोत"
   ],
-  "BSEB-10-Social Science": [
-    "यूरोप में राष्ट्रवाद",
-    "समाजवाद एवं साम्यवाद",
-    "हिन्द-चीन में राष्ट्रवादी आंदोलन",
-    "भारत में राष्ट्रवाद",
-    "अर्थव्यवस्था और आजीविका",
-    "शहरीकरण एवं शहरी जीवन",
-    "व्यापार और भूमंडलीकरण",
-    "प्रेस-संस्कृति एवं राष्ट्रवाद",
-    "भारत: संसाधन एवं उपयोग",
-    "कृषि",
-    "निर्माण उद्योग",
-    "परिवहन, संचार एवं व्यापार",
-    "बिहार: कृषि एवं वन संसाधन",
-    "मानचित्र अध्ययन",
-    "लोकतंत्र में सत्ता की साझेदारी",
-    "लोकतंत्र की चुनौतियाँ",
-    "अर्थव्यवस्था एवं इसके विकास का इतिहास",
-    "मुद्रा, बचत एवं साख",
-    "वैश्वीकरण",
-    "उपभोक्ता जागरण एवं संरक्षण",
-    "आपदा प्रबंधन"
-  ],
-  "BSEB-11-Biology": [
+    "BSEB-11-Biology": [
     "जैव विविधता (Biodiversity)",
     "जैविक वर्गीकरण (Biological Classification)",
     "सूक्ष्मजीव (Microorganisms)",
@@ -224,25 +205,29 @@ export const FULL_SYLLABUS: Record<string, string[]> = {
     "सममिति",
     "प्रायोगिक ज्यामिति"
   ],
-  "BSEB-6-Science": [
+    "BSEB-6-Biology": [
     "भोजन : यह कहाँ से आता है",
     "भोजन के घटक",
+    "पौधों को जानिए",
+    "शरीर में गति",
+    "सजीव एवं उनका परिवेश",
+    "कचरा – संग्रहण एवं निपटान"
+  ],
+  "BSEB-6-Chemistry": [
     "तंतु से वस्त्र तक",
     "वस्तुओं के समूह बनाना",
     "पदार्थों का पृथक्करण",
     "हमारे चारों ओर के परिवर्तन",
-    "पौधों को जानिए",
-    "शरीर में गति",
-    "सजीव एवं उनका परिवेश",
+    "जल",
+    "हमारे चारों ओर वायु"
+  ],
+  "BSEB-6-Physics": [
     "गति एवं दूरियों का मापन",
     "प्रकाश – छायाएँ एवं परावर्तन",
     "विद्युत् तथा परिपथ",
-    "चुंबकों द्वारा मनोरंजन",
-    "जल",
-    "हमारे चारों ओर वायु",
-    "कचरा – संग्रहण एवं निपटान"
+    "चुंबकों द्वारा मनोरंजन"
   ],
-  "BSEB-6-Social Science": [
+    "BSEB-6-History": [
     "What, Where, How and When?",
     "From Hunting–Gathering to Growing Food",
     "In the Earliest Cities",
@@ -253,7 +238,9 @@ export const FULL_SYLLABUS: Record<string, string[]> = {
     "Vital Villages, Thriving Towns",
     "Traders, Kings and Pilgrims",
     "New Empires and Kingdoms",
-    "Buildings, Paintings and Books",
+    "Buildings, Paintings and Books"
+  ],
+  "BSEB-6-Geography": [
     "The Earth in the Solar System",
     "Globe: Latitudes and Longitudes",
     "Motions of the Earth",
@@ -262,6 +249,17 @@ export const FULL_SYLLABUS: Record<string, string[]> = {
     "Major Landforms of the Earth",
     "Our Country – India",
     "India: Climate, Vegetation and Wildlife"
+  ],
+  "BSEB-6-Political Science": [
+    "Understanding Diversity",
+    "Diversity and Discrimination",
+    "What is Government?",
+    "Key Elements of a Democratic Government",
+    "Panchayati Raj",
+    "Rural Administration",
+    "Urban Administration",
+    "Rural Livelihoods",
+    "Urban Livelihoods"
   ],
   "BSEB-7-Mathematics": [
     "पूर्णांक",
@@ -278,27 +276,31 @@ export const FULL_SYLLABUS: Record<string, string[]> = {
     "सममिति",
     "ठोस आकारों का चित्रण"
   ],
-  "BSEB-7-Science": [
+    "BSEB-7-Biology": [
     "पादपों में पोषण",
     "प्राणियों में पोषण",
-    "रेशों से वस्त्र तक",
-    "ऊष्मा",
-    "अम्ल, क्षारक और लवण",
-    "भौतिक एवं रासायनिक परिवर्तन",
     "मौसम, जलवायु तथा जलवायु के अनुरूप जंतुओं द्वारा अनुकूलन",
-    "पवन, तूफ़ान और चक्रवात",
     "मृदा",
     "जीवों में श्वसन",
     "जंतुओं और पादप में परिवहन",
     "पादप में जनन",
-    "गति एवं समय",
-    "विद्युत धारा और इसके प्रभाव",
-    "प्रकाश",
-    "जल : एक बहुमूल्य संसाधन",
     "वन : हमारी जीवन रेखा",
     "अपशिष्ट जल की कहानी"
   ],
-  "BSEB-7-Social Science": [
+  "BSEB-7-Chemistry": [
+    "रेशों से वस्त्र तक",
+    "अम्ल, क्षारक और लवण",
+    "भौतिक एवं रासायनिक परिवर्तन",
+    "जल : एक बहुमूल्य संसाधन"
+  ],
+  "BSEB-7-Physics": [
+    "ऊष्मा",
+    "पवन, तूफ़ान और चक्रवात",
+    "गति एवं समय",
+    "विद्युत धारा और इसके प्रभाव",
+    "प्रकाश"
+  ],
+    "BSEB-7-History": [
     "Tracing Changes Through a Thousand Years",
     "New Kings and Kingdoms",
     "The Delhi Sultans",
@@ -308,13 +310,30 @@ export const FULL_SYLLABUS: Record<string, string[]> = {
     "Tribes, Nomads and Settled Communities",
     "Devotional Paths to the Divine",
     "The Making of Regional Cultures",
-    "Eighteenth-Century Political Formations",
+    "Eighteenth-Century Political Formations"
+  ],
+  "BSEB-7-Geography": [
     "Environment",
     "Inside Our Earth",
     "Our Changing Earth",
     "Air",
     "Water",
-    "Natural Vegetation and Wildlife"
+    "Natural Vegetation and Wildlife",
+    "Human Environment—Settlement, Transport and Communication",
+    "Human Environment Interactions—The Tropical and the Subtropical Region",
+    "Life in the Temperate Grasslands",
+    "Life in the Deserts"
+  ],
+  "BSEB-7-Political Science": [
+    "On Equality",
+    "Role of the Government in Health",
+    "How the State Government Works",
+    "Growing up as Boys and Girls",
+    "Women Change the World",
+    "Understanding Media",
+    "Markets Around Us",
+    "A Shirt in the Market",
+    "Struggles for Equality"
   ],
   "BSEB-8-Mathematics": [
     "परिमेय संख्याएँ",
@@ -333,27 +352,31 @@ export const FULL_SYLLABUS: Record<string, string[]> = {
     "गुणनखंडन",
     "आलेखों से परिचय"
   ],
-  "BSEB-8-Science": [
+    "BSEB-8-Biology": [
     "फसल उत्पादन एवं प्रबंध",
     "सूक्ष्मजीव: मित्र एवं शत्रु",
+    "पौधे एवं जंतुओं का संरक्षण",
+    "कोशिका – संरचना एवं प्रकार्य",
+    "जंतुओं में जनन",
+    "किशोरावस्था की ओर"
+  ],
+  "BSEB-8-Chemistry": [
     "संश्लेषित रेशे और प्लास्टिक",
     "पदार्थ: धातु और अधातु",
     "कोयला और पेट्रोलियम",
     "दहन और ज्वाला",
-    "पौधे एवं जंतुओं का संरक्षण",
-    "कोशिका – संरचना एवं प्रकार्य",
-    "जंतुओं में जनन",
-    "किशोरावस्था की ओर",
+    "विद्युत धारा के रासायनिक प्रभाव",
+    "वायु तथा जल का प्रदूषण"
+  ],
+  "BSEB-8-Physics": [
     "बल तथा दाब",
     "घर्षण",
     "ध्वनि",
-    "विद्युत धारा के रासायनिक प्रभाव",
     "कुछ प्राकृतिक परिघटनाएँ",
     "प्रकाश",
-    "तारे एवं सौर परिवार",
-    "वायु तथा जल का प्रदूषण"
+    "तारे एवं सौर परिवार"
   ],
-  "BSEB-8-Social Science": [
+    "BSEB-8-History": [
     "How, When and Where",
     "From Trade to Territory",
     "Ruling the Countryside",
@@ -363,15 +386,27 @@ export const FULL_SYLLABUS: Record<string, string[]> = {
     "Civilising the 'Native', Educating the Nation",
     "Women, Caste and Reform",
     "The Making of the National Movement",
-    "India After Independence",
+    "India After Independence"
+  ],
+  "BSEB-8-Geography": [
     "Resources",
     "Land, Soil, Water, Natural Vegetation and Wildlife",
     "Mineral and Power Resources",
     "Agriculture",
     "Industries",
-    "Human Resources",
+    "Human Resources"
+  ],
+  "BSEB-8-Political Science": [
     "The Indian Constitution",
-    "Understanding Secularism"
+    "Understanding Secularism",
+    "Why Do We Need a Parliament?",
+    "Understanding Laws",
+    "Judiciary",
+    "Understanding Our Criminal Justice System",
+    "Understanding Marginalisation",
+    "Confronting Marginalisation",
+    "Public Facilities",
+    "Law and Social Justice"
   ],
   "BSEB-9-Mathematics": [
     "संख्या पद्धति",
@@ -390,49 +425,28 @@ export const FULL_SYLLABUS: Record<string, string[]> = {
     "सांख्यिकी",
     "प्रायिकता"
   ],
-  "BSEB-9-Science": [
+    "BSEB-9-Chemistry": [
     "हमारे आस-पास के पदार्थ",
     "क्या हमारे आस-पास के पदार्थ शुद्ध हैं",
     "परमाणु एवं अणु",
-    "परमाणु की संरचना",
+    "परमाणु की संरचना"
+  ],
+  "BSEB-9-Biology": [
     "जीवन की मौलिक इकाई",
     "ऊतक",
     "जीवों में विविधता",
-    "गति",
-    "बल तथा गति के नियम",
-    "गुरुत्वाकर्षण",
-    "कार्य तथा ऊर्जा",
-    "ध्वनि",
     "हम बीमार क्यों होते हैं",
     "प्राकृतिक संपदा",
     "खाद्य संसाधनों में सुधार"
   ],
-  "BSEB-9-Social Science": [
-    "भौगोलिक खोजें",
-    "अमेरिकी स्वतंत्रता संग्राम",
-    "फ्रांस की क्रांति",
-    "विश्वयुद्धों का इतिहास",
-    "नाजीवाद",
-    "वन्य समाज और उपनिवेशवाद",
-    "शांति के प्रयास",
-    "कृषि और खेतिहर समाज",
-    "स्थिति और विस्तार",
-    "भौतिक स्वरूप: संरचना और उच्चावच",
-    "अपवाह स्वरूप",
-    "जलवायु",
-    "प्राकृतिक वनस्पति एवं वन्य प्राणी",
-    "जनसंख्या",
-    "लोकतंत्र का क्रमिक विकास",
-    "संविधान निर्माण",
-    "चुनावी राजनीति",
-    "संसदीय लोकतंत्र की संस्थाएँ",
-    "लोकतांत्रिक अधिकार",
-    "बिहार के एक गाँव की कहानी",
-    "मानव एक संसाधन",
-    "गरीबी: एक चुनौती",
-    "भारत में खाद्य सुरक्षा"
+  "BSEB-9-Physics": [
+    "गति",
+    "बल तथा गति के नियम",
+    "गुरुत्वाकर्षण",
+    "कार्य तथा ऊर्जा",
+    "ध्वनि"
   ],
-  "BSEB-COMPETITION-Biology": [
+    "BSEB-COMPETITION-Biology": [
     "जीवधारियों का वर्गीकरण",
     "कोशिका विज्ञान",
     "जैव-विकास",

@@ -15,6 +15,8 @@ import { ErrorBoundary } from './ErrorBoundary';
 import { DEFAULT_CONTENT_INFO_CONFIG } from '../constants';
 import { checkFeatureAccess } from '../utils/permissionUtils';
 import { speakText, stopSpeech } from '../utils/textToSpeech';
+import { downloadManager } from '../utils/downloadManager';
+import { HardDriveDownload } from 'lucide-react';
 
 interface Props {
   chapter: Chapter;
@@ -842,6 +844,23 @@ export const PdfView: React.FC<Props> = ({
                        </div>
                      </div>
                      <div className="flex items-center gap-2">
+                         <button
+                            onClick={async () => {
+                                const success = await downloadManager.saveDownload({
+                                    id: `pdfview_${chapter.id}_${syllabusMode}`,
+                                    type: 'LESSON',
+                                    title: `${chapter.title} Notes`,
+                                    subject: subject.name,
+                                    timestamp: Date.now(),
+                                    data: { content: { html: contentData, notes: contentData?.premiumNotes }, chapter, subject }
+                                });
+                                if (success) alert('Notes saved offline in Downloads hub.');
+                            }}
+                            className="p-2 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 rounded-xl transition-colors shrink-0 border border-emerald-200"
+                            title="Save Offline"
+                         >
+                            <HardDriveDownload size={16} />
+                         </button>
                          <button onClick={toggleFullScreen} className="p-2 bg-slate-50 text-slate-600 hover:bg-slate-100 rounded-xl transition-colors shrink-0 border border-slate-200" title={isFullscreen ? "Exit Fullscreen" : "Fullscreen"}>
                              {isFullscreen ? <Minimize size={16} /> : <Maximize size={16} />}
                          </button>

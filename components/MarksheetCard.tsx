@@ -1496,7 +1496,7 @@ export const MarksheetCard: React.FC<Props> = ({ result, user, settings, onClose
                             title: `Marksheet: ${result.chapterTitle || 'Quiz'}`,
                             subject: result.subjectName || 'General',
                             timestamp: Date.now(),
-                            data: { result }
+                            data: { result, questions }
                         });
                         if(success) alert('Marksheet saved for offline viewing in the Downloads tab.');
                     }}
@@ -1515,7 +1515,7 @@ export const MarksheetCard: React.FC<Props> = ({ result, user, settings, onClose
                             title: `Analysis: ${result.chapterTitle || 'Quiz'}`,
                             subject: result.subjectName || 'General',
                             timestamp: Date.now(),
-                            data: { result }
+                            data: { result, questions }
                         });
                         if(success) alert('Analysis report saved for offline viewing in the Downloads tab.');
                     }}

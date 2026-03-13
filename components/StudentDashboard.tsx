@@ -27,7 +27,7 @@ import { AudioPlaylistView } from './AudioPlaylistView'; // Imported for Audio F
 import { PdfView } from './PdfView'; // Imported for PDF Flow
 import { McqView } from './McqView'; // Imported for MCQ Flow
 import { MiniPlayer } from './MiniPlayer'; // Imported for Audio Flow
-import { BoostScoreHub } from './BoostScoreHub';
+
 import { HistoryPage } from './HistoryPage';
 import { Leaderboard } from './Leaderboard';
 import { SpinWheel } from './SpinWheel';
@@ -993,7 +993,7 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
       if ((activeTab as string) === 'ANALYTICS') return <AnalyticsPage user={user} onBack={() => onTabChange('HOME')} settings={settings} onNavigateToChapter={onNavigateToChapter} />;
       if ((activeTab as string) === 'SUB_HISTORY') return <SubscriptionHistory user={user} onBack={() => onTabChange('HOME')} />;
       if (activeTab === 'HISTORY') return <HistoryPage user={user} onUpdateUser={handleUserUpdate} settings={settings} />;
-      if (activeTab === 'BOOST_SCORE') return <BoostScoreHub onBack={() => onTabChange('HOME')} user={user} />;
+
       if (activeTab === 'LEADERBOARD') return <Leaderboard user={user} settings={settings} />;
       if (activeTab === 'GAME') return isGameEnabled ? (user.isGameBanned ? <div className="text-center py-20 bg-red-50 rounded-2xl border border-red-100"><Ban size={48} className="mx-auto text-red-500 mb-4" /><h3 className="text-lg font-bold text-red-700">Access Denied</h3><p className="text-sm text-red-600">Admin has disabled the game for your account.</p></div> : <SpinWheel user={user} onUpdateUser={handleUserUpdate} settings={settings} />) : null;
       if (activeTab === 'REDEEM') return <div className="animate-in fade-in slide-in-from-bottom-2 duration-300"><RedeemSection user={user} onSuccess={onRedeemSuccess} /></div>;

@@ -140,7 +140,9 @@ export const getSubjectsList = (classLevel: string, stream: string | null, board
   else if (['6', '7', '8'].includes(classLevel)) {
       selectedSubjects = [
           pool.math,
-          pool.science,
+          pool.physics,
+          pool.chemistry,
+          pool.biology,
           pool.history,
           pool.geography,
           pool.polity,

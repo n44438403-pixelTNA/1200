@@ -34,7 +34,7 @@ interface Props {
 
 export const MarksheetCard: React.FC<Props> = ({ result, user, settings, onClose, onViewAnalysis, onPublish, questions, onUpdateUser, initialView, onLaunchContent, mcqMode = 'FREE' }) => {
   const [page, setPage] = useState(1);
-  const [activeTab, setActiveTab] = useState<'OFFICIAL_MARKSHEET' | 'SOLUTION' | 'OMR' | 'RECOMMEND' | 'MISTAKES' | 'AI_ANALYSIS'>(
+  const [activeTab, setActiveTab] = useState<'OFFICIAL_MARKSHEET' | 'SOLUTION' | 'DETAILED_SOLUTIONS' | 'OMR' | 'RECOMMEND' | 'MISTAKES' | 'AI_ANALYSIS'>(
       mcqMode === 'PREMIUM' ? 'SOLUTION' : 'OFFICIAL_MARKSHEET'
   );
   

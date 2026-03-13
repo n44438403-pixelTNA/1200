@@ -1,0 +1,1 @@
+sed -i 's/let entries: {title: string, url: string, type: '\''PDF'\'' | '\''HTML'\'', content?: string}\[\] = \[\];/let entries: {title: string, url: string, type: '\''PDF'\'' | '\''HTML'\'', content?: string}[] = [];/g' components/PdfView.tsx

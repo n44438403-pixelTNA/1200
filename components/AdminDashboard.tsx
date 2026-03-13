@@ -5189,7 +5189,118 @@ Capital of India?       Mumbai  Delhi   Kolkata Chennai 2       Delhi is the cap
                                   </button>
                               </div>
 
+                              {/* PRIMARY PREMIUM NOTE (MAIN) */}
+                              <div className="bg-yellow-50 p-4 rounded-xl border border-yellow-100 mb-6 mt-6">
+                                  <label className="block text-xs font-black text-yellow-800 uppercase mb-1 flex items-center gap-2">
+                                      <Crown size={14} /> Primary Premium Note Link ({syllabusMode})
+                                  </label>
+                                  <div className="flex items-center bg-white border border-yellow-200 rounded-xl overflow-hidden mb-2">
+                                      <div className="bg-yellow-50 p-3"><Link size={16} className="text-yellow-600" /></div>
+                                      <input
+                                          type="text"
+                                          value={editConfig.premiumLink || ''}
+                                          onChange={e => setEditConfig({...editConfig, premiumLink: e.target.value})}
+                                          className="flex-1 p-3 outline-none text-sm"
+                                          placeholder={`https://drive.google.com/... (Premium Paid)`}
+                                      />
+                                  </div>
+
+                                  <label className="block text-[10px] font-bold text-yellow-700 uppercase mb-1 mt-3">OR Paste Primary Premium Note Text (HTML for TTS)</label>
+                                  <textarea
+                                      value={editConfig[getModeField('premiumNotesHtml') as keyof ContentConfig] || ''}
+                                      onChange={e => setEditConfig({...editConfig, [getModeField('premiumNotesHtml')]: e.target.value})}
+                                      className="w-full p-3 border border-yellow-200 rounded-xl text-sm h-32 focus:ring-2 focus:ring-yellow-500 outline-none"
+                                      placeholder={`Paste detailed HTML premium notes here for TTS and reading...`}
+                                  />
+                              </div>
+
                               {/* UNLIMITED DEEP DIVE & PREMIUM MANAGER (TOPICS BREAKDOWN) */}
+                                  <div className="bg-yellow-50 p-4 rounded-xl border border-yellow-100 mb-6">
+                                      <h4 className="font-bold text-yellow-900 mb-4 flex items-center gap-2">
+                                          <Crown size={20} /> Additional Premium Notes ({syllabusMode})
+                                      </h4>
+
+                                      <div className="space-y-3 mb-4">
+                                          {premiumNotesList.map((note, idx) => (
+                                              <div key={idx} className="bg-white p-3 rounded-lg border border-yellow-100 shadow-sm flex flex-col gap-2">
+                                                  <div className="flex gap-2 items-center">
+                                                      <span className="w-6 text-center text-xs font-bold text-yellow-600">{idx + 1}</span>
+                                                      <input
+                                                          type="text"
+                                                          value={note.title}
+                                                          onChange={e => {
+                                                              const updated = [...premiumNotesList];
+                                                              updated[idx].title = e.target.value;
+                                                              setPremiumNotesList(updated);
+                                                          }}
+                                                          placeholder="Note Title (e.g. Part 1)"
+                                                          className="flex-1 p-2 border rounded text-xs font-bold"
+                                                      />
+                                                      <select
+                                                          value={note.type}
+                                                          onChange={e => {
+                                                              const updated = [...premiumNotesList];
+                                                              updated[idx].type = e.target.value as 'PDF' | 'HTML';
+                                                              setPremiumNotesList(updated);
+                                                          }}
+                                                          className="p-2 border rounded text-xs bg-slate-50"
+                                                      >
+                                                          <option value="PDF">PDF</option>
+                                                          <option value="HTML">HTML</option>
+                                                      </select>
+                                                      <button onClick={() => setPremiumNotesList(prev => prev.filter((_, i) => i !== idx))} className="text-red-400 hover:text-red-600 p-2">
+                                                          <Trash2 size={16} />
+                                                      </button>
+                                                  </div>
+
+                                                  {note.type === 'HTML' ? (
+                                                      <textarea
+                                                          value={note.content || ''}
+                                                          onChange={e => {
+                                                              const updated = [...premiumNotesList];
+                                                              updated[idx].content = e.target.value;
+                                                              setPremiumNotesList(updated);
+                                                          }}
+                                                          className="w-full p-2 border rounded text-xs h-20 font-mono"
+                                                          placeholder="HTML Content..."
+                                                      />
+                                                  ) : (
+                                                      <>
+                                                          <input
+                                                              type="text"
+                                                              value={note.url}
+                                                              onChange={e => {
+                                                                  const updated = [...premiumNotesList];
+                                                                  updated[idx].url = e.target.value;
+                                                                  setPremiumNotesList(updated);
+                                                              }}
+                                                              placeholder="Google Drive Link (PDF)..."
+                                                              className="w-full p-2 border rounded text-xs font-mono text-blue-600 bg-slate-50"
+                                                          />
+                                                          <textarea
+                                                              value={note.content || ''}
+                                                              onChange={e => {
+                                                                  const updated = [...premiumNotesList];
+                                                                  updated[idx].content = e.target.value;
+                                                                  setPremiumNotesList(updated);
+                                                              }}
+                                                              className="w-full p-2 border rounded text-xs h-20 font-mono"
+                                                              placeholder="HTML Content (For TTS only if using PDF)..."
+                                                          />
+                                                      </>
+                                                  )}
+                                              </div>
+                                          ))}
+                                      </div>
+
+                                      <button
+                                          onClick={() => setPremiumNotesList([...premiumNotesList, { title: `Part ${premiumNotesList.length + 1}`, url: '', type: 'PDF', content: '' }])}
+                                          className="w-full py-3 bg-white border-2 border-dashed border-yellow-300 text-yellow-700 font-bold rounded-xl hover:bg-yellow-50 transition-all flex items-center justify-center gap-2"
+                                      >
+                                          <Plus size={18} /> Add Premium Note Entry
+                                      </button>
+                                  </div>
+
                               <div className="bg-purple-50 p-4 rounded-xl border border-purple-100">
                                   <h4 className="font-bold text-purple-900 mb-4 flex items-center gap-2">
                                       <Layers size={20} /> Topics Breakdown (Deep Dive & Premium)

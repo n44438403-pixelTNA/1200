@@ -100,11 +100,12 @@ export const DownloadsPage = ({
                 <LessonView
                     content={selectedItem.data.content}
                     subject={selectedItem.data.subject}
+                    classLevel={user.classLevel || '10' as any}
                     chapter={selectedItem.data.chapter}
-                    onClose={() => setActiveView('LIST')}
+                    loading={false}
+                    onBack={() => setActiveView('LIST')}
                     user={user}
                     settings={settings}
-                    onDeductCredits={() => {}}
                 />
             </div>
         );

@@ -2341,8 +2341,46 @@ const AdminDashboardInner: React.FC<Props> = ({ onNavigate, settings, onUpdateSe
                   }
               }
 
-            // 1.5 EXTRACT IMPLICIT HTML BLOCKS
+            // 1.5 EXTRACT IMPLICIT HTML BLOCKS AND PLAIN TEXT NOTES
             let textForMcq = rawText.replace(noteRegex, "");
+
+            // Strategy: Split the whole text by 'Question X' or '🔥 PYQ'
+            const segments = textForMcq.split(/(?:Question\s*\d+|🔥\s*PYQ\s*Inspired:.*?)(?=\n|$)/i);
+
+            // Loop through segments. A segment will contain the rest of the question AND potentially some trailing notes.
+            segments.forEach((seg, idx) => {
+                // The note part usually comes AFTER the last standard MCQ field (like Difficulty Level or Memory Trick)
+                const noteSplit = seg.split(/(?:📊\s*Difficulty Level:.*?\n|🧠\s*Memory Trick:.*?\n)/i);
+
+                // If there's text after the MCQ fields, it's likely a standalone note!
+                if (noteSplit.length > 1) {
+                    const rawNote = noteSplit[noteSplit.length - 1].trim();
+
+                    // Filter out empty or pure whitespace or just a few characters
+                    if (rawNote.length > 30 && !rawNote.match(/^(?:A\)|B\)|C\)|D\)|✅|💡)/i)) {
+                        // We found a trailing note block!
+                        // Format it as HTML
+                        let title = rawNote.split('\n')[0].trim();
+                        if (title.length > 50) title = "Topic Note"; // Fallback if first line is too long
+
+                        let htmlContent = `<h3>${title}</h3><p>` + rawNote.substring(title.length).trim().replace(/\n\n/g, '</p><p>').replace(/\n/g, '<br/>') + `</p>`;
+
+                        newTopicNotes.push({
+                            id: `note-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+                            title: title,
+                            topic: title,
+                            content: htmlContent,
+                            isPremium: false
+                        });
+
+                        // Remove this note from the textForMcq so it doesn't confuse the MCQ parser
+                        textForMcq = textForMcq.replace(rawNote, "");
+                    }
+                }
+            });
+
+            // Also keep the existing HTML block extractor
+
 
             // Matches any standalone HTML blocks starting with <h...> and ending before the next question marker
             const implicitHtmlRegex = /(?:^|\n\n)(<h[1-6]>[\s\S]*?)(?=\n\n(?:❓|Question|🔥|📖)|\Z)/gi;

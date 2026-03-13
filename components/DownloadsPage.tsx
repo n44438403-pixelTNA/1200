@@ -122,6 +122,7 @@ export const DownloadsPage = ({
                 <div className="p-4 max-w-2xl mx-auto">
                     <MarksheetCard
                         result={selectedItem.data.result}
+                        questions={selectedItem.data.questions}
                         user={user}
                         settings={settings}
                     />

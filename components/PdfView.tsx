@@ -331,7 +331,7 @@ export const PdfView: React.FC<Props> = ({
         // PROCESS NEW CONTENT STRUCTURE (SAFE)
         if (data) {
             // Determine Entries based on Mode
-            let entries: DeepDiveEntry[] = [];
+            let entries: {title: string, url: string, type: 'PDF' | 'HTML', content?: string}[] = [];
             if (syllabusMode === 'SCHOOL') {
                 entries = data.schoolDeepDiveEntries || data.deepDiveEntries || [];
             } else {
@@ -1148,9 +1148,9 @@ export const PdfView: React.FC<Props> = ({
                            <>
                                {/* ENTRY SELECTOR IF MULTIPLE */}
                                {(() => {
-                                   let entries: DeepDiveEntry[] = [];
-                                   if (syllabusMode === 'SCHOOL') entries = contentData?.schoolDeepDiveEntries || contentData?.deepDiveEntries || [];
-                                   else entries = contentData?.competitionDeepDiveEntries || [];
+                                   let entries: {title: string, url: string, type: 'PDF' | 'HTML', content?: string}[] = [];
+                                   if (syllabusMode === 'SCHOOL') entries = contentData?.schoolPremiumNotesList || [];
+                                   else entries = contentData?.competitionPremiumNotesList || [];
 
                                    if (entries.length <= 1) return null;
 
@@ -1179,13 +1179,13 @@ export const PdfView: React.FC<Props> = ({
                                        let ttsHtml = '';
                                        let entryTitle = '';
 
-                                       let entries: DeepDiveEntry[] = [];
-                                       if (syllabusMode === 'SCHOOL') entries = contentData?.schoolDeepDiveEntries || contentData?.deepDiveEntries || [];
-                                       else entries = contentData?.competitionDeepDiveEntries || [];
+                                       let entries: {title: string, url: string, type: 'PDF' | 'HTML', content?: string}[] = [];
+                                       if (syllabusMode === 'SCHOOL') entries = contentData?.schoolPremiumNotesList || [];
+                                       else entries = contentData?.competitionPremiumNotesList || [];
 
                                        // Check if showing "Chapter Premium" (Legacy) or "Topic Premium" (Entry)
-                                       const legacyLink = syllabusMode === 'SCHOOL' ? contentData?.premiumLink : contentData?.competitionPdfPremiumLink;
-                                       const legacyHtml = syllabusMode === 'SCHOOL' ? contentData?.deepDiveNotesHtml : contentData?.competitionDeepDiveNotesHtml;
+                                       const legacyLink = syllabusMode === 'SCHOOL' ? (contentData?.schoolPdfPremiumLink || contentData?.premiumLink) : contentData?.competitionPdfPremiumLink;
+                                       const legacyHtml = syllabusMode === 'SCHOOL' ? (contentData?.schoolPremiumNotesHtml || contentData?.premiumNotesHtml) : contentData?.competitionPremiumNotesHtml;
                                        const hasLegacy = legacyLink || (legacyHtml && legacyHtml.length > 10);
 
                                        // Construct a virtual list for selection logic: [Legacy (if exists), ...Entries]
@@ -1202,8 +1202,8 @@ export const PdfView: React.FC<Props> = ({
                                        entries.forEach((e, i) => {
                                            virtualList.push({
                                                title: e.title || `Topic Note ${i + 1}`,
-                                               pdf: e.pdfLink,
-                                               html: e.htmlContent
+                                               pdf: e.url,
+                                               html: e.content || ''
                                            });
                                        });
 

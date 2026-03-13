@@ -20,6 +20,7 @@ import html2canvas from 'html2canvas';
 import { DownloadOptionsModal } from './DownloadOptionsModal';
 import { downloadAsMHTML } from '../utils/downloadUtils';
 import { downloadManager } from '../utils/downloadManager';
+import { HardDriveDownload } from 'lucide-react';
 
 interface Props {
   content: LessonContent | null;
@@ -765,9 +766,25 @@ export const LessonView: React.FC<Props> = ({
                 <div className="flex justify-end mb-4">
                     <button
                         onClick={handleDownloadRequest}
-                        className="bg-green-600 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-lg hover:bg-green-700 flex items-center gap-2"
+                        className="bg-slate-100 text-slate-700 px-3 py-2 rounded-xl text-xs font-bold shadow-sm hover:bg-slate-200 flex items-center gap-2 border border-slate-200"
                     >
-                        <Download size={16} /> Download Report (10 CR)
+                        <Download size={16} /> Share/PDF (10 CR)
+                    </button>
+                    <button
+                        onClick={async () => {
+                            const success = await downloadManager.saveDownload({
+                                id: chapter.id,
+                                type: 'LESSON',
+                                title: chapter.title,
+                                subject: subject.name,
+                                timestamp: Date.now(),
+                                data: { chapter, content, subject } // Use contentData to avoid naming collisions
+                            });
+                            if (success) alert('Saved for offline use! View in the Downloads tab.');
+                        }}
+                        className="bg-emerald-600 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-lg hover:bg-emerald-700 flex items-center gap-2"
+                    >
+                        <HardDriveDownload size={16} /> Save Offline (Free)
                     </button>
                 </div>
 
@@ -1692,7 +1709,6 @@ export const LessonView: React.FC<Props> = ({
                    title="Download Analysis Report"
                    onDownloadPdf={() => handleConfirmDownload('PDF')}
                    onDownloadMhtml={() => handleConfirmDownload('MHTML')}
-                   onDownloadOffline={() => handleConfirmDownload('OFFLINE')}
                />
 
                <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-slate-200 flex gap-3 z-[9999] shadow-[0_-4px_10px_rgba(0,0,0,0.05)]">

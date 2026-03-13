@@ -14,7 +14,7 @@ interface Props {
 }
 
 export const HistoryPage: React.FC<Props> = ({ user, onUpdateUser, settings }) => {
-  const [activeTab, setActiveTab] = useState<'ACTIVITY' | 'SAVED'>('ACTIVITY');
+  const [activeTab, setActiveTab] = useState<'DOWNLOADS' | 'ACTIVITY'>('DOWNLOADS');
   
   // SAVED NOTES STATE
   const [history, setHistory] = useState<LessonContent[]>([]);
@@ -243,27 +243,37 @@ export const HistoryPage: React.FC<Props> = ({ user, onUpdateUser, settings }) =
         
         <div className="flex justify-between items-center mb-6">
             <h3 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
-                 <FileText className="text-blue-600" /> Study History
+                 <HardDriveDownload className="text-emerald-600" /> Downloads & Activity
             </h3>
         </div>
 
         {/* TABS */}
-        <div className="flex p-1 bg-slate-100 rounded-xl mb-6">
+        <div className="flex bg-slate-100 p-1 rounded-xl mb-6 shadow-inner">
             <button
-                onClick={() => setActiveTab('ACTIVITY')}
-                className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all ${activeTab === 'ACTIVITY' ? 'bg-white shadow text-slate-800' : 'text-slate-500 hover:text-slate-700'}`}
+                onClick={() => setActiveTab('DOWNLOADS')}
+                className={`flex-1 py-3 text-sm font-black rounded-lg transition-all flex justify-center items-center gap-2 ${activeTab === 'DOWNLOADS' ? 'bg-white shadow text-emerald-600' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-200/50'}`}
             >
-                Activity Log
+                <HardDriveDownload size={18} /> Saved Offline
             </button>
             <button
-                onClick={() => setActiveTab('SAVED')}
-                className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all ${activeTab === 'SAVED' ? 'bg-white shadow text-slate-800' : 'text-slate-500 hover:text-slate-700'}`}
+                onClick={() => setActiveTab('ACTIVITY')}
+                className={`flex-1 py-3 text-sm font-black rounded-lg transition-all flex justify-center items-center gap-2 ${activeTab === 'ACTIVITY' ? 'bg-white shadow text-blue-600' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-200/50'}`}
             >
-                Saved Notes
+                <FileText size={18} /> Activity Log
             </button>
         </div>
 
-        {activeTab === 'ACTIVITY' && (
+        {activeTab === 'DOWNLOADS' ? (
+            <div className="-mx-4 -mt-2">
+                <DownloadsPage
+                    onBack={() => setActiveTab('ACTIVITY')}
+                    user={user}
+                    settings={settings}
+                    isEmbedded={true}
+                />
+            </div>
+        ) : (
+
             <div className="space-y-4">
                 {usageLog.length === 0 ? (
                     <div className="text-center py-12 text-slate-400 bg-slate-50 rounded-xl border border-slate-200">
@@ -382,81 +392,6 @@ export const HistoryPage: React.FC<Props> = ({ user, onUpdateUser, settings }) =
                     ))
                 )}
             </div>
-        )}
-
-        {activeTab === 'SAVED' && (
-            <>
-                <div className="relative mb-6">
-                    <Search className="absolute left-3 top-3 text-slate-400" size={18} />
-                    <input
-                        type="text"
-                        placeholder="Search your notes..."
-                        value={search}
-                        onChange={e => setSearch(e.target.value)}
-                        className="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                    />
-                </div>
-
-                {filteredHistory.length === 0 ? (
-                    <div className="text-center py-12 text-slate-400 bg-slate-50 rounded-xl border border-slate-200">
-                        <BookOpen size={48} className="mx-auto mb-3 opacity-30" />
-                        <p>No saved notes yet. Start learning to build your library!</p>
-                    </div>
-                ) : (
-                    <div className="space-y-4">
-                        {filteredHistory.map((item) => (
-                            <div
-                                key={item.id}
-                                onClick={() => handleOpenItem(item)}
-                                className="bg-white border border-slate-200 rounded-xl overflow-hidden hover:shadow-md transition-all cursor-pointer group relative"
-                            >
-                                {/* COST BADGE */}
-                                {!user.isPremium && item.type.includes('MCQ') && (settings?.mcqHistoryCost ?? 1) > 0 && (
-                                    <div className="absolute top-2 right-2 bg-yellow-100 text-yellow-800 text-[9px] font-bold px-2 py-1 rounded-full flex items-center gap-1 z-10 border border-yellow-200">
-                                        <Lock size={8} /> Pay {settings?.mcqHistoryCost ?? 1} CR
-                                    </div>
-                                )}
-
-                                <div className="p-3 flex justify-between items-start">
-                                    <div className="flex-1">
-                                        <div className="flex items-center gap-2 mb-1">
-                                            <span className={`text-[10px] font-black px-2 py-0.5 rounded-full ${
-                                                item.score >= 90 ? 'bg-green-100 text-green-700' :
-                                                item.score >= 75 ? 'bg-blue-100 text-blue-700' :
-                                                item.score >= 50 ? 'bg-yellow-100 text-yellow-700' :
-                                                'bg-red-100 text-red-700'
-                                            }`}>
-                                                {item.score >= 90 ? 'Excellent' :
-                                                 item.score >= 75 ? 'Good' :
-                                                 item.score >= 50 ? 'Average' : 'Bad'}
-                                            </span>
-                                            <h4 className="font-bold text-lg text-slate-800 group-hover:text-blue-600 transition-colors">
-                                                {item.title}
-                                            </h4>
-                                        </div>
-                                        <div className="flex items-center gap-4 text-xs text-slate-400 mt-1">
-                                            <div className="flex items-center gap-1"><Calendar size={12} /> {item.dateCreated ? new Date(item.dateCreated).toLocaleDateString() : 'N/A'}</div>
-
-                                            <div className="font-bold text-blue-600">{item.score}% Score</div>
-                                            <div className={`font-bold ${item.score >= 60 ? 'text-green-600' : 'text-red-600'}`}>
-                                                {item.score >= 60 ? 'Passed' : 'Needs Review'}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Preview Footer */}
-                                <div className="bg-slate-50 px-3 py-2 border-t border-slate-100 flex justify-between items-center">
-                                     <span className="text-xs text-slate-500 font-medium">Click to read full note</span>
-                                     <div className="text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity">
-                                         <ChevronDown size={16} className="-rotate-90" />
-                                     </div>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                )}
-            </>
         )}
     </div>
   );

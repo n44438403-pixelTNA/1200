@@ -15,8 +15,6 @@ import { ErrorBoundary } from './ErrorBoundary';
 import { DEFAULT_CONTENT_INFO_CONFIG } from '../constants';
 import { checkFeatureAccess } from '../utils/permissionUtils';
 import { speakText, stopSpeech } from '../utils/textToSpeech';
-import { downloadManager } from '../utils/downloadManager';
-import { HardDriveDownload } from 'lucide-react';
 
 interface Props {
   chapter: Chapter;
@@ -748,33 +746,6 @@ export const PdfView: React.FC<Props> = ({
               <div className="absolute top-4 left-4 z-50 flex gap-4">
                   <button onClick={() => { setActiveNoteContent(null); stopAllSpeech(); }} className="bg-white/80 backdrop-blur-md text-slate-800 p-3 rounded-full hover:bg-white shadow-lg border border-slate-200">
                       <ArrowLeft size={24} />
-                  </button>
-
-                  <button
-                      onClick={async () => {
-                          try {
-                              const success = await downloadManager.saveDownload({
-                                  id: `note_${chapter.id}`,
-                                  type: 'LESSON',
-                                  title: activeNoteContent.title,
-                                  subject: subject.name,
-                                  timestamp: Date.now(),
-                                  data: {
-                                      content: { content: activeNoteContent.content },
-                                      chapter,
-                                      subject
-                                  }
-                              });
-                              if (success) {
-                                  alert('Note saved for offline use! View it in the Downloads tab.');
-                              } else {
-                                  alert('Failed to save offline.');
-                              }
-                          } catch(e) { console.error(e); }
-                      }}
-                      className="bg-emerald-600 text-white px-4 py-2 rounded-full font-bold shadow-lg hover:bg-emerald-700 flex items-center gap-2"
-                  >
-                      <HardDriveDownload size={18} /> Save Offline
                   </button>
 
                   {/* TTS Toggle */}

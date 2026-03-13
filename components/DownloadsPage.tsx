@@ -8,11 +8,13 @@ import { formatDuration } from '../utils/timeUtils';
 export const DownloadsPage = ({
     onBack,
     user,
-    settings
+    settings,
+    isEmbedded
 }: {
     onBack: () => void,
     user: any,
-    settings: any
+    settings: any,
+    isEmbedded?: boolean
 }) => {
     const [downloads, setDownloads] = useState<DownloadItem[]>([]);
     const [loading, setLoading] = useState(true);
@@ -108,6 +110,7 @@ export const DownloadsPage = ({
 
     return (
         <div className="min-h-screen bg-slate-50 flex flex-col pb-20">
+            {!isEmbedded && (
             <div className="bg-white px-4 pt-12 pb-4 shadow-sm z-10 sticky top-0">
                 <div className="flex items-center gap-3 mb-4">
                     <button onClick={onBack} className="p-2 -ml-2 text-slate-600 hover:bg-slate-100 rounded-full transition-colors">
@@ -133,8 +136,24 @@ export const DownloadsPage = ({
                     />
                 </div>
             </div>
+            )}
 
-            <div className="flex-1 p-4 overflow-y-auto">
+            {isEmbedded && (
+                <div className="px-4 pt-2 pb-4 bg-slate-50 sticky top-0 z-10">
+                    <div className="relative">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                        <input
+                            type="text"
+                            placeholder="Search downloads..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="w-full bg-white text-slate-700 text-sm rounded-xl py-3 pl-10 pr-4 outline-none border border-slate-200 focus:border-emerald-300 focus:ring-2 focus:ring-emerald-100 transition-all font-medium placeholder:font-normal shadow-sm"
+                        />
+                    </div>
+                </div>
+            )}
+
+            <div className="flex-1 p-4 overflow-y-auto pt-0">
                 {loading ? (
                     <div className="flex items-center justify-center h-40">
                         <div className="animate-spin rounded-full h-8 w-8 border-4 border-emerald-500 border-t-transparent"></div>

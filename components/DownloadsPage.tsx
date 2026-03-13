@@ -18,7 +18,7 @@ export const DownloadsPage = ({
 }) => {
     const [downloads, setDownloads] = useState<DownloadItem[]>([]);
     const [loading, setLoading] = useState(true);
-    const [activeView, setActiveView] = useState<'LIST' | 'LESSON' | 'ANALYSIS'>('LIST');
+    const [activeView, setActiveView] = useState<'LIST' | 'LESSON' | 'ANALYSIS' | 'PDF'>('LIST');
     const [selectedItem, setSelectedItem] = useState<DownloadItem | null>(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [activeCategory, setActiveCategory] = useState<'ALL' | 'LESSON' | 'ANALYSIS'>('ALL');
@@ -50,7 +50,11 @@ export const DownloadsPage = ({
     const handleOpen = (item: DownloadItem) => {
         setSelectedItem(item);
         if (item.type === 'LESSON') {
-            setActiveView('LESSON');
+            if (item.id.startsWith('pdfview_') || item.id.startsWith('note_')) {
+                setActiveView('PDF');
+            } else {
+                setActiveView('LESSON');
+            }
         } else if (item.type === 'ANALYSIS') {
             setActiveView('ANALYSIS');
         } else {
@@ -64,6 +68,28 @@ export const DownloadsPage = ({
         if (kb > 1024) return `${(kb / 1024).toFixed(1)} MB`;
         return `${kb.toFixed(0)} KB`;
     };
+
+
+    if (activeView === 'PDF' && selectedItem?.data) {
+        return (
+            <div className="fixed inset-0 z-50 bg-slate-50 flex flex-col h-screen overflow-hidden">
+                <div className="sticky top-0 z-50 bg-white border-b border-slate-200 px-4 py-3 flex items-center gap-3 shadow-sm">
+                    <button onClick={() => setActiveView('LIST')} className="p-2 bg-slate-100 rounded-full text-slate-600 hover:bg-slate-200">
+                        <ArrowLeft size={20} />
+                    </button>
+                    <div className="flex-1 min-w-0">
+                        <h2 className="font-bold text-slate-800 text-sm line-clamp-1">{selectedItem.title}</h2>
+                        <p className="text-[10px] text-slate-500">Offline Reading Mode</p>
+                    </div>
+                </div>
+                <div className="flex-1 overflow-y-auto p-4 md:p-8 bg-slate-50">
+                    <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 mb-20 max-w-3xl mx-auto">
+                        <div className="prose prose-slate max-w-none note-text" dangerouslySetInnerHTML={{ __html: selectedItem.data.content?.html?.quickNotes || selectedItem.data.content?.html?.deepDive || selectedItem.data.content?.content || 'No text content available offline.' }} />
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     if (activeView === 'LESSON' && selectedItem?.data) {
         return (

@@ -2,7 +2,8 @@ import { safeSetLocalStorage, saveUserLocal } from '../utils/safeStorage';
 
 import React, { useState, useEffect } from 'react';
 import { Chapter, User, Subject, SystemSettings, MCQResult, PerformanceTag } from '../types';
-import { CheckCircle, Lock, ArrowLeft, Crown, PlayCircle, HelpCircle, Trophy, Clock, BrainCircuit, FileText } from 'lucide-react';
+import { CheckCircle, Lock, ArrowLeft, Crown, PlayCircle, HelpCircle, Trophy, Clock, BrainCircuit, FileText, HardDriveDownload } from 'lucide-react';
+import { downloadManager } from '../utils/downloadManager';
 import { checkFeatureAccess } from '../utils/permissionUtils';
 import { CustomAlert, CustomConfirm } from './CustomDialogs';
 import { getChapterData, saveUserToLive, saveUserHistory, savePublicActivity } from '../firebase';
@@ -768,9 +769,28 @@ export const McqView: React.FC<Props> = ({
                <p className="text-xs text-slate-500">{subject.name} • MCQ Center</p>
            </div>
            
-           <div className="flex items-center gap-1 bg-blue-50 px-3 py-1 rounded-full border border-blue-100">
-               <Crown size={14} className="text-blue-600" />
-               <span className="font-black text-blue-800 text-xs">{user.credits} CR</span>
+           <div className="flex items-center gap-2">
+               <button
+                  onClick={async () => {
+                      const success = await downloadManager.saveDownload({
+                          id: `mcq_${chapter.id}`,
+                          type: 'LESSON',
+                          title: `${chapter.title} MCQs`,
+                          subject: subject.name,
+                          timestamp: Date.now(),
+                          data: { content: { questions: questions }, chapter, subject }
+                      });
+                      if (success) alert('MCQ practice set saved offline in Downloads hub.');
+                  }}
+                  className="p-2 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 rounded-full transition-colors border border-emerald-200"
+                  title="Save Offline"
+               >
+                  <HardDriveDownload size={16} />
+               </button>
+               <div className="flex items-center gap-1 bg-blue-50 px-3 py-1.5 rounded-full border border-blue-100">
+                   <Crown size={14} className="text-blue-600" />
+                   <span className="font-black text-blue-800 text-xs">{user.credits} CR</span>
+               </div>
            </div>
        </div>
 

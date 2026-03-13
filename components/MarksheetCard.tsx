@@ -14,6 +14,8 @@ import { CustomConfirm } from './CustomDialogs'; // Import CustomConfirm
 import { SpeakButton } from './SpeakButton';
 import { renderMathInHtml } from '../utils/mathUtils';
 import { downloadAsMHTML } from '../utils/downloadUtils';
+import { downloadManager } from '../utils/downloadManager';
+import { DownloadOptionsModal } from './DownloadOptionsModal';
 
 interface Props {
   result: MCQResult;
@@ -43,6 +45,8 @@ export const MarksheetCard: React.FC<Props> = ({ result, user, settings, onClose
   const [isLoadingUltra, setIsLoadingUltra] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isDownloadingAll, setIsDownloadingAll] = useState(false);
+  const [marksheetDlOpen, setMarksheetDlOpen] = useState(false);
+  const [fullDlOpen, setFullDlOpen] = useState(false);
   const [viewingNote, setViewingNote] = useState<any>(null); // New state for HTML Note Modal
   const [comparisonMessage, setComparisonMessage] = useState<string | null>(null);
 
@@ -1486,7 +1490,7 @@ export const MarksheetCard: React.FC<Props> = ({ result, user, settings, onClose
                 </button>
                 {activeTab === 'OFFICIAL_MARKSHEET' && (
                 <button
-                    onClick={() => downloadAsMHTML('marksheet-style-1', `Marksheet_${user.name}`)}
+                    onClick={() => setMarksheetDlOpen(true)}
                     className="flex items-center justify-center p-3 bg-slate-100 text-slate-700 rounded-full font-bold hover:bg-slate-200 transition-colors shadow-sm active:scale-95"
                     title="Download Marksheet"
                 >
@@ -1495,7 +1499,7 @@ export const MarksheetCard: React.FC<Props> = ({ result, user, settings, onClose
             )}
                 {activeTab !== 'OFFICIAL_MARKSHEET' && (
                 <button
-                    onClick={() => downloadAsMHTML('full-report-print-container', `Full_Analysis_${user.name}`)}
+                    onClick={() => setFullDlOpen(true)}
                     className="flex items-center justify-center p-3 bg-blue-600 text-white rounded-full font-bold hover:bg-blue-700 transition-colors shadow-lg shadow-blue-200 active:scale-95"
                     title="Download Full Analysis"
                 >

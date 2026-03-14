@@ -2211,7 +2211,7 @@ const App: React.FC = () => {
 
   return (
     <ErrorBoundary>
-    <div className="min-h-screen flex flex-col bg-slate-50 font-sans relative pt-[env(safe-area-inset-top,24px)] pb-[env(safe-area-inset-bottom,32px)]">
+    <div className={`min-h-screen flex flex-col bg-slate-50 font-sans relative pt-[env(safe-area-inset-top,24px)] pb-[env(safe-area-inset-bottom,32px)] ${user?.role === 'TEACHER' ? 'app-role-teacher' : 'app-role-student'}`}>
       {/* STATUS BAR BACKGROUND */}
       <div className="fixed top-0 left-0 right-0 h-[env(safe-area-inset-top,24px)] bg-slate-900 z-[100]"></div>
       {/* BOTTOM SAFE AREA BACKGROUND */}

@@ -127,9 +127,6 @@ export const DownloadsPage = ({
                         questions={selectedItem.data.questions}
                         user={user}
                         settings={settings}
-
-
-                        onClose={() => setActiveView('LIST')}
                         mcqMode="PREMIUM"
                     />
                 </div>

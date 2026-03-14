@@ -274,3 +274,72 @@ button {
   padding: 10px;
   border-radius: 8px;
 }
+
+/* --- TEACHER DEEP DIVE STYLES --- */
+.topic-deep-dive {
+  max-width: 900px;
+  margin: auto;
+  padding: 20px;
+  background: #f5f7fb;
+  font-family: 'Poppins', sans-serif;
+  border-radius: 14px;
+}
+
+.tdd-section {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 18px;
+  margin-bottom: 18px;
+  border-left: 6px solid #2563eb;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+}
+
+.tdd-section h2 {
+  font-size: 18px;
+  color: #1e293b;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+.tdd-section p {
+  font-size: 15px;
+  color: #475569;
+  line-height: 1.6;
+}
+
+.tdd-section ul {
+  padding-left: 20px;
+  color: #475569;
+  list-style-type: disc;
+}
+
+.tdd-section li {
+  margin-bottom: 6px;
+}
+
+.tdd-section:nth-child(1) { border-left-color: #2563eb; }
+.tdd-section:nth-child(2) { border-left-color: #16a34a; }
+.tdd-section:nth-child(3) { border-left-color: #f59e0b; }
+.tdd-section:nth-child(4) { border-left-color: #9333ea; }
+.tdd-section:nth-child(5) { border-left-color: #ef4444; }
+.tdd-section:nth-child(6) { border-left-color: #0ea5e9; }
+
+@media (max-width: 600px) {
+  .topic-deep-dive {
+    padding: 12px;
+  }
+  .tdd-section {
+    padding: 14px;
+  }
+  .tdd-section h2 {
+    font-size: 16px;
+  }
+  .tdd-section p {
+    font-size: 14px;
+  }
+}
+
+/* Hide teacher sections completely for non-teacher users */
+.app-role-student .topic-deep-dive {
+  display: none !important;
+}

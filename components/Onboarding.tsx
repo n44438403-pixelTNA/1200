@@ -1,7 +1,7 @@
 import { safeSetLocalStorage, saveUserLocal } from '../utils/safeStorage';
 import React, { useState } from 'react';
 import { User, Board, ClassLevel, Stream } from '../types';
-import { saveUserToLive } from '../firebase';
+import { saveUserToLive, verifyTeacherCode, useTeacherCode  } from '../firebase';
 import { BookOpen, Target, LogOut, Loader2, Sparkles, Zap, Award } from 'lucide-react';
 
 interface Props {
@@ -16,6 +16,9 @@ export const Onboarding: React.FC<Props> = ({ user, onComplete, onLogout }) => {
   const [mobile, setMobile] = useState(user.mobile || '');
   const [password, setPassword] = useState('');
   const [board, setBoard] = useState<Board | ''>('');
+    const [role, setRole] = useState<'STUDENT' | 'TEACHER'>('STUDENT');
+    const [teacherCode, setTeacherCode] = useState('');
+    const [isVerifyingCode, setIsVerifyingCode] = useState(false);
   const [classLevel, setClassLevel] = useState<ClassLevel | ''>('');
   const [stream, setStream] = useState<Stream | ''>('');
   const [isSaving, setIsSaving] = useState(false);
@@ -172,6 +175,39 @@ export const Onboarding: React.FC<Props> = ({ user, onComplete, onLogout }) => {
                               </div>
                           )}
                       </div>
+
+                      <div className="flex flex-col gap-3 mb-6 mt-6 pt-4 border-t border-slate-100">
+                          <label className="text-sm font-bold text-slate-700 block">I am a...</label>
+                          <div className="grid grid-cols-2 gap-3">
+                              <button
+                                  onClick={() => setRole('STUDENT')}
+                                  className={`p-3 rounded-xl border-2 transition-all font-bold ${role === 'STUDENT' ? 'border-blue-500 bg-blue-50 text-blue-700' : 'border-slate-200 text-slate-600 hover:bg-slate-50'}`}
+                              >
+                                  👨‍🎓 Student
+                              </button>
+                              <button
+                                  onClick={() => setRole('TEACHER')}
+                                  className={`p-3 rounded-xl border-2 transition-all font-bold ${role === 'TEACHER' ? 'border-purple-500 bg-purple-50 text-purple-700' : 'border-slate-200 text-slate-600 hover:bg-slate-50'}`}
+                              >
+                                  👨‍🏫 Teacher
+                              </button>
+                          </div>
+
+                          {role === 'TEACHER' && (
+                              <div className="animate-in fade-in slide-in-from-top-2 p-4 bg-purple-50 rounded-xl border border-purple-200 mt-2">
+                                  <label className="text-xs font-bold text-purple-800 block mb-2 uppercase tracking-wider">Teacher Access Code</label>
+                                  <input
+                                      type="text"
+                                      value={teacherCode}
+                                      onChange={(e) => setTeacherCode(e.target.value.toUpperCase())}
+                                      placeholder="e.g. TCH-12345"
+                                      className="w-full px-4 py-3 rounded-lg border border-purple-300 focus:ring-2 focus:ring-purple-500 outline-none font-bold text-slate-800 bg-white shadow-inner uppercase tracking-widest placeholder:normal-case placeholder:tracking-normal"
+                                  />
+                                  <p className="text-[10px] text-purple-600 mt-2">Requires a valid code provided by Admin to access Teacher features.</p>
+                              </div>
+                          )}
+                      </div>
+
                       <div className="flex items-center gap-3 mb-6 mt-6 pt-4 border-t border-slate-100">
                           <Target className="text-blue-500" size={24} />
                           <h2 className="text-lg font-bold text-slate-800">Select Your Board</h2>

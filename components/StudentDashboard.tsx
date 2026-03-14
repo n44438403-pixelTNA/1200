@@ -1301,7 +1301,35 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
                         </div>
 
 
+
+
+                        {/* TEACHER MODE SWITCHER */}
+                        {(user.role === 'TEACHER' || user.role === 'ADMIN' || user.role === 'SUB_ADMIN') && (
+                            <div className="bg-purple-50 p-4 rounded-xl border border-purple-200 mt-6 flex items-center justify-between shadow-sm animate-in fade-in">
+                                <div>
+                                    <h4 className="font-black text-purple-900 flex items-center gap-2 text-sm">
+                                        <Briefcase size={16} /> Teacher Mode Active
+                                    </h4>
+                                    <p className="text-[10px] text-purple-700 font-bold mt-1">You have Teacher access.</p>
+                                </div>
+                                <span className="bg-purple-600 text-white text-[10px] font-black px-3 py-1.5 rounded-full shadow-sm shadow-purple-200">ACTIVE</span>
+                            </div>
+                        )}
+                        {user.role === 'STUDENT' && (
+                            <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 mt-6 shadow-sm animate-in fade-in">
+                                <h4 className="font-black text-slate-800 flex items-center gap-2 mb-2 text-sm">
+                                    <Briefcase size={16} className="text-purple-600" /> Are you a Teacher?
+                                </h4>
+                                <button onClick={() => {
+                                    alert("To activate Teacher Mode, please re-login and select 'Teacher' during onboarding or contact your administrator.");
+                                }} className="w-full bg-white border-2 border-purple-100 text-purple-700 font-bold py-2.5 rounded-xl text-xs hover:bg-purple-50 transition-colors shadow-sm">
+                                    Enter Teacher Code
+                                </button>
+                            </div>
+                        )}
+
                         <div className="grid grid-cols-2 gap-3 mt-6">
+
                             <button
                                 onClick={() => { setShowSidebar(false); setEditMode(true); }}
                                 className="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex flex-col items-center justify-center gap-2 hover:bg-slate-50 transition-colors"

@@ -64,13 +64,32 @@ export const Onboarding: React.FC<Props> = ({ user, onComplete, onLogout, settin
   const finishOnboarding = async () => {
       setIsSaving(true);
       try {
+          let finalRole = role;
+          if (role === 'TEACHER') {
+              if (!teacherCode) {
+                  alert("Teacher Code is required.");
+                  setIsSaving(false);
+                  return;
+              }
+              const validCode = await verifyTeacherCode(teacherCode);
+              if (!validCode) {
+                  alert("Invalid or expired Teacher Code.");
+                  setIsSaving(false);
+                  return;
+              }
+              // Code is valid, consume one use
+              await useTeacherCode(validCode.id);
+          }
+
           const updatedUser: User = {
+
               ...user,
               name: name.trim(),
               board: board as Board,
               classLevel: classLevel as ClassLevel,
               stream: stream ? (stream as Stream) : undefined,
-              profileCompleted: true
+              profileCompleted: true,
+              role: finalRole as any
           };
 
           if (isGoogleUser) {

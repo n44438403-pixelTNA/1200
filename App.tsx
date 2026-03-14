@@ -2359,7 +2359,7 @@ const App: React.FC = () => {
                    <div className="text-right hidden md:block">
                        <div className="text-xs font-bold text-slate-800">{state.user.name}</div>
                    </div>
-                   <button onClick={handleLogout} className="p-2 text-red-400 hover:bg-red-50 rounded-full"><LogOut size={20} /></button>
+                   {(state.settings.isLogoutEnabled !== false || state.user?.role === 'ADMIN' || state.user?.role === 'SUB_ADMIN') && <button onClick={handleLogout} className="p-2 text-red-400 hover:bg-red-50 rounded-full"><LogOut size={20} /></button>}
                </div>
            )}
         </div>
@@ -2422,7 +2422,7 @@ const App: React.FC = () => {
                 )}
                 
                 {(!activeWeeklyTest && state.view === 'BOARDS') && <BoardSelection onSelect={handleBoardSelect} onBack={goBack} />}
-                {state.view === 'ONBOARDING' && state.user && <Onboarding user={state.user} onComplete={handleLogin} onLogout={handleLogout} />}
+                {state.view === 'ONBOARDING' && state.user && <Onboarding user={state.user} onComplete={handleLogin} onLogout={handleLogout} settings={state.settings} />}
                 {state.view === 'CLASSES' && <ClassSelection selectedBoard={state.selectedBoard} allowedClasses={state.user?.role === 'ADMIN' ? undefined : state.settings.allowedClasses} settings={state.settings} user={state.user} onSelect={handleClassSelect} onBoardChange={handleBoardSelect} onBack={goBack} />}
                 {state.view === 'STREAMS' && <StreamSelection onSelect={handleStreamSelect} onBack={goBack} />}
                 {state.view === 'SUBJECTS' && state.selectedClass && <SubjectSelection classLevel={state.selectedClass} stream={state.selectedStream} board={state.selectedBoard || undefined} onSelect={handleSubjectSelect} onBack={goBack} />}

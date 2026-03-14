@@ -4,13 +4,16 @@ import { User, Board, ClassLevel, Stream } from '../types';
 import { saveUserToLive, verifyTeacherCode, useTeacherCode  } from '../firebase';
 import { BookOpen, Target, LogOut, Loader2, Sparkles, Zap, Award } from 'lucide-react';
 
+import { SystemSettings } from '../types';
+
 interface Props {
+  settings?: SystemSettings;
   user: User;
   onComplete: (user: User) => void;
   onLogout: () => void;
 }
 
-export const Onboarding: React.FC<Props> = ({ user, onComplete, onLogout }) => {
+export const Onboarding: React.FC<Props> = ({ user, onComplete, onLogout, settings }) => {
   const [step, setStep] = useState(1);
   const [name, setName] = useState(user.name || '');
   const [mobile, setMobile] = useState(user.mobile || '');
@@ -113,9 +116,11 @@ export const Onboarding: React.FC<Props> = ({ user, onComplete, onLogout }) => {
 
           {/* Header */}
           <div className="p-8 pb-6 text-center border-b border-slate-50 relative">
-              <button onClick={onLogout} className="absolute top-6 right-6 text-slate-400 hover:text-red-500 transition-colors p-2 bg-slate-50 rounded-full">
-                  <LogOut size={16} />
-              </button>
+              {(settings?.isLogoutEnabled !== false || user?.role === 'ADMIN' || user?.role === 'SUB_ADMIN') && (
+                  <button onClick={onLogout} className="absolute top-6 right-6 text-slate-400 hover:text-red-500 transition-colors p-2 bg-slate-50 rounded-full">
+                      <LogOut size={16} />
+                  </button>
+              )}
 
               <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 text-white rounded-2xl mx-auto flex items-center justify-center mb-4 shadow-lg shadow-blue-200 rotate-3">
                   <Sparkles size={32} />

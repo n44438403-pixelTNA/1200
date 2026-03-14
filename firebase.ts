@@ -698,3 +698,84 @@ export const subscribeToDemands = (callback: (requests: any[]) => void) => {
 };
 
 export { app, db, rtdb, auth };
+
+// --- TEACHER CODES ---
+
+
+export const generateTeacherCode = async (price: number, maxUses: number): Promise<TeacherCode> => {
+  try {
+    const code = 'TCH-' + Math.floor(10000 + Math.random() * 90000);
+    const docRef = doc(collection(db, 'teacherCodes'));
+    const newCode: TeacherCode = {
+      id: docRef.id,
+      code,
+      price,
+      active: true,
+      createdAt: Date.now(),
+      maxUses,
+      currentUses: 0,
+    };
+    await setDoc(docRef, sanitizeForFirestore(newCode));
+    return newCode;
+  } catch (error) {
+    console.error("Error generating teacher code", error);
+    throw error;
+  }
+};
+
+export const fetchTeacherCodes = async (): Promise<TeacherCode[]> => {
+  try {
+    const querySnapshot = await getDocs(collection(db, 'teacherCodes'));
+    return querySnapshot.docs.map(doc => doc.data() as TeacherCode);
+  } catch (error) {
+    console.error("Error fetching teacher codes", error);
+    return [];
+  }
+};
+
+export const toggleTeacherCode = async (id: string, active: boolean) => {
+  try {
+    await updateDoc(doc(db, 'teacherCodes', id), { active });
+  } catch (error) {
+    console.error("Error toggling teacher code", error);
+    throw error;
+  }
+};
+
+export const deleteTeacherCode = async (id: string) => {
+  try {
+    await deleteDoc(doc(db, 'teacherCodes', id));
+  } catch (error) {
+    console.error("Error deleting teacher code", error);
+    throw error;
+  }
+};
+
+export const verifyTeacherCode = async (code: string): Promise<TeacherCode | null> => {
+    try {
+        const q = query(collection(db, 'teacherCodes'), where('code', '==', code), where('active', '==', true));
+        const querySnapshot = await getDocs(q);
+        if (querySnapshot.empty) return null;
+
+        const teacherCode = querySnapshot.docs[0].data() as TeacherCode;
+        if (teacherCode.currentUses >= teacherCode.maxUses) return null;
+
+        return teacherCode;
+    } catch (error) {
+        console.error("Error verifying teacher code", error);
+        return null;
+    }
+};
+
+export const useTeacherCode = async (id: string) => {
+    try {
+        const docRef = doc(db, 'teacherCodes', id);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+            const data = docSnap.data() as TeacherCode;
+            await updateDoc(docRef, { currentUses: (data.currentUses || 0) + 1 });
+        }
+    } catch (error) {
+        console.error("Error using teacher code", error);
+    }
+};

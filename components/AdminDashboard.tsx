@@ -2,11 +2,11 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { safeSetLocalStorage, saveUserLocal } from '../utils/safeStorage';
 import { User, ViewState, SystemSettings, Subject, Chapter, MCQItem, RecoveryRequest, ActivityLogEntry, LeaderboardEntry, RecycleBinItem, Stream, Board, ClassLevel, GiftCode, SubscriptionPlan, CreditPackage, SpinReward, HtmlModule, PremiumNoteSlot, ContentInfoConfig, ContentInfoItem, SubscriptionHistoryEntry, UniversalAnalysisLog, ContentType, LessonContent, DeepDiveEntry, AdditionalNoteEntry } from '../types';
-import { List, LayoutDashboard, Users, Search, Trash2, Save, X, Eye, EyeOff, Shield, Megaphone, CheckCircle, ListChecks, Database, FileText, Monitor, Sparkles, Banknote, BrainCircuit, AlertOctagon, ArrowLeft, Key, Bell, ShieldCheck, Lock, Globe, Layers, Zap, PenTool, RefreshCw, RotateCcw, Plus, LogOut, Download, Upload, CreditCard, Ticket, Video, Image as ImageIcon, Type, Link, FileJson, Activity, AlertTriangle, Gift, Book, Mail, Edit3, MessageSquare, ShoppingBag, Cloud, Rocket, Code2, Layers as LayersIcon, Wifi, WifiOff, Copy, Crown, Gamepad2, Calendar, BookOpen, Image, HelpCircle, Youtube, Play, Star, Trophy, Palette, Settings, Headphones, Layout, Bot, LayoutDashboard as DashboardIcon, Loader2, Gauge, LayoutGrid, ArrowUpCircle } from 'lucide-react';
+import { Briefcase, List, LayoutDashboard, Users, Search, Trash2, Save, X, Eye, EyeOff, Shield, Megaphone, CheckCircle, ListChecks, Database, FileText, Monitor, Sparkles, Banknote, BrainCircuit, AlertOctagon, ArrowLeft, Key, Bell, ShieldCheck, Lock, Globe, Layers, Zap, PenTool, RefreshCw, RotateCcw, Plus, LogOut, Download, Upload, CreditCard, Ticket, Video, Image as ImageIcon, Type, Link, FileJson, Activity, AlertTriangle, Gift, Book, Mail, Edit3, MessageSquare, ShoppingBag, Cloud, Rocket, Code2, Layers as LayersIcon, Wifi, WifiOff, Copy, Crown, Gamepad2, Calendar, BookOpen, Image, HelpCircle, Youtube, Play, Star, Trophy, Palette, Settings, Headphones, Layout, Bot, LayoutDashboard as DashboardIcon, Loader2, Gauge, LayoutGrid, ArrowUpCircle } from 'lucide-react';
 import { getSubjectsList, DEFAULT_SUBJECTS, DEFAULT_APP_FEATURES, ALL_APP_FEATURES, STUDENT_APP_FEATURES, DEFAULT_CONTENT_INFO_CONFIG, ADMIN_PERMISSIONS, APP_VERSION, STATIC_SYLLABUS, LEVEL_UNLOCKABLE_FEATURES } from '../constants';
 import { fetchChapters, fetchLessonContent } from '../services/groq';
 import { runAutoPilot, runCommandMode } from '../services/autoPilot';
-import { saveChapterData, bulkSaveLinks, checkFirebaseConnection, saveSystemSettings, subscribeToUsers, rtdb, saveUserToLive, db, getChapterData, saveCustomSyllabus, deleteCustomSyllabus, subscribeToUniversalAnalysis, saveAiInteraction, saveSecureKeys, getSecureKeys, subscribeToApiUsage, subscribeToDrafts, resetAllContent, subscribeToDemands } from '../firebase'; // IMPORT FIREBASE
+import { generateTeacherCode, fetchTeacherCodes, toggleTeacherCode, deleteTeacherCode, saveChapterData, bulkSaveLinks, checkFirebaseConnection, saveSystemSettings, subscribeToUsers, rtdb, saveUserToLive, db, getChapterData, saveCustomSyllabus, deleteCustomSyllabus, subscribeToUniversalAnalysis, saveAiInteraction, saveSecureKeys, getSecureKeys, subscribeToApiUsage, subscribeToDrafts, resetAllContent, subscribeToDemands } from '../firebase'; // IMPORT FIREBASE
 import { ref, set, onValue, update, push, get } from "firebase/database";
 import { doc, deleteDoc } from "firebase/firestore";
 import { storage } from '../utils/storage';
@@ -104,6 +104,7 @@ interface Props {
 type AdminTab = 
   | 'DASHBOARD' 
   | 'USERS' 
+  | 'TEACHERS'
   | 'NOTIFY_USERS' // NEW
   | 'ACTIVITY_LOG' // NEW
   | 'SUBSCRIPTION_MANAGER'
@@ -408,6 +409,10 @@ const AdminDashboardInner: React.FC<Props> = ({ onNavigate, settings, onUpdateSe
   };
   const [showChat, setShowChat] = useState(false);
   const [users, setUsers] = useState<User[]>([]);
+  const [teacherCodes, setTeacherCodes] = useState<any[]>([]);
+  const [newTeacherPrice, setNewTeacherPrice] = useState('299');
+  const [newTeacherMaxUses, setNewTeacherMaxUses] = useState('5');
+  const [isGeneratingTeacherCode, setIsGeneratingTeacherCode] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [isFirebaseConnected, setIsFirebaseConnected] = useState(false);
   

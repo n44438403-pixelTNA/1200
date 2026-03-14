@@ -5,7 +5,7 @@ export type Board = 'CBSE' | 'BSEB' | 'COMPETITION';
 
 export type Stream = 'Science' | 'Commerce' | 'Arts';
 
-export type Role = 'STUDENT' | 'ADMIN' | 'SUB_ADMIN';
+export type Role = 'STUDENT' | 'ADMIN' | 'SUB_ADMIN' | 'TEACHER';
 
 export interface TimeConfig {
     days: number;
@@ -1131,4 +1131,15 @@ export interface FeatureRow {
 export interface FeatureCategory {
     name: string;
     features: FeatureRow[];
+}
+
+
+export interface TeacherCode {
+  id: string; // Document ID
+  code: string; // The actual code e.g. TCH-XXXXX
+  price: number;
+  active: boolean;
+  createdAt: number; // Timestamp
+  maxUses: number;
+  currentUses: number;
 }

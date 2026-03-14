@@ -1,27 +1,21 @@
 import { safeSetLocalStorage, saveUserLocal } from '../utils/safeStorage';
 import React, { useState } from 'react';
 import { User, Board, ClassLevel, Stream } from '../types';
-import { saveUserToLive, verifyTeacherCode, useTeacherCode  } from '../firebase';
+import { saveUserToLive } from '../firebase';
 import { BookOpen, Target, LogOut, Loader2, Sparkles, Zap, Award } from 'lucide-react';
 
-import { SystemSettings } from '../types';
-
 interface Props {
-  settings?: SystemSettings;
   user: User;
   onComplete: (user: User) => void;
   onLogout: () => void;
 }
 
-export const Onboarding: React.FC<Props> = ({ user, onComplete, onLogout, settings }) => {
+export const Onboarding: React.FC<Props> = ({ user, onComplete, onLogout }) => {
   const [step, setStep] = useState(1);
   const [name, setName] = useState(user.name || '');
   const [mobile, setMobile] = useState(user.mobile || '');
   const [password, setPassword] = useState('');
   const [board, setBoard] = useState<Board | ''>('');
-    const [role, setRole] = useState<'STUDENT' | 'TEACHER'>('STUDENT');
-    const [teacherCode, setTeacherCode] = useState('');
-    const [isVerifyingCode, setIsVerifyingCode] = useState(false);
   const [classLevel, setClassLevel] = useState<ClassLevel | ''>('');
   const [stream, setStream] = useState<Stream | ''>('');
   const [isSaving, setIsSaving] = useState(false);
@@ -64,32 +58,13 @@ export const Onboarding: React.FC<Props> = ({ user, onComplete, onLogout, settin
   const finishOnboarding = async () => {
       setIsSaving(true);
       try {
-          let finalRole = role;
-          if (role === 'TEACHER') {
-              if (!teacherCode) {
-                  alert("Teacher Code is required.");
-                  setIsSaving(false);
-                  return;
-              }
-              const validCode = await verifyTeacherCode(teacherCode);
-              if (!validCode) {
-                  alert("Invalid or expired Teacher Code.");
-                  setIsSaving(false);
-                  return;
-              }
-              // Code is valid, consume one use
-              await useTeacherCode(validCode.id);
-          }
-
           const updatedUser: User = {
-
               ...user,
               name: name.trim(),
               board: board as Board,
               classLevel: classLevel as ClassLevel,
               stream: stream ? (stream as Stream) : undefined,
-              profileCompleted: true,
-              role: finalRole as any
+              profileCompleted: true
           };
 
           if (isGoogleUser) {
@@ -135,11 +110,9 @@ export const Onboarding: React.FC<Props> = ({ user, onComplete, onLogout, settin
 
           {/* Header */}
           <div className="p-8 pb-6 text-center border-b border-slate-50 relative">
-              {(settings?.isLogoutEnabled !== false || user?.role === 'ADMIN' || user?.role === 'SUB_ADMIN') && (
-                  <button onClick={onLogout} className="absolute top-6 right-6 text-slate-400 hover:text-red-500 transition-colors p-2 bg-slate-50 rounded-full">
-                      <LogOut size={16} />
-                  </button>
-              )}
+              <button onClick={onLogout} className="absolute top-6 right-6 text-slate-400 hover:text-red-500 transition-colors p-2 bg-slate-50 rounded-full">
+                  <LogOut size={16} />
+              </button>
 
               <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 text-white rounded-2xl mx-auto flex items-center justify-center mb-4 shadow-lg shadow-blue-200 rotate-3">
                   <Sparkles size={32} />
@@ -199,39 +172,6 @@ export const Onboarding: React.FC<Props> = ({ user, onComplete, onLogout, settin
                               </div>
                           )}
                       </div>
-
-                      <div className="flex flex-col gap-3 mb-6 mt-6 pt-4 border-t border-slate-100">
-                          <label className="text-sm font-bold text-slate-700 block">I am a...</label>
-                          <div className="grid grid-cols-2 gap-3">
-                              <button
-                                  onClick={() => setRole('STUDENT')}
-                                  className={`p-3 rounded-xl border-2 transition-all font-bold ${role === 'STUDENT' ? 'border-blue-500 bg-blue-50 text-blue-700' : 'border-slate-200 text-slate-600 hover:bg-slate-50'}`}
-                              >
-                                  👨‍🎓 Student
-                              </button>
-                              <button
-                                  onClick={() => setRole('TEACHER')}
-                                  className={`p-3 rounded-xl border-2 transition-all font-bold ${role === 'TEACHER' ? 'border-purple-500 bg-purple-50 text-purple-700' : 'border-slate-200 text-slate-600 hover:bg-slate-50'}`}
-                              >
-                                  👨‍🏫 Teacher
-                              </button>
-                          </div>
-
-                          {role === 'TEACHER' && (
-                              <div className="animate-in fade-in slide-in-from-top-2 p-4 bg-purple-50 rounded-xl border border-purple-200 mt-2">
-                                  <label className="text-xs font-bold text-purple-800 block mb-2 uppercase tracking-wider">Teacher Access Code</label>
-                                  <input
-                                      type="text"
-                                      value={teacherCode}
-                                      onChange={(e) => setTeacherCode(e.target.value.toUpperCase())}
-                                      placeholder="e.g. TCH-12345"
-                                      className="w-full px-4 py-3 rounded-lg border border-purple-300 focus:ring-2 focus:ring-purple-500 outline-none font-bold text-slate-800 bg-white shadow-inner uppercase tracking-widest placeholder:normal-case placeholder:tracking-normal"
-                                  />
-                                  <p className="text-[10px] text-purple-600 mt-2">Requires a valid code provided by Admin to access Teacher features.</p>
-                              </div>
-                          )}
-                      </div>
-
                       <div className="flex items-center gap-3 mb-6 mt-6 pt-4 border-t border-slate-100">
                           <Target className="text-blue-500" size={24} />
                           <h2 className="text-lg font-bold text-slate-800">Select Your Board</h2>

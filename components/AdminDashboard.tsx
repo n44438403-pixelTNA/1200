@@ -2,11 +2,11 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { safeSetLocalStorage, saveUserLocal } from '../utils/safeStorage';
 import { User, ViewState, SystemSettings, Subject, Chapter, MCQItem, RecoveryRequest, ActivityLogEntry, LeaderboardEntry, RecycleBinItem, Stream, Board, ClassLevel, GiftCode, SubscriptionPlan, CreditPackage, SpinReward, HtmlModule, PremiumNoteSlot, ContentInfoConfig, ContentInfoItem, SubscriptionHistoryEntry, UniversalAnalysisLog, ContentType, LessonContent, DeepDiveEntry, AdditionalNoteEntry } from '../types';
-import { Briefcase, List, LayoutDashboard, Users, Search, Trash2, Save, X, Eye, EyeOff, Shield, Megaphone, CheckCircle, ListChecks, Database, FileText, Monitor, Sparkles, Banknote, BrainCircuit, AlertOctagon, ArrowLeft, Key, Bell, ShieldCheck, Lock, Globe, Layers, Zap, PenTool, RefreshCw, RotateCcw, Plus, LogOut, Download, Upload, CreditCard, Ticket, Video, Image as ImageIcon, Type, Link, FileJson, Activity, AlertTriangle, Gift, Book, Mail, Edit3, MessageSquare, ShoppingBag, Cloud, Rocket, Code2, Layers as LayersIcon, Wifi, WifiOff, Copy, Crown, Gamepad2, Calendar, BookOpen, Image, HelpCircle, Youtube, Play, Star, Trophy, Palette, Settings, Headphones, Layout, Bot, LayoutDashboard as DashboardIcon, Loader2, Gauge, LayoutGrid, ArrowUpCircle } from 'lucide-react';
+import { List, LayoutDashboard, Users, Search, Trash2, Save, X, Eye, EyeOff, Shield, Megaphone, CheckCircle, ListChecks, Database, FileText, Monitor, Sparkles, Banknote, BrainCircuit, AlertOctagon, ArrowLeft, Key, Bell, ShieldCheck, Lock, Globe, Layers, Zap, PenTool, RefreshCw, RotateCcw, Plus, LogOut, Download, Upload, CreditCard, Ticket, Video, Image as ImageIcon, Type, Link, FileJson, Activity, AlertTriangle, Gift, Book, Mail, Edit3, MessageSquare, ShoppingBag, Cloud, Rocket, Code2, Layers as LayersIcon, Wifi, WifiOff, Copy, Crown, Gamepad2, Calendar, BookOpen, Image, HelpCircle, Youtube, Play, Star, Trophy, Palette, Settings, Headphones, Layout, Bot, LayoutDashboard as DashboardIcon, Loader2, Gauge, LayoutGrid, ArrowUpCircle } from 'lucide-react';
 import { getSubjectsList, DEFAULT_SUBJECTS, DEFAULT_APP_FEATURES, ALL_APP_FEATURES, STUDENT_APP_FEATURES, DEFAULT_CONTENT_INFO_CONFIG, ADMIN_PERMISSIONS, APP_VERSION, STATIC_SYLLABUS, LEVEL_UNLOCKABLE_FEATURES } from '../constants';
 import { fetchChapters, fetchLessonContent } from '../services/groq';
 import { runAutoPilot, runCommandMode } from '../services/autoPilot';
-import { generateTeacherCode, fetchTeacherCodes, toggleTeacherCode, deleteTeacherCode, saveChapterData, bulkSaveLinks, checkFirebaseConnection, saveSystemSettings, subscribeToUsers, rtdb, saveUserToLive, db, getChapterData, saveCustomSyllabus, deleteCustomSyllabus, subscribeToUniversalAnalysis, saveAiInteraction, saveSecureKeys, getSecureKeys, subscribeToApiUsage, subscribeToDrafts, resetAllContent, subscribeToDemands } from '../firebase'; // IMPORT FIREBASE
+import { saveChapterData, bulkSaveLinks, checkFirebaseConnection, saveSystemSettings, subscribeToUsers, rtdb, saveUserToLive, db, getChapterData, saveCustomSyllabus, deleteCustomSyllabus, subscribeToUniversalAnalysis, saveAiInteraction, saveSecureKeys, getSecureKeys, subscribeToApiUsage, subscribeToDrafts, resetAllContent, subscribeToDemands } from '../firebase'; // IMPORT FIREBASE
 import { ref, set, onValue, update, push, get } from "firebase/database";
 import { doc, deleteDoc } from "firebase/firestore";
 import { storage } from '../utils/storage';
@@ -104,7 +104,6 @@ interface Props {
 type AdminTab = 
   | 'DASHBOARD' 
   | 'USERS' 
-  | 'TEACHERS'
   | 'NOTIFY_USERS' // NEW
   | 'ACTIVITY_LOG' // NEW
   | 'SUBSCRIPTION_MANAGER'
@@ -241,13 +240,6 @@ const MODELS = [
 const AdminDashboardInner: React.FC<Props> = ({ onNavigate, settings, onUpdateSettings, onImpersonate, logActivity, isDarkMode, onToggleDarkMode, user }) => {
 
   const [activeTab, setActiveTab] = useState<AdminTab>('DASHBOARD');
-
-    // Teacher Mode State
-    const [teacherCodes, setTeacherCodes] = useState<any[]>([]);
-    const [newTeacherPrice, setNewTeacherPrice] = useState('299');
-    const [newTeacherMaxUses, setNewTeacherMaxUses] = useState('5');
-    const [isGeneratingTeacherCode, setIsGeneratingTeacherCode] = useState(false);
-
   const [powerTab, setPowerTab] = useState<'LIMITS' | 'PLAN_MATRIX' | 'FEATURE_LISTS'>('LIMITS');
   const [customBloggerCode, setCustomBloggerCode] = useState('');
   const [showVisibilityControls, setShowVisibilityControls] = useState(false); // NEW: Master Visibility Toggle
@@ -279,14 +271,6 @@ const AdminDashboardInner: React.FC<Props> = ({ onNavigate, settings, onUpdateSe
           if (stored) setCurrentUser(JSON.parse(stored));
       }
   }, [user]);
-
-
-    // Fetch Teacher Codes
-    useEffect(() => {
-        if (currentUser?.role === 'ADMIN' && activeTab === 'TEACHERS') {
-            fetchTeacherCodes().then(codes => setTeacherCodes(codes)).catch(e => console.error("Error fetching codes:", e));
-        }
-    }, [currentUser, activeTab]);
 
   // --- PERMISSION HELPER ---
   const hasPermission = (perm: string) => {
@@ -6584,10 +6568,6 @@ Capital of India?       Mumbai  Delhi   Kolkata Chennai 2       Delhi is the cap
                       <>
                           <div><label className="text-xs font-bold uppercase text-slate-500">Admin Email</label><input type="text" value={localSettings.adminEmail || ''} onChange={e => setLocalSettings({...localSettings, adminEmail: e.target.value})} className="w-full p-3 border rounded-xl" /></div>
                           <div><label className="text-xs font-bold uppercase text-slate-500">Admin Login Code</label><input type="text" value={localSettings.adminCode || ''} onChange={e => setLocalSettings({...localSettings, adminCode: e.target.value})} className="w-full p-3 border rounded-xl" /></div>
-                          <div className="flex items-center justify-between bg-blue-50 p-4 rounded-xl border border-blue-100 mt-4">
-                              <div><p className="font-bold text-blue-800">Enable Logout Button</p><p className="text-xs text-blue-600">If disabled, students cannot log out of the app.</p></div>
-                              <input type="checkbox" checked={localSettings.isLogoutEnabled ?? true} onChange={() => setLocalSettings({...localSettings, isLogoutEnabled: !localSettings.isLogoutEnabled})} className="w-6 h-6 accent-blue-600" />
-                          </div>
                       </>
                   )}
                   {/* VISIBILITY */}
@@ -8759,149 +8739,7 @@ Capital of India?       Mumbai  Delhi   Kolkata Chennai 2       Delhi is the cap
           </div>
       )}
 
-
-      {/* --- TEACHERS TAB --- */}
-      {activeTab === 'TEACHERS' && (
-          <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-200 animate-in slide-in-from-bottom-4">
-              <div className="flex items-center gap-4 mb-6">
-                  <button onClick={() => setActiveTab('DASHBOARD')} className="bg-slate-100 p-2 rounded-full hover:bg-slate-200"><ArrowLeft size={20} /></button>
-                  <h3 className="text-xl font-black text-slate-800 flex items-center gap-2">
-                      <Briefcase className="text-purple-600" /> Teachers Management
-                  </h3>
-              </div>
-
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                  {/* GENERATE CODE SECTION */}
-                  <div className="bg-purple-50 p-6 rounded-2xl border border-purple-100">
-                      <h4 className="font-bold text-purple-900 mb-4 flex items-center gap-2">
-                          <Plus size={20} /> Generate Teacher Code
-                      </h4>
-                      <div className="flex flex-col gap-4">
-                          <div className="flex gap-4">
-                              <div className="flex-1">
-                                  <label className="text-xs font-bold text-purple-700 uppercase block mb-1">Cost / Value</label>
-                                  <input type="number" value={newTeacherPrice} onChange={e => setNewTeacherPrice(e.target.value)} className="w-full px-4 py-3 rounded-xl border-none shadow-sm focus:ring-2 focus:ring-purple-300" />
-                              </div>
-                              <div className="flex-1">
-                                  <label className="text-xs font-bold text-purple-700 uppercase block mb-1">Max Uses</label>
-                                  <input type="number" value={newTeacherMaxUses} onChange={e => setNewTeacherMaxUses(e.target.value)} className="w-full px-4 py-3 rounded-xl border-none shadow-sm focus:ring-2 focus:ring-purple-300" />
-                              </div>
-                          </div>
-                          <button
-                              onClick={async () => {
-                                  if (isGeneratingTeacherCode) return;
-                                  setIsGeneratingTeacherCode(true);
-                                  try {
-                                      const newCode = await generateTeacherCode(Number(newTeacherPrice), Number(newTeacherMaxUses));
-                                      setTeacherCodes([newCode, ...teacherCodes]);
-                                      alert(`Generated Code: ${newCode.code}`);
-                                  } catch (err) {
-                                      console.error(err);
-                                      alert("Error generating code");
-                                  }
-                                  setIsGeneratingTeacherCode(false);
-                              }}
-                              disabled={isGeneratingTeacherCode}
-                              className="w-full py-4 bg-purple-600 text-white rounded-xl font-bold hover:bg-purple-700 shadow-md transition-all flex justify-center items-center gap-2"
-                          >
-                              {isGeneratingTeacherCode ? 'Generating...' : <><Zap size={18} /> Generate New Code</>}
-                          </button>
-                      </div>
-                  </div>
-
-                  {/* ACTIVE CODES SECTION */}
-                  <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100">
-                      <h4 className="font-bold text-slate-800 mb-4 flex items-center gap-2">
-                          <Key size={20} className="text-slate-500" /> Active Codes
-                      </h4>
-                      <div className="overflow-y-auto max-h-64 pr-2 space-y-3">
-                          {teacherCodes.length === 0 ? (
-                              <p className="text-sm text-slate-500 text-center py-4">No teacher codes found.</p>
-                          ) : (
-                              teacherCodes.map(code => (
-                                  <div key={code.id} className="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between">
-                                      <div>
-                                          <div className="font-mono font-black text-purple-600 text-lg">{code.code}</div>
-                                          <div className="text-[10px] font-bold text-slate-400 mt-1 uppercase flex gap-3">
-                                              <span>{code.currentUses} / {code.maxUses} Uses</span>
-                                              <span className={code.active ? 'text-green-500' : 'text-red-500'}>{code.active ? 'ACTIVE' : 'DISABLED'}</span>
-                                          </div>
-                                      </div>
-                                      <div className="flex gap-2">
-                                          <button onClick={async () => {
-                                              await toggleTeacherCode(code.id, !code.active);
-                                              setTeacherCodes(teacherCodes.map(c => c.id === code.id ? {...c, active: !c.active} : c));
-                                          }} className={`p-2 rounded-lg transition-colors ${code.active ? 'bg-amber-100 text-amber-600 hover:bg-amber-200' : 'bg-green-100 text-green-600 hover:bg-green-200'}`}>
-                                              <RefreshCw size={16} />
-                                          </button>
-                                          <button onClick={async () => {
-                                              if (confirm('Delete this code?')) {
-                                                  await deleteTeacherCode(code.id);
-                                                  setTeacherCodes(teacherCodes.filter(c => c.id !== code.id));
-                                              }
-                                          }} className="p-2 bg-red-50 text-red-500 hover:bg-red-100 rounded-lg transition-colors">
-                                              <Trash2 size={16} />
-                                          </button>
-                                      </div>
-                                  </div>
-                              ))
-                          )}
-                      </div>
-                  </div>
-              </div>
-
-              {/* TEACHERS LEADERBOARD */}
-              <div className="mt-8 bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
-                  <div className="bg-slate-50 p-4 border-b border-slate-100 flex items-center justify-between">
-                      <h4 className="font-bold text-slate-800 flex items-center gap-2">
-                          <Users size={18} className="text-blue-500" /> Registered Teachers
-                      </h4>
-                      <span className="text-xs font-bold text-slate-500 bg-white px-3 py-1 rounded-full border border-slate-200">
-                          {users.filter(u => u.role === 'TEACHER').length} Total
-                      </span>
-                  </div>
-                  <table className="w-full text-left text-sm">
-                      <thead className="bg-white border-b border-slate-100 text-slate-400">
-                          <tr className="uppercase text-[10px] tracking-wider font-bold">
-                              <th className="p-4">Name</th>
-                              <th className="p-4">Email / Phone</th>
-                              <th className="p-4">Joined</th>
-                              <th className="p-4 text-right">Actions</th>
-                          </tr>
-                      </thead>
-                      <tbody className="divide-y divide-slate-50">
-                          {users.filter(u => u.role === 'TEACHER').map(t => (
-                              <tr key={t.id} className="hover:bg-slate-50 transition-colors">
-                                  <td className="p-4">
-                                      <p className="font-bold text-slate-800 flex items-center gap-2">
-                                          {t.name}
-                                      </p>
-                                      <p className="text-[10px] text-slate-400 font-mono mt-0.5">{t.id.slice(0, 8)}...</p>
-                                  </td>
-                                  <td className="p-4 text-slate-600 text-xs">{t.email || t.mobile || 'N/A'}</td>
-                                  <td className="p-4 text-slate-500 text-xs">{t.createdAt ? new Date(t.createdAt).toLocaleDateString() : 'N/A'}</td>
-                                  <td className="p-4 text-right">
-                                      <button onClick={() => setViewingUserHistory(t)} className="p-2 text-slate-400 hover:text-purple-600 bg-white border border-slate-200 rounded-lg shadow-sm" title="View Activity">
-                                          <Activity size={16} />
-                                      </button>
-                                  </td>
-                              </tr>
-                          ))}
-                          {users.filter(u => u.role === 'TEACHER').length === 0 && (
-                              <tr>
-                                  <td colSpan={4} className="p-8 text-center text-slate-400 text-sm">
-                                      No teachers registered yet. Share a teacher code to invite them!
-                                  </td>
-                              </tr>
-                          )}
-                      </tbody>
-                  </table>
-              </div>
-          </div>
-      )}
-
       {/* --- USERS TAB (Enhanced) --- */}
-
       {activeTab === 'USERS' && (
           <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-200 animate-in slide-in-from-bottom-4">
               <div className="flex items-center gap-4 mb-6"><button onClick={() => setActiveTab('DASHBOARD')} className="bg-slate-100 p-2 rounded-full hover:bg-slate-200"><ArrowLeft size={20} /></button><h3 className="text-xl font-black text-slate-800">User Management</h3></div>

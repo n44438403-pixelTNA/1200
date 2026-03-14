@@ -18,7 +18,7 @@ import { LessonActionModal } from './LessonActionModal';
 import { RedeemSection } from './RedeemSection';
 import { PrizeList } from './PrizeList';
 import { Store } from './Store';
-import { Globe, Briefcase, Layout, Gift, Sparkles, Megaphone, Lock, BookOpen, AlertCircle, Edit, Settings, Play, Pause, RotateCcw, MessageCircle, Gamepad2, Timer, CreditCard, Send, CheckCircle, Mail, X, Ban, Smartphone, Trophy, ShoppingBag, ArrowRight, Video, Youtube, Home, User as UserIcon, Book, BookOpenText, List, BarChart3, Award, Bell, Headphones, LifeBuoy, WifiOff, Zap, Star, Crown, History, ListChecks, Rocket, Ticket, TrendingUp, BrainCircuit, FileText, CheckSquare, Menu, LayoutGrid, Compass, User as UserIconOutline, MessageSquare, Bot, HelpCircle, Database, Activity, Download, Calendar, LogOut } from 'lucide-react';
+import { Globe, Layout, Gift, Sparkles, Megaphone, Lock, BookOpen, AlertCircle, Edit, Settings, Play, Pause, RotateCcw, MessageCircle, Gamepad2, Timer, CreditCard, Send, CheckCircle, Mail, X, Ban, Smartphone, Trophy, ShoppingBag, ArrowRight, Video, Youtube, Home, User as UserIcon, Book, BookOpenText, List, BarChart3, Award, Bell, Headphones, LifeBuoy, WifiOff, Zap, Star, Crown, History, ListChecks, Rocket, Ticket, TrendingUp, BrainCircuit, FileText, CheckSquare, Menu, LayoutGrid, Compass, User as UserIconOutline, MessageSquare, Bot, HelpCircle, Database, Activity, Download, Calendar, LogOut } from 'lucide-react';
 import { SubjectSelection } from './SubjectSelection';
 import { BannerCarousel } from './BannerCarousel';
 import { ChapterSelection } from './ChapterSelection'; // Imported for Video Flow
@@ -1301,67 +1301,7 @@ export const StudentDashboard: React.FC<Props> = ({ user, dailyStudySeconds, onS
                         </div>
 
 
-
-
-{/* TEACHER MODE SWITCHER */}
-                        {(user.role === 'TEACHER' || user.role === 'ADMIN' || user.role === 'SUB_ADMIN') && (
-                            <div className="bg-purple-50 p-4 rounded-xl border border-purple-200 mt-6 flex items-center justify-between shadow-sm animate-in fade-in">
-                                <div>
-                                    <h4 className="font-black text-purple-900 flex items-center gap-2 text-sm">
-                                        <Briefcase size={16} /> Teacher Mode Active
-                                    </h4>
-                                    <p className="text-[10px] text-purple-700 font-bold mt-1">You have Teacher access.</p>
-                                </div>
-                                <span className="bg-purple-600 text-white text-[10px] font-black px-3 py-1.5 rounded-full shadow-sm shadow-purple-200">ACTIVE</span>
-                            </div>
-                        )}
-                        {user.role === 'STUDENT' && (
-                            <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 mt-6 shadow-sm animate-in fade-in">
-                                <h4 className="font-black text-slate-800 flex items-center gap-2 mb-2 text-sm">
-                                    <Briefcase size={16} className="text-purple-600" /> Are you a Teacher?
-                                </h4>
-                                <button onClick={async () => {
-                                    const code = prompt("Enter Teacher Code to unlock Teacher Mode:");
-                                    if (!code) return;
-
-                                    try {
-                                        // Just a basic visual loader could be nice, but simple alert is fine
-                                        const { verifyTeacherCode, useTeacherCode, saveUserToLive } = await import('../firebase');
-                                        const validCode = await verifyTeacherCode(code.toUpperCase());
-                                        if (!validCode) {
-                                            alert("Invalid or expired Teacher Code.");
-                                            return;
-                                        }
-                                        await useTeacherCode(validCode.id);
-                                        const updatedUser = { ...user, role: 'TEACHER' as any };
-                                        await saveUserToLive(updatedUser);
-                                        // Update local state
-                                        localStorage.setItem('nst_current_user', JSON.stringify(updatedUser));
-                                        window.location.reload();
-                                    } catch (err) {
-                                        console.error(err);
-                                        alert("Error verifying code.");
-                                    }
-                                }} className="w-full bg-white border-2 border-purple-100 text-purple-700 font-bold py-2.5 rounded-xl text-xs hover:bg-purple-50 transition-colors shadow-sm">
-                                    Enter Teacher Code
-                                </button>
-                            </div>
-                        )}
-                        {user.role === 'STUDENT' && (
-                            <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 mt-6 shadow-sm animate-in fade-in">
-                                <h4 className="font-black text-slate-800 flex items-center gap-2 mb-2 text-sm">
-                                    <Briefcase size={16} className="text-purple-600" /> Are you a Teacher?
-                                </h4>
-                                <button onClick={() => {
-                                    alert("To activate Teacher Mode, please re-login and select 'Teacher' during onboarding or contact your administrator.");
-                                }} className="w-full bg-white border-2 border-purple-100 text-purple-700 font-bold py-2.5 rounded-xl text-xs hover:bg-purple-50 transition-colors shadow-sm">
-                                    Enter Teacher Code
-                                </button>
-                            </div>
-                        )}
-
                         <div className="grid grid-cols-2 gap-3 mt-6">
-
                             <button
                                 onClick={() => { setShowSidebar(false); setEditMode(true); }}
                                 className="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex flex-col items-center justify-center gap-2 hover:bg-slate-50 transition-colors"

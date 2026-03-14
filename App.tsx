@@ -2211,7 +2211,7 @@ const App: React.FC = () => {
 
   return (
     <ErrorBoundary>
-    <div className={`min-h-screen flex flex-col bg-slate-50 font-sans relative pt-[env(safe-area-inset-top,24px)] pb-[env(safe-area-inset-bottom,32px)] ${state.user?.role === 'TEACHER' ? 'app-role-teacher' : 'app-role-student'}`}>
+    <div className="min-h-screen flex flex-col bg-slate-50 font-sans relative pt-[env(safe-area-inset-top,24px)] pb-[env(safe-area-inset-bottom,32px)]">
       {/* STATUS BAR BACKGROUND */}
       <div className="fixed top-0 left-0 right-0 h-[env(safe-area-inset-top,24px)] bg-slate-900 z-[100]"></div>
       {/* BOTTOM SAFE AREA BACKGROUND */}
@@ -2359,7 +2359,7 @@ const App: React.FC = () => {
                    <div className="text-right hidden md:block">
                        <div className="text-xs font-bold text-slate-800">{state.user.name}</div>
                    </div>
-                   {(state.settings.isLogoutEnabled !== false || state.user?.role === 'ADMIN' || state.user?.role === 'SUB_ADMIN') && <button onClick={handleLogout} className="p-2 text-red-400 hover:bg-red-50 rounded-full"><LogOut size={20} /></button>}
+                   <button onClick={handleLogout} className="p-2 text-red-400 hover:bg-red-50 rounded-full"><LogOut size={20} /></button>
                </div>
            )}
         </div>
@@ -2422,7 +2422,7 @@ const App: React.FC = () => {
                 )}
                 
                 {(!activeWeeklyTest && state.view === 'BOARDS') && <BoardSelection onSelect={handleBoardSelect} onBack={goBack} />}
-                {state.view === 'ONBOARDING' && state.user && <Onboarding user={state.user} onComplete={handleLogin} onLogout={handleLogout} settings={state.settings} />}
+                {state.view === 'ONBOARDING' && state.user && <Onboarding user={state.user} onComplete={handleLogin} onLogout={handleLogout} />}
                 {state.view === 'CLASSES' && <ClassSelection selectedBoard={state.selectedBoard} allowedClasses={state.user?.role === 'ADMIN' ? undefined : state.settings.allowedClasses} settings={state.settings} user={state.user} onSelect={handleClassSelect} onBoardChange={handleBoardSelect} onBack={goBack} />}
                 {state.view === 'STREAMS' && <StreamSelection onSelect={handleStreamSelect} onBack={goBack} />}
                 {state.view === 'SUBJECTS' && state.selectedClass && <SubjectSelection classLevel={state.selectedClass} stream={state.selectedStream} board={state.selectedBoard || undefined} onSelect={handleSubjectSelect} onBack={goBack} />}

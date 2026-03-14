@@ -27,3 +27,6 @@
 3:49:12 AM [vite] (client) hmr update /index.css?direct, /index.css
 3:50:03 AM [vite] (client) hmr update /App.tsx
 4:12:13 AM [vite] (client) hmr update /App.tsx
+4:27:10 AM [vite] (client) hmr update /App.tsx
+[BABEL] Note: The code generator has deoptimised the styling of /app/components/AdminDashboard.tsx as it exceeds the max of 500KB.
+[BABEL] Note: The code generator has deoptimised the styling of /app/components/AdminDashboard.tsx as it exceeds the max of 500KB.

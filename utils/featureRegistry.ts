@@ -351,17 +351,6 @@ export const ALL_FEATURES: Feature[] = [
         color: 'blue'
     },
     {
-        id: 'ADMIN_TEACHERS',
-        label: 'Teacher Mode',
-        group: 'CORE',
-        surfaceLevel: 3,
-        adminVisible: true,
-        adminTab: 'TEACHERS',
-        requiredPermission: 'VIEW_USERS',
-        icon: 'Briefcase',
-        color: 'purple'
-    },
-    {
         id: 'ADMIN_SUB_ADMINS',
         label: 'Sub-Admins',
         group: 'CORE',

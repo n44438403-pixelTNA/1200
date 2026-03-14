@@ -5,7 +5,7 @@ export type Board = 'CBSE' | 'BSEB' | 'COMPETITION';
 
 export type Stream = 'Science' | 'Commerce' | 'Arts';
 
-export type Role = 'STUDENT' | 'ADMIN' | 'SUB_ADMIN' | 'TEACHER';
+export type Role = 'STUDENT' | 'ADMIN' | 'SUB_ADMIN';
 
 export interface TimeConfig {
     days: number;
@@ -377,7 +377,6 @@ export interface SystemSettings {
   watermarkPosition?: { top: string, left: string }; // NEW: Custom Position
   showUserWatermark?: boolean; // Toggle User Name Overlay
   maintenanceMode?: boolean;
-  isLogoutEnabled?: boolean;
   maintenanceMessage?: string;
   customCSS?: string;
   apiKeys?: any[]; // Legacy Gemini Keys
@@ -1132,15 +1131,4 @@ export interface FeatureRow {
 export interface FeatureCategory {
     name: string;
     features: FeatureRow[];
-}
-
-
-export interface TeacherCode {
-  id: string; // Document ID
-  code: string; // The actual code e.g. TCH-XXXXX
-  price: number;
-  active: boolean;
-  createdAt: number; // Timestamp
-  maxUses: number;
-  currentUses: number;
 }

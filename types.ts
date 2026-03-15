@@ -901,6 +901,12 @@ export interface DeepDiveEntry {
   pdfLink: string;
 }
 
+export interface QuickNoteEntry {
+  id: string;
+  title: string;
+  content: string; // Multiline text, each line is a bullet point
+}
+
 export interface AdditionalNoteEntry {
   id: string;
   title: string;
@@ -999,6 +1005,10 @@ export interface LessonContent {
   competitionDeepDiveEntries?: DeepDiveEntry[];
   schoolAdditionalNotes?: AdditionalNoteEntry[];
   competitionAdditionalNotes?: AdditionalNoteEntry[];
+
+  quickNoteEntries?: QuickNoteEntry[];
+  schoolQuickNoteEntries?: QuickNoteEntry[];
+  competitionQuickNoteEntries?: QuickNoteEntry[];
 
   // NEW TOPIC BASED CONTENT
   topicNotes?: { id: string, title: string, content: string, isPremium: boolean, topic: string }[];

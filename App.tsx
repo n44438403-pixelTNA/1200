@@ -339,6 +339,7 @@ const App: React.FC = () => {
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [popupQueue, setPopupQueue] = useState<('TRACKER' | 'CHALLENGE' | 'WELCOME')[]>([]);
   const [showUpdatePopup, setShowUpdatePopup] = useState(false); // NEW
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [loadingContentType, setLoadingContentType] = useState<ContentType | undefined>(undefined); // NEW
 
   // --- VERSION CONTROL INIT ---
@@ -1081,12 +1082,23 @@ const App: React.FC = () => {
     }));
   };
 
-  const handleLogout = async () => {
+const handleLogout = async () => {
+    // Check if the user is an admin or sub-admin - they can logout immediately
+    if (state.user?.role === 'ADMIN' || state.user?.role === 'SUB_ADMIN') {
+        executeLogout();
+        return;
+    }
+    // If regular student, show friction modal
+    setShowLogoutModal(true);
+  };
+
+  const executeLogout = async () => {
     logActivity("LOGOUT", "User Logged Out");
     localStorage.removeItem('nst_current_user');
     await storage.removeItem('nst_user_bulky');
     setState(prev => ({ ...prev, user: null, originalAdmin: null, view: 'CLASSES', selectedBoard: 'CBSE', selectedClass: null, selectedStream: null, selectedSubject: null, lessonContent: null, language: 'English' }));
     setDailyStudySeconds(0);
+    setShowLogoutModal(false);
   };
 
   const handleMCQComplete = (score: number, answers: Record<number, number>, displayData: MCQItem[], timeTaken: number) => {
@@ -2422,7 +2434,7 @@ const App: React.FC = () => {
                 )}
                 
                 {(!activeWeeklyTest && state.view === 'BOARDS') && <BoardSelection onSelect={handleBoardSelect} onBack={goBack} />}
-                {state.view === 'ONBOARDING' && state.user && <Onboarding user={state.user} onComplete={handleLogin} onLogout={handleLogout} />}
+                {state.view === 'ONBOARDING' && state.user && <Onboarding user={state.user} onComplete={handleLogin} onLogout={handleLogout} settings={state.settings} />}
                 {state.view === 'CLASSES' && <ClassSelection selectedBoard={state.selectedBoard} allowedClasses={state.user?.role === 'ADMIN' ? undefined : state.settings.allowedClasses} settings={state.settings} user={state.user} onSelect={handleClassSelect} onBoardChange={handleBoardSelect} onBack={goBack} />}
                 {state.view === 'STREAMS' && <StreamSelection onSelect={handleStreamSelect} onBack={goBack} />}
                 {state.view === 'SUBJECTS' && state.selectedClass && <SubjectSelection classLevel={state.selectedClass} stream={state.selectedStream} board={state.selectedBoard || undefined} onSelect={handleSubjectSelect} onBack={goBack} />}
@@ -2609,6 +2621,18 @@ const App: React.FC = () => {
           onCancel={() => setConfirmConfig({...confirmConfig, isOpen: false})}
       />
 
+      {showLogoutModal && (
+        <LogoutFrictionModal
+          onCancel={() => setShowLogoutModal(false)}
+          onConfirm={(pw) => {
+            if (pw === state.user?.password) {
+              executeLogout();
+            } else {
+              alert('Incorrect Password');
+            }
+          }}
+        />
+      )}
       {showUpdatePopup && state.settings.latestVersion && state.settings.updateUrl && (
           <UpdatePopup
               latestVersion={state.settings.latestVersion}

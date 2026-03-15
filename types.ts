@@ -377,6 +377,7 @@ export interface SystemSettings {
   watermarkPosition?: { top: string, left: string }; // NEW: Custom Position
   showUserWatermark?: boolean; // Toggle User Name Overlay
   maintenanceMode?: boolean;
+  isLogoutEnabled?: boolean;
   maintenanceMessage?: string;
   customCSS?: string;
   apiKeys?: any[]; // Legacy Gemini Keys

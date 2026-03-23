@@ -339,10 +339,14 @@ const RevisionHubComponent: React.FC<Props> = ({ user, onTabChange, settings, on
         let isMounted = true;
 
         const expandTopics = async () => {
-            if (isMounted) setTopics(processedTopics);
             // If there are too many topics (> 20), do not attempt to deep-expand all of them at once via network
             // as it will freeze the app. We just show chapter level.
-            if (processedTopics.length > 20) return;
+            if (processedTopics.length > 20) {
+                if (isMounted) {
+                    setTopics(prev => JSON.stringify(prev) !== JSON.stringify(processedTopics) ? processedTopics : prev);
+                }
+                return;
+            }
 
             // Parallel Processing for Speed
             const expandedResults = await Promise.all(processedTopics.map(async (topic) => {
@@ -426,8 +430,13 @@ const RevisionHubComponent: React.FC<Props> = ({ user, onTabChange, settings, on
                 const uniqueTopics = Array.from(uniqueMap.values());
 
                 // Update if different
-                if (uniqueTopics.length !== topics.length) {
-                    setTopics(uniqueTopics);
+                if (isMounted) {
+                    setTopics(prev => {
+                        if (JSON.stringify(prev) !== JSON.stringify(uniqueTopics)) {
+                            return uniqueTopics;
+                        }
+                        return prev;
+                    });
                 }
             }
         };
